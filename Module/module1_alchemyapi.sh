@@ -17,5 +17,5 @@ URL=$1
 URLCURL="http://access.alchemyapi.com/calls/url/URLGetText?apikey=${APIKEY}&url=${URL}&outputMode=${OUTPUTMODE}"
 
 # Requete curl
-curl ${URLCURL} | jq '. | {url : .url, text : .text}'
+curl -s ${URLCURL} | jq '. | {url : .url, text : .text}'
 
