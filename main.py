@@ -2,7 +2,6 @@ import subprocess
 # from Module import module2_partie1
 from flask import json
 
-
 def DoSearch(search):
     # call module 1 REQUEST TO URL TO TEXT URL
     print('bash call')
@@ -17,5 +16,4 @@ def DoSearch(search):
     # module2_partie1.getUrlFromText(f.read())
     print('module 2 end')
     return 'rien'
-    # module2_partie2
     # call module 3 RDF TO RESULTS
