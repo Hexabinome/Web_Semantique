@@ -5,19 +5,19 @@ import requests, json, threading
 
 
 # TODO: making the confidence and support changeable
-def getUrlsFromText(jsonText):
+def getUrlsFromText(text):
 
-    data = {'text' : jsonText,
+    data = {'text' : text,
         'confidence' : '0.2',
         'support' : '20' }
 
     url = 'http://spotlight.dbpedia.org/rest/annotate/'
-    header = {'Accept' : 'application/json ', 'Content-Type' : 'application/json'}
+    header = {'Accept' : 'application/json '}
     req = requests.post(url, data, headers=header)
 
     # TODO can throw error. Check status code 200
     if req.status_code != 200:
-        raise IOError("ERR : {0}\nJson was : {1}".format(req.reason, jsonText))
+        raise IOError("ERR : {0}\nJson was : {1}".format(req.reason, text))
     jsonResponse = json.loads(req.text)
 
     urlList = []
@@ -25,8 +25,8 @@ def getUrlsFromText(jsonText):
         urlList.append(resource[u'@URI'])
     return urlList
 
-def getUrlsFromTextThreaded(jsonTest, result, i):
-    result[i] = getUrlsFromText(jsonTest)
+def getUrlsFromTextThreaded(jsonText, result, i):
+    result[i] = getUrlsFromText(jsonText)
 
 def getUrlsFromTexts(jsonTexts):
     nbTexts = len(jsonTexts)
@@ -45,9 +45,9 @@ def getUrlsFromTexts(jsonTexts):
     return allUrls
 
 # TEST
-res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break
-    for students included in last year's economic stimulus package, arguing
-    that the policy provides more generous assistance.""")
+#res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break
+#    for students included in last year's economic stimulus package, arguing
+#    that the policy provides more generous assistance.""")
 #res = getUrlsFromTexts(["Berlin Germany beer Warsaw", """President Obama called Wednesday on Congress to extend a tax break
 #    for students included in last year's economic stimulus package, arguing
 #    that the policy provides more generous assistance."""])
