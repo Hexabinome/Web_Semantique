@@ -19,7 +19,7 @@ PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 F
 
 # extract all result-urls from result pages's html sources 
 # the url container has the form <a href="/url?q=XYZ> 
-RAW_LINKS=$(echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | sed 's/\&amp/\n/g' | grep http)
+RAW_LINKS=$(echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | sed 's/\&amp/\n/g' | grep http | sed 's/">//g')
 
 # still the urls need to be refined, see table below for substitution rules
 # more info: https://en.wikipedia.org/wiki/Percent-encoding
@@ -41,23 +41,24 @@ RAW_LINKS=$(echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\
 # %40 -> @
 # %5B -> [
 # %5D -> ]
-echo $RAW_LINKS | sed 's/%21/!/g' \
-		| sed 's/%23/#/g' \
-		| sed 's/%24/$/g' \
-		| sed 's/%26/&/g' \
-		| sed 's/%28/(/g' \
-		| sed 's/%29/)/g' \
-		| sed 's/%2A/*/g' \
-		| sed 's/%2B/+/g' \
-		| sed 's/%2C/,/g' \
-		| sed 's/%2F/\//g' \
-		| sed 's/%3A/:/g' \
-		| sed 's/%3B/;/g' \
-		| sed 's/%3D/=/g' \
-		| sed 's/%3F/?/g' \
-		| sed 's/%40/@/g' \
-		| sed 's/%5B/[/g' \
-		| sed 's/%5D/]/g'
+echo $RAW_LINKS | sed 's/ /\n/g' \
+		| sed 's/%21/!/g' \
+	       | sed 's/%23/#/g' \
+	       | sed 's/%24/$/g' \
+	       | sed 's/%26/&/g' \
+	       | sed 's/%28/(/g' \
+	       | sed 's/%29/)/g' \
+	       | sed 's/%2A/*/g' \
+	       | sed 's/%2B/+/g' \
+	       | sed 's/%2C/,/g' \
+	       | sed 's/%2F/\//g' \
+	       | sed 's/%3A/:/g' \
+	       | sed 's/%3B/;/g' \
+	       | sed 's/%3D/=/g' \
+	       | sed 's/%3F/?/g' \
+	       | sed 's/%40/@/g' \
+	       | sed 's/%5B/[/g' \
+	       | sed 's/%5D/]/g'
 
 #		  | sed 's/%27/\'/g' \
 
