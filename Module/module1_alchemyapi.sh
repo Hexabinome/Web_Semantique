@@ -1,6 +1,6 @@
 #!/bin/bash
 # Ce script récupère une URL et appel l'API Alchemy pour extraire le texte de la page.
-# Usage : 02-alchemyapi.sh url
+# Usage : module1_alchemy.sh url
 #  => {url : url
 #  	   text : textdelapage}
 
