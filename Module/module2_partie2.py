@@ -3,6 +3,7 @@
 # ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+# TODO : Reflechir sur les requetes a effectuee
 def getSparqlFromUrl(url):
   sparql = SPARQLWrapper("http://dbpedia.org/sparql")
   sparql.setQuery("""
@@ -13,6 +14,13 @@ def getSparqlFromUrl(url):
   sparql.setReturnFormat(JSON)
   results = sparql.query().convert()
   return results
+
+def getSparqlFromUrl(urlList):
+
+  toReturn = []
+  for url in urlLisr:
+    toReturn.append(getSparqlFromUrl(url))
+  return toReturn
 
 
 

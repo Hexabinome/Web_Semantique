@@ -3,22 +3,23 @@
 # ------------------------------------------
 import urllib2, urllib, json
 
+
+# TODO: making the confidence and support changeable
 def getUrlFromText (jsonText):
-  # The data will be what is return by the previsous step
+
   data = urllib.urlencode({'text' : jsonText,
    'confidence' : '0.2',
    'support' : '20' })
 
   url = 'http://spotlight.dbpedia.org/rest/annotate/'
   req = urllib2.Request(url, data, {'Accept' : 'application/json ', 'Content-Type' : 'application/json'})
-  f = urllib2.urlopen(req)
+  webResponse = urllib2.urlopen(req)
 
-  resp = json.loads(f.read())
+  jsonResponse = json.loads(webResponse.read())
 
   urlList = []
-  for x in resp[u'Resources']:
-      urlList.append(x[u'@URI'])
-  # print urlList
+  for resource in jsonResponse[u'Resources']:
+      urlList.append(resource[u'@URI'])
   return urlList
 
 
