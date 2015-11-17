@@ -46,6 +46,7 @@ echo $RAW_LINKS | sed 's/ /\n/g' \
 	       | sed 's/%23/#/g' \
 	       | sed 's/%24/$/g' \
 	       | sed 's/%26/&/g' \
+       	       | sed "s/%27/'/g" \
 	       | sed 's/%28/(/g' \
 	       | sed 's/%29/)/g' \
 	       | sed 's/%2A/*/g' \
@@ -59,6 +60,4 @@ echo $RAW_LINKS | sed 's/ /\n/g' \
 	       | sed 's/%40/@/g' \
 	       | sed 's/%5B/[/g' \
 	       | sed 's/%5D/]/g'
-
-#		  | sed 's/%27/\'/g' \
 
