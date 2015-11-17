@@ -3,6 +3,6 @@ Ce répertoire contient les différents modules utilisés pour le projet. Les nu
 
 # Modules
  - Module 1 : Max & Momo
- - Module 2 : Je ne sais pas
+ - Module 2 : David & robin
  - Module 3 : Je ne sais pas
  - ...
