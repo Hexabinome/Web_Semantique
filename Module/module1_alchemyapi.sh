@@ -4,7 +4,7 @@
 #  => {url : url
 #  	   text : textdelapage}
 
-# Clé de l'api 
+# Clé de l'api
 APIKEY="691b05b66974d5e2c59a2d3d3fa950e7b98d5fcd"
 
 # Mode de sortie
@@ -16,6 +16,6 @@ URL=$1
 # URL appelé par curl
 URLCURL="http://access.alchemyapi.com/calls/url/URLGetText?apikey=${APIKEY}&url=${URL}&outputMode=${OUTPUTMODE}"
 
-# Requete curl 
-curl ${URLCURL} | ./jq-linux64 '. | {url : .url, text : .text}'
+# Requete curl
+curl ${URLCURL} | jq '. | {url : .url, text : .text}'
 
