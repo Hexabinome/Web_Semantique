@@ -15,7 +15,11 @@ fi
 # La requete
 REQUETE=$1
 
+echo "{ resultats :[" > output/alchemy.json
 
 for i in $(./module1_requete-google.sh ${REQUETE}) ; do 
-	./module1_alchemyapi.sh $i;
+	./module1_alchemyapi.sh $i >> output/alchemy.json;
 done
+
+
+echo ] >> output/alchemy.json
