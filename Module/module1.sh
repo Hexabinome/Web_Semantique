@@ -17,11 +17,11 @@ OUTPUTFILE="Module/output/alchemy.json"
 # La requete
 REQUETE=$1
 
-echo "{ resultats :[" > ${OUTPUTFILE}
+echo "{ \"resultats\" :" > ${OUTPUTFILE}
 
 for i in $(Module/module1_requete-google.sh ${REQUETE}) ; do 
-	Module/module1_alchemyapi.sh $i >> ${OUTPUTFILE};
-done
+	Module/module1_alchemyapi.sh $i ;
+done | jq -s '.' >> ${OUTPUTFILE}
 
 
-echo ] >> ${OUTPUTFILE}
+echo "}" >> ${OUTPUTFILE}
