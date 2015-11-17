@@ -21,8 +21,10 @@ Launches a sparql query and returns a list of json objects.
 '''
 def getSparqlFromUrls(urlList):
   toReturn = []
-  for url in urlLisr:
+  for url in urlList:
     toReturn.append(getSparqlFromUrl(url))
   return toReturn
 
-#res = getSparqlFromUrl('http://dbpedia.org/resource/Beer') # Call example
+# Example calls
+#res = getSparqlFromUrl('http://dbpedia.org/resource/Beer') 
+results = getSparqlFromUrls(['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany'])
