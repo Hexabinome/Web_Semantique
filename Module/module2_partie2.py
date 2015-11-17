@@ -1,33 +1,42 @@
+﻿# -*- coding: utf-8 -*-
 # ------------------------------------------
 #           get_sparql_graph
 # ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
+import json, threading
 
 # TODO : Reflechir sur les requetes a effectuee
 def getSparqlFromUrl(url):
-  sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-  sparql.setQuery("""
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?label
-    WHERE { <""" + url + """> ?e ?label }
-  """)
-  sparql.setReturnFormat(JSON)
-  results = sparql.query().convert()
-  return results
+    query = "SELECT * WHERE {{ <{0}> ?predicat ?valeur }}".format(url)
+    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    
+    jsonResponse = sparql.query().convert()
+    rdfTripletList = jsonResponse['results']['bindings']
+    return json.dumps({url: rdfTripletList})
 
-def getSparqlFromUrl(urlList):
+def getSparqlFromUrlThreaded(url, resultList, idx):
+    resultList[idx] = getSparqlFromUrl(url)
 
-  toReturn = []
-  for url in urlLisr:
-    toReturn.append(getSparqlFromUrl(url))
-  return toReturn
+'''
+Launches a sparql query and returns a list of json objects.
+'''
+def getSparqlFromUrls(urlList):
+    nbUrl = len(urlList)
+    toReturn = [None] * nbUrl
+    threads = [None] * nbUrl
 
+    # Launch threads
+    for i in range(nbUrl):
+        threads[i] = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlList[i], toReturn, i))
+        threads[i].start()
 
+    # Wait for threads
+    for thread in threads:
+        thread.join()
+    return toReturn
 
-# from https://rdflib.github.io/sparqlwrapper/
-## DEBUG
-# results getSparqlFromUrl('http://dbpedia.org/resource/Asturias')
-# print results
-# for result in results["results"]["bindings"]:
-#   print(result["label"]["value"])
-## END of DEBUG
+# Example calls
+#res = getSparqlFromUrl('http://dbpedia.org/resource/Beer') 
+#results = getSparqlFromUrls(['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany'])
