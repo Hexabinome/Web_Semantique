@@ -21,7 +21,7 @@ def getUrlsFromText(text):
 
     # TODO can throw error. Check status code 200
     if req.status_code != 200:
-        raise IOError("ERR : {0}\nJson was : {1}".format(req.reason, text))
+        raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
     jsonResponse = json.loads(req.text)
     print(jsonResponse.keys())
     urlList = []
