@@ -5,8 +5,12 @@
 PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.de/search?q=sunset+rubdown")
 
 #extract all XYZ-urls from <a href="/url?q=XYZ> search results
-echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | grep http | sed 's/\">//g' > /tmp/linkfile
+echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | sed 's/\&amp/\n/g' | grep http | sed 's/%3F/?/g' | sed 's/%3D/=/g' | sed 's/%2B/+/g'
+sed 's/\">//g' 
 
+
+
+# > /tmp/linkfile
 
 
 
