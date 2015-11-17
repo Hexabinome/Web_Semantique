@@ -1,6 +1,6 @@
 #!/bin/bash
 # Ce script récupère une URL et appel l'API Alchemy pour extraire le texte de la page.
-# Usage : 02-alchemyapi.sh url
+# Usage : module1_alchemy.sh url
 #  => {url : url
 #  	   text : textdelapage}
 
@@ -17,5 +17,5 @@ URL=$1
 URLCURL="http://access.alchemyapi.com/calls/url/URLGetText?apikey=${APIKEY}&url=${URL}&outputMode=${OUTPUTMODE}"
 
 # Requete curl
-curl ${URLCURL} | jq '. | {url : .url, text : .text}'
+curl -s ${URLCURL} | jq '. | {url : .url, text : .text}'
 
