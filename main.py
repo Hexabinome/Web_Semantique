@@ -1,4 +1,4 @@
-import subprocess
+﻿import subprocess
 #from Module import module2_partie1
 
 
@@ -8,6 +8,6 @@ def DoSearch(search):
     f = open('Module/output/alchemy.json')
     return f.read()
     # call module 2 TEXT URL TO URI TO RDF
-    #module2_partie1.getUrlFromText(f.read)
+    #module2_partie1.getUrlsFromText(f.read)
     # module2_partie2
     # call module 3 RDF TO RESULTS
