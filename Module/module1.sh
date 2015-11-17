@@ -12,14 +12,16 @@ if ! [ ${NBARGS} -eq 1 ]; then
 	exit 123
 fi
 
+OUTPUTFILE="Module/output/alchemy.json"
+
 # La requete
 REQUETE=$1
 
-echo "{ resultats :[" > output/alchemy.json
+echo "{ resultats :[" > ${OUTPUTFILE}
 
-for i in $(./module1_requete-google.sh ${REQUETE}) ; do 
-	./module1_alchemyapi.sh $i >> output/alchemy.json;
+for i in $(Module/module1_requete-google.sh ${REQUETE}) ; do 
+	Module/module1_alchemyapi.sh $i >> ${OUTPUTFILE};
 done
 
 
-echo ] >> output/alchemy.json
+echo ] >> ${OUTPUTFILE}
