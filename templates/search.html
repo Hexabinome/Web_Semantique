@@ -1,5 +1,16 @@
 <!doctype html>
 
 <body>
-  <h1>{{search}}</h1>
+<h1>Recherche</h1>
+<ul>
+  {% for urllist in search %}
+  <li>
+  <ul>
+    {% for url in urllist %}
+    <li>{{url}}</li>
+    {% endfor %}
+  </ul>
+  </li>
+  {% endfor %}
+</ul>
 </body>

@@ -8,7 +8,7 @@ app = Flask(__name__)
 def search(search):
     print('you searched '+search)
     search_res = main.DoSearch(search)
-    return render_template('search.html', search=search)
+    return render_template('search.html', search=search_res)
 
 if __name__ == "__main__":
     app.run()
