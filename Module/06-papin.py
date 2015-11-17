@@ -1,4 +1,12 @@
+# ==========================
+# Import
+# ==========================
+import os 
 import json
+
+# ==========================
+# Extraction du JSON
+# ==========================
 input_file=open('testrdf.json', 'r')
 output_file=open('testoutput.json', 'w')
 
@@ -18,6 +26,10 @@ back_json=json.dumps(result, output_file)
 
 output_file.write(back_json)
 output_file.close() 
+
+# ==========================
+# Calcul de similarité
+# ==========================
 
 
 print"Hello world"
