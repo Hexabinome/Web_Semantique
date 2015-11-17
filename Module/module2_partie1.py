@@ -3,14 +3,14 @@
 # ------------------------------------------
 import urllib2, urllib, json
 
-def getUrlFromText (text):
+def getUrlFromText (jsonText):
   # The data will be what is return by the previsous step
-  data = urllib.urlencode({'text' : text,
+  data = urllib.urlencode({'text' : jsonText,
    'confidence' : '0.2',
    'support' : '20' })
 
   url = 'http://spotlight.dbpedia.org/rest/annotate/'
-  req = urllib2.Request(url, data, {'Accept' : 'application/json '  }) #, 'Content-Type' : 'application/json'})
+  req = urllib2.Request(url, data, {'Accept' : 'application/json ', 'Content-Type' : 'application/json'})
   f = urllib2.urlopen(req)
 
   resp = json.loads(f.read())
