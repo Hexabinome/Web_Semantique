@@ -3,7 +3,7 @@
 # ==========================
 import os 
 import json
-
+'''
 # ==========================
 # Extraction du JSON
 # ==========================
@@ -26,10 +26,25 @@ back_json=json.dumps(result, output_file)
 
 output_file.write(back_json)
 output_file.close() 
-
+'''
 # ==========================
 # Calcul de similarité
 # ==========================
 
+tab = list()
+ligne = list()
 
-print"Hello world"
+graphe = [
+["yo1", "yo2", "yo3", "yo4"], 
+["yo2", "yo5", "yo6", "yo7"],
+["yo2", "yo3", "yo6", "yo7"]]
+
+for iLigne in range(0,len(graphe)) :
+    for iCol in range(0,len(graphe)) :
+        ratio = len([val for val in graphe[iLigne] if val in graphe[iCol]]) / (len(list(set(graphe[iLigne] + graphe[iCol]))))
+        ligne.append(ratio)
+    tab.append(ligne)
+
+print(tab)  
+
+os.system("pause")
