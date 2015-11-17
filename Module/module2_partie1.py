@@ -7,12 +7,12 @@ import requests, json, threading
 # TODO: making the confidence and support changeable
 def getUrlsFromText(text):
 
-    data = {'text' : text,
-        'confidence' : '0.2',
-        'support' : '20' }
+    data = {'text': text,
+        'confidence': '0.2',
+        'support': '20' }
 
     url = 'http://spotlight.dbpedia.org/rest/annotate/'
-    header = {'Accept' : 'application/json '}
+    header = {'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
     req = requests.post(url, data, headers=header)
 
     # TODO can throw error. Check status code 200
