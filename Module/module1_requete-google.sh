@@ -1,12 +1,22 @@
 #! /bin/bash
 # [Maxou]
 
+function usage()
+{
+    echo "No search term specified :("
+    exit -1
+}
+
+if [ $# = 0 ]; then
+    usage
+fi
+
 SUBJECT=$(echo $1 | sed 's/ /+/g')
 
 # get sources of first google search result page
 # I needed to change the user client because google blocks wget/curl requests
-PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.de/search?q=$SUBJECT")
-#PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.com/search?q=$SUBJECT")
+PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.co.uk/search?q=$SUBJECT")
+#PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.de/search?q=$SUBJECT")
 
 #echo $PAGE_SOURCE
 
