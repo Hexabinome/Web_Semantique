@@ -7,8 +7,7 @@ app = Flask(__name__)
 @app.route("/search/<search>")
 def search(search):
     print('you searched '+search)
-    search = main.DoSearch(search)
-    print(search)
+    search_res = main.DoSearch(search)
     return render_template('search.html', search=search)
 
 if __name__ == "__main__":
