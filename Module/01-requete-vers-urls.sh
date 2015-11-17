@@ -1,2 +1,2 @@
 #! /bin/bash
-cat "etape 01 - Maxou"
+echo "etape 01 - Maxou"
