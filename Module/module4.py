@@ -1,3 +1,6 @@
+# ------------------------------------------
+#           get_sparql_graph
+# ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 def getSparqlFromUrl(url):

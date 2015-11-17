@@ -1,3 +1,6 @@
+# ------------------------------------------
+#           get_spotlight_uri
+# ------------------------------------------
 import urllib2, urllib, json
 
 def getUrlFromText (text):
@@ -17,8 +20,6 @@ def getUrlFromText (text):
       urlList.append(x[u'@URI'])
   # print urlList
   return urlList
-
-
 
 
 # TEST
