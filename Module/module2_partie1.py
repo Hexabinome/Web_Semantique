@@ -16,6 +16,8 @@ def getUrlsFromText(jsonText):
     req = requests.post(url, data, headers=header)
 
     # TODO can throw error. Check status code 200
+    if req.status_code != 200:
+        raise IOError("ERR : {0}\nJson was : {1}".format(req.reason, jsonText))
     jsonResponse = json.loads(req.text)
 
     urlList = []
@@ -43,9 +45,9 @@ def getUrlsFromTexts(jsonTexts):
     return allUrls
 
 # TEST
-#print(getUrlFromText("""President Obama called Wednesday on Congress to extend a tax break
-#    for students included in last year's economic stimulus package, arguing
-#    that the policy provides more generous assistance."""))
+res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break
+    for students included in last year's economic stimulus package, arguing
+    that the policy provides more generous assistance.""")
 #res = getUrlsFromTexts(["Berlin Germany beer Warsaw", """President Obama called Wednesday on Congress to extend a tax break
 #    for students included in last year's economic stimulus package, arguing
 #    that the policy provides more generous assistance."""])
