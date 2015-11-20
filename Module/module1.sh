@@ -6,8 +6,8 @@
 NBARGS=$#
 
 if ! [ ${NBARGS} -eq 2 ]; then
-	echo "Nombre d'arguements incorrects. Il faut juste la requete en paramètre et le nombre de resultats."
-	echo "Example : ..."
+	echo "Nombre d'arguments incorrects. Il faut la requete en paramètre et le nombre de resultats."
+	echo "Example : module1.sh dexter 10."
 	#statements
 	exit 123
 fi

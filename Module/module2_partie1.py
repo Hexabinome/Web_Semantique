@@ -23,7 +23,7 @@ def getUrlsFromText(text):
     if req.status_code != 200:
         raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
     jsonResponse = json.loads(req.text)
-    print(jsonResponse.keys())
+    #print(jsonResponse.keys())
     urlList = []
     for resource in jsonResponse[u'Resources']:
         urlList.append(resource[u'@URI'])
