@@ -4,6 +4,8 @@ from flask import json
 
 
 def DoSearch(search):
+    # TODO change requestType
+    requestType = 2
     # call module 1 REQUEST TO URL TO TEXT URL
     print('module 1 call')
     subprocess.check_call(['./Module/module1.sh', search])
@@ -15,7 +17,7 @@ def DoSearch(search):
     # call module 2 TEXT URL TO URI TO RDF
     print('module 2 call')
     urllist = module2_partie1.getUrlsFromTexts(jsonlist)
-    dbcontent = module2_partie2.getSparqlFromUrls(urllist)
+    dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType)
     print('module 2 end')
     return dbcontent
     # call module 3 RDF TO RESULTS
