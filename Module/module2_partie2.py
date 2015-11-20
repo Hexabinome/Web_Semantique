@@ -63,6 +63,7 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
         # Wait for threads
         for t in threads:
             t.join()
+        threads = []
 
     # Create out list
     out_list = listOfListsOfUrls[:] # Realizes copy of elements
