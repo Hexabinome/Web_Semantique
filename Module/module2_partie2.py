@@ -44,22 +44,25 @@ Returns a list (of pages) of lists of jsonDBPediaContent
 def getSparqlFromUrls(listOfListsOfUrls, requestType):
     # Copy urls in one set => unique elements
     urlDict = {}
+    urlTab = []
     for page in listOfListsOfUrls:
         if page:
             for url in page:
                 urlDict[url] = None
+                urlTab.append(url)
 
+    # storing threads
     threads = []
 
     # Launch threads
-    for url in urlDict.keys():
-        t = threading.Thread(target=getSparqlFromUrlThreaded, args=(url, urlDict, requestType))
-        t.start()
-        threads.append(t)
-
-    # Wait for threads
-    for thread in threads:
-        thread.join()
+    while urlTab:
+        for x in range(1,4):
+            t = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlTab.pop(), urlDict, requestType))
+            t.start()
+            threads.append(t)
+        # Wait for threads
+        for t in threads:
+            t.join()
 
     # Create out list
     out_list = listOfListsOfUrls[:] # Realizes copy of elements
@@ -73,6 +76,6 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
 
 # Example calls
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
-# results = getSparqlFromUrls([['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
-#                            ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette', 'http://dbpedia.org/resource/Europe']], 0)
-# print(res)
+results = getSparqlFromUrls([['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
+                           ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette', 'http://dbpedia.org/resource/Europe']], 0)
+print(results)
