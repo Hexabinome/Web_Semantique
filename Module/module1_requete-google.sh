@@ -17,9 +17,13 @@ SUBJECT=$(echo $1 | sed 's/ /+/g')
 # I needed to change the user client because google blocks wget/curl requests
 PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.co.uk/search?q=$SUBJECT")
 
+# filter all adds. Luckily all add urls are marked in the page sources. Their links begin with: "/aclk?sa="
+# So I will filter all html elements containing this string.
+FILTERED_SOURCE=$(echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep --invert-match 'href="/aclk?sa=')
+
 # extract all result-urls from result pages's html sources 
 # the url container has the form <a href="/url?q=XYZ> 
-RAW_LINKS=$(echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | sed 's/\&amp/\n/g' | grep http | sed 's/">//g')
+RAW_LINKS=$(echo $FILTERED_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | sed 's/\&amp/\n/g' | grep http | sed 's/">//g')
 
 # still the urls need to be refined, see table below for substitution rules
 # more info: https://en.wikipedia.org/wiki/Percent-encoding
