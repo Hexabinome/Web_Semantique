@@ -20,12 +20,16 @@ function extract_urls()
 {
 	# filter all adds. Luckily all add urls are marked in the page sources. Their links begin with: "/aclk?sa="
 	# So I will filter all href elements starting by this string.
-	FILTERED_SOURCE=$(echo $PAGE_SOURCE | sed 's/>/>\n/g' | grep --invert-match 'href="/aclk?sa=')
-	
-	# extract all result-urls from result pages's html sources 
-	# the url container has the form <a href="/url?q=XYZ> 
-	RAW_LINKS=$(echo $FILTERED_SOURCE | sed 's/>/>\n/g' | grep -A1 "<h3" | sed 's/http/\nhttp/g' | sed 's/\&amp/\n/g' | grep http | sed 's/">//g')
-	
+	FILTERED_SOURCE=$(echo $PAGE_SOURCE | sed 's/>/>\
+/g' | grep --invert-match 'href="/aclk?sa=')
+
+	# extract all result-urls from result pages's html sources
+	# the url container has the form <a href="/url?q=XYZ>
+	RAW_LINKS=$(echo $FILTERED_SOURCE | sed 's/>/>\
+/g' | grep -A1 "<h3" | sed 's/http/\
+http/g' | sed 's/\&amp/\
+/g' | grep http | sed 's/">//g')
+
 	# still the urls need to be refined, see table below for substitution rules
 	# more info: https://en.wikipedia.org/wiki/Percent-encoding
 	# %21 -> !
@@ -46,7 +50,8 @@ function extract_urls()
 	# %40 -> @
 	# %5B -> [
 	# %5D -> ]
-	echo $RAW_LINKS | sed 's/ /\n/g' \
+	echo $RAW_LINKS | sed 's/ /\
+/g' \
 		| sed 's/%21/!/g' \
 	        | sed 's/%23/#/g' \
 	        | sed 's/%24/$/g' \
@@ -65,10 +70,10 @@ function extract_urls()
 	        | sed 's/%40/@/g' \
 	        | sed 's/%5B/[/g' \
 	        | sed 's/%5D/]/g'
-		
+
 	# Caluclate number of links extraxted from the given page sources
 	AMOUNT=$(echo $RAW_LINKS | wc -w)
-	
+
 }
 
 SUBJECT=$(echo $1 | sed 's/ /+/g')
@@ -80,7 +85,7 @@ COUNTER=0
 
 # keep on searching following google pages until the desired amount of results is reached
 until [  $COUNTER -ge $LIMIT ]; do
-    
+
     # get sources of google search result page ( I needed to change the user client because google blocks wget/curl requests)
     PAGE_SOURCE=$(curl -s -A 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0' "http://www.google.co.uk/search?q=$SUBJECT&start=$COUNTER")
     extract_urls
