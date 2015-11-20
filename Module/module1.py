@@ -1,8 +1,6 @@
 import requests
 import re
 from urllib.parse import quote
-from pprint import pprint
-import sys
 import json
 
 # Note : on est limité à 100 requêtes par jour donc à utiliser avec parcimonie
@@ -37,9 +35,9 @@ def alchemy_api(url):
     :param url:
     :return: {"url" : "http://...", "text":"zeiruyzeiur"}
     """
-    request_url = "http://access.alchemyapi.com/calls/url/URLGetText?apikey={}&url={}&outputMode=json".format(
-        ALCHEMY_API_KEY, url)
-    response = requests.get(request_url)
+    request_url = "http://access.alchemyapi.com/calls/url/URLGetText"
+    payload = {'apikey': ALCHEMY_API_KEY, 'url': url, 'outputMode': 'json'}
+    response = requests.get(request_url, params=payload)
 
     assert response.status_code == 200
     text = response.json()["text"]
@@ -68,8 +66,7 @@ def do_module1_job(search_input, start_page=None):
         result.append(alchemy_api(link["link"]))
 
     json_string = {"resultats": result}
-    json_string = json.dumps(json_string, ensure_ascii=False)
-    return json_string
+    return json.dumps(json_string, ensure_ascii=False)
 
 
 if __name__ == "__main__":
