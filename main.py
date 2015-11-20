@@ -8,7 +8,7 @@ def DoSearch(search):
     requestType = 2
     # call module 1 REQUEST TO URL TO TEXT URL
     print('module 1 call')
-    subprocess.check_call(['./Module/module1.sh', search])
+    subprocess.check_call(['./Module/module1.sh', search, '1'])
     print('module 1 end')
     with open('Module/output/alchemy.json', 'r', encoding='utf-8') as f:
         string = f.read()
@@ -24,4 +24,4 @@ def DoSearch(search):
 
 if __name__ == '__main__':
     term = input()
-    print(DoSearch(term))
+    print((DoSearch(term)[1]))
