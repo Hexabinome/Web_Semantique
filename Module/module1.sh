@@ -1,12 +1,12 @@
 #! /bin/bash
-# Usage : module1.sh "requete"
+# Usage : module1.sh "requete" nbResultat
 
 
 #Verification du nombre d'arguments qui doit valoir 1
 NBARGS=$#
 
-if ! [ ${NBARGS} -eq 1 ]; then
-	echo "Nombre d'arguements incorrects. Il faut juste la requete en paramètre."
+if ! [ ${NBARGS} -eq 2 ]; then
+	echo "Nombre d'arguements incorrects. Il faut juste la requete en paramètre et le nombre de resultats."
 	echo "Example : ..."
 	#statements
 	exit 123
@@ -16,10 +16,11 @@ OUTPUTFILE="Module/output/alchemy.json"
 
 # La requete
 REQUETE=$1
+NBRES=$2
 
 echo "{ \"resultats\" :" > ${OUTPUTFILE}
 
-for i in $(Module/module1_requete-google.sh ${REQUETE}) ; do 
+for i in $(Module/module1_requete-google.sh ${REQUETE} ${NBRES}) ; do
 	Module/module1_alchemyapi.sh $i ;
 done | jq -s '.' >> ${OUTPUTFILE}
 
