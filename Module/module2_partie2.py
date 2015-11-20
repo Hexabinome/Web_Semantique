@@ -9,12 +9,13 @@ import threading, json
 '''
 requestType is a number to change the dbpedia query
 '''
-def getSparqlFromUrl(url, requestType):
 
-    options = {0 : subject,
-                1 : item,
-                2 : subjectAndItem
-    }
+
+def getSparqlFromUrl(url, requestType):
+    options = {0: subject,
+               1: item,
+               2: subjectAndItem
+               }
     query = options[requestType](url)
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(query)
@@ -24,23 +25,30 @@ def getSparqlFromUrl(url, requestType):
     rdfTripletList = jsonResponse['results']['bindings']
     return {url: json.loads(json.dumps(rdfTripletList))}
 
+
 def subject(url):
     return "SELECT * WHERE {{ <{0}> ?predicat ?valeur }}".format(url)
+
 
 def item(url):
     return "SELECT * WHERE {{  ?subject ?predicat <{0}> }}".format(url)
 
+
 def subjectAndItem(url):
     return " SELECT * WHERE{{ {{ {0} }}UNION{{ {1} }} }}".format(item(url), subject(url))
 
+
 def getSparqlFromUrlThreaded(url, resultDict, requestType):
     resultDict[url] = getSparqlFromUrl(url, requestType)
+
 
 '''
 Parameter is a list of lists of urls. It
 Launches a sparql query for each different url
 Returns a list (of pages) of lists of jsonDBPediaContent
 '''
+
+
 def getSparqlFromUrls(listOfListsOfUrls, requestType):
     # Copy urls in one set => unique elements
     urlDict = {}
@@ -56,7 +64,7 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
 
     # Launch threads
     while urlTab:
-        for x in range(1,4):
+        for x in range(1, 4):
             t = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlTab.pop(), urlDict, requestType))
             t.start()
             threads.append(t)
@@ -66,7 +74,7 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
         threads = []
 
     # Create out list
-    out_list = listOfListsOfUrls[:] # Realizes copy of elements
+    out_list = listOfListsOfUrls[:]  # Realizes copy of elements
     for pageIdx in range(len(out_list)):
         if out_list[pageIdx]:
             for urlIdx in range(len(out_list[pageIdx])):
@@ -75,8 +83,10 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
 
     return out_list
 
-# Example calls
+# Example calls TEST
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
-results = getSparqlFromUrls([['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
-                           ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette', 'http://dbpedia.org/resource/Europe']], 0)
-print(results)
+# results = getSparqlFromUrls(
+#   [['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
+#    ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette',
+#     'http://dbpedia.org/resource/Europe']], 0)
+# print(results)

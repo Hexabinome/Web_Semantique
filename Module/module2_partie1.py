@@ -16,14 +16,14 @@ def getUrlsFromText(text):
     header = {
         'Accept': 'application/json',
         'User-Agent':
-        'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
+            'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
     req = requests.post(url, data, headers=header)
 
     # TODO can throw error. Check status code 200
     if req.status_code != 200:
         raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
     jsonResponse = json.loads(req.text)
-    #print(jsonResponse.keys())
+    # print(jsonResponse.keys())
     urlList = []
     for resource in jsonResponse[u'Resources']:
         urlList.append(resource[u'@URI'])
