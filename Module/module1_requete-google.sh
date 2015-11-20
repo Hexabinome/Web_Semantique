@@ -87,6 +87,4 @@ until [  $COUNTER -ge $LIMIT ]; do
     COUNTER=$(expr $COUNTER + $AMOUNT)
 done
 
-echo $COUNTER
-
 # URL to search 10 results beginning from a certain index: OFFSET usually is a multiple of 10
