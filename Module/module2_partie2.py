@@ -6,8 +6,16 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import json, threading
 
 # TODO : Reflechir sur les requetes a effectuee
-def getSparqlFromUrl(url):
-    query = "SELECT * WHERE {{ <{0}> ?predicat ?valeur }}".format(url)
+'''
+requestType is a number to change the dbpedia query
+'''
+def getSparqlFromUrl(url, requestType):
+
+    options = {0 : subject,
+                1 : item,
+                2 : subjectAndItem
+    }
+    query = options[requestType](url)
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
@@ -16,15 +24,24 @@ def getSparqlFromUrl(url):
     rdfTripletList = jsonResponse['results']['bindings']
     return json.dumps({url: rdfTripletList})
 
-def getSparqlFromUrlThreaded(url, resultDict):
-    resultDict[url] = getSparqlFromUrl(url)
+def subject(url):
+    return "SELECT * WHERE {{ <{0}> ?predicat ?valeur }}".format(url)
+
+def item(url):
+    return "SELECT * WHERE {{  ?subject ?predicat <{0}> }}".format(url)
+
+def subjectAndItem(url):
+    return " SELECT * WHERE{{ {{ {0} }}UNION{{ {1} }} }}".format(item(url), subject(url))
+
+def getSparqlFromUrlThreaded(url, resultDict, requestType):
+    resultDict[url] = getSparqlFromUrl(url, requestType)
 
 '''
 Parameter is a list of lists of urls. It
 Launches a sparql query for each different url
 Returns a list (of pages) of lists of jsonDBPediaContent
 '''
-def getSparqlFromUrls(listOfListsOfUrls):
+def getSparqlFromUrls(listOfListsOfUrls, requestType):
     # Copy urls in one set => unique elements
     urlDict = {}
     for page in listOfListsOfUrls:
@@ -36,7 +53,7 @@ def getSparqlFromUrls(listOfListsOfUrls):
 
     # Launch threads
     for url in urlDict.keys():
-        t = threading.Thread(target=getSparqlFromUrlThreaded, args=(url, urlDict))
+        t = threading.Thread(target=getSparqlFromUrlThreaded, args=(url, urlDict, requestType))
         t.start()
         threads.append(t)
 
@@ -55,6 +72,7 @@ def getSparqlFromUrls(listOfListsOfUrls):
     return out_list
 
 # Example calls
-#res = getSparqlFromUrl('http://dbpedia.org/resource/Beer')
-#results = getSparqlFromUrls([['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
-#                            ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette', 'http://dbpedia.org/resource/Europe']])
+# res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
+# results = getSparqlFromUrls([['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
+#                            ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette', 'http://dbpedia.org/resource/Europe']], 0)
+# print(res)
