@@ -16,6 +16,6 @@ URL=$1
 # URL appelé par curl
 URLCURL="http://access.alchemyapi.com/calls/url/URLGetText?apikey=${APIKEY}&url=${URL}&outputMode=${OUTPUTMODE}"
 
-# Requete curl
+# Requete curl : en supprimat les \n, \t et espaces inutiles
 curl -s ${URLCURL} |sed -e 's/\\n//g' -e 's/\\t//g' |tr -s " "| jq '. | {url : .url, text : .text}'
 
