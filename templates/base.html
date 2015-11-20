@@ -20,8 +20,14 @@
     {% endblock %}
 </head>
 <body>
-    <div class="container text-center">{% block content %}{% endblock %}
+<div class="container text-center">
+    <header>
+        <div class="row">
+            <img src="{{ url_for('static',filename='images/memento.png') }}">
+        </div>
+    </header>
+    {% block content %}{% endblock %}
     <footer>MementoCinema - Copyright 2015</footer>
-    </div>
+</div>
 </body>
 </html>
