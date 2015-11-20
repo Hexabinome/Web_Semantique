@@ -3,7 +3,7 @@
 #           get_sparql_graph
 # ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
-import json, threading
+import threading, json
 
 # TODO : Reflechir sur les requetes a effectuee
 '''
@@ -22,7 +22,7 @@ def getSparqlFromUrl(url, requestType):
 
     jsonResponse = sparql.query().convert()
     rdfTripletList = jsonResponse['results']['bindings']
-    return json.dumps({url: rdfTripletList})
+    return {url: json.loads(json.dumps(rdfTripletList))}
 
 def subject(url):
     return "SELECT * WHERE {{ <{0}> ?predicat ?valeur }}".format(url)
