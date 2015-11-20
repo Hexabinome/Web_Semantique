@@ -8,8 +8,8 @@ def DoSearch(search):
     print('module 1 call')
     subprocess.check_call(['./Module/module1.sh', search])
     print('module 1 end')
-    f = open('Module/output/alchemy.json', 'r', encoding='utf-8')
-    string = f.read()
+    with open('Module/output/alchemy.json', 'r', encoding='utf-8') as f:
+        string = f.read()
     dict = json.loads(string)
     jsonlist = dict['resultats']
     # call module 2 TEXT URL TO URI TO RDF
