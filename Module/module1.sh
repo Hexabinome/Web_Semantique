@@ -24,5 +24,4 @@ for i in $(Module/module1_requete-google.sh ${REQUETE} ${NBRES}) ; do
 	Module/module1_alchemyapi.sh $i ;
 done | jq -s '.' >> ${OUTPUTFILE}
 
-
 echo "}" >> ${OUTPUTFILE}
