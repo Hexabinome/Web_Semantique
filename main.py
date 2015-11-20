@@ -8,7 +8,7 @@ def DoSearch(search):
     requestType = 2
     # call module 1 REQUEST TO URL TO TEXT URL
     print('module 1 call')
-    # subprocess.check_call(['./Module/module1.sh', search])
+    subprocess.check_call(['./Module/module1.sh', search, '1'])
     print('module 1 end')
 
     with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
@@ -21,7 +21,7 @@ def DoSearch(search):
     dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType)
     print('module 2 end')
     #return dbcontent
-    
+
     #call module 3 RDF TO RESULTS
     print('module 3 call')
     matrix = module3_1.createSimilarityMatrix(dbcontent)
@@ -33,4 +33,4 @@ if __name__ == '__main__':
     sys.stdout = open('console.txt', 'w')
 
     term = input()
-    print(DoSearch(term))
+    print((DoSearch(term)[1]))
