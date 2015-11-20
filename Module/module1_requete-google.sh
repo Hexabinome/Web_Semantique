@@ -20,11 +20,13 @@ function extract_urls()
 {
 	# filter all adds. Luckily all add urls are marked in the page sources. Their links begin with: "/aclk?sa="
 	# So I will filter all href elements starting by this string.
+	# DO NOT REMOVE THE LINEBREAK: It cannot be replaced by a \n because mac os's sed command does not interpret \n the same way as linux.
 	FILTERED_SOURCE=$(echo $PAGE_SOURCE | sed 's/>/>\
 /g' | grep --invert-match 'href="/aclk?sa=')
 
 	# extract all result-urls from result pages's html sources
 	# the url container has the form <a href="/url?q=XYZ>
+	# DO NOT REMOVE THE LINEBREAK: It cannot be replaced by a \n because mac os's sed command does not interpret \n the same way as linux.
 	RAW_LINKS=$(echo $FILTERED_SOURCE | sed 's/>/>\
 /g' | grep -A1 "<h3" | sed 's/http/\
 http/g' | sed 's/\&amp/\
