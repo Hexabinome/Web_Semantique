@@ -2,8 +2,12 @@
 {% block title %} - Search {% endblock %}
 
 {% block content %}
-<h2>Search</h2>
-  <form action="{{url_for('search')}}" method=post>
-    <input type=text name=search> </input>
-  </form>
+    <div class="row">
+            <h1>MementoCinema</h1>
+    </div>
+    <div class="row">
+        <form action="{{url_for('search')}}" method=post>
+            <input type=text name=search> </input>
+        </form>
+    </div>
 {% endblock %}
