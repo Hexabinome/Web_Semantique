@@ -11,12 +11,27 @@
     </div>
     <div class="row">
         <form class="form-inline" action="{{ url_for('search') }}" method=post role="form">
-            <div class="row" >
+            <div class="row">
                 <div class="form-group">
-                    <input class="form-control" style="width: 525px" placeholder="Search..." required type=text name=search> </input>
+                    <input id="searchInput" class="form-control" placeholder="Search..." required type=text
+                           name=search>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Search">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input name="actors" type="checkbox"> Actors
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input name="films" type="checkbox"> Films
+                        </label>
+                    </div>
                 </div>
             </div>
         </form>

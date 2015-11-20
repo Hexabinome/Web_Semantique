@@ -12,9 +12,15 @@
 
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-        <!-- Latest compiled JavaScript -->
+        <!-- Latest compiled JavaScript for bootstrap -->
         <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/ripples.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                $.material.init();
+            });
+        </script>
 
         <title>MementoCinema {% block title %}{% endblock %}</title>
     {% endblock %}
