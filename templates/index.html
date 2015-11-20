@@ -3,11 +3,21 @@
 
 {% block content %}
     <div class="row">
-            <h1>MementoCinema</h1>
+        <div class="col-md-4 col-md-offset-4">
+            <div class="page-header">
+                <h1>MementoCinema</h1>
+            </div>
+        </div>
     </div>
     <div class="row">
-        <form action="{{url_for('search')}}" method=post>
-            <input type=text name=search> </input>
+        <form class="form-inline" action="{{ url_for('search') }}" method=post role="form">
+            <div class="form-group">
+                <input class="form-control" placeholder="Search..." required type=text name=search> </input>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" value="Search">
+            </div>
+
         </form>
     </div>
 {% endblock %}
