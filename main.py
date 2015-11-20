@@ -11,11 +11,11 @@ def DoSearch(search):
     # subprocess.check_call(['./Module/module1.sh', search])
     print('module 1 end')
 
-    with open('Module/output/alchemy.json', 'r', encoding='utf-8') as f:
+    with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
         string = f.read()
     dict = json.loads(string)
     jsonlist = dict['resultats']
-    # call module 2 TEXT URL TO URI TO RDF
+    #call module 2 TEXT URL TO URI TO RDF
     print('module 2 call')
     urllist = module2_partie1.getUrlsFromTexts(jsonlist)
     dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType)
@@ -24,7 +24,7 @@ def DoSearch(search):
     
     #call module 3 RDF TO RESULTS
     print('module 3 call')
-    matrix = module3_1.createSimilarityMatrix()#dbcontent)
+    matrix = module3_1.createSimilarityMatrix(dbcontent)
     print('module 3 end')
 
     return matrix

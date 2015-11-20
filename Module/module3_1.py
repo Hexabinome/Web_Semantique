@@ -9,69 +9,72 @@ import sys
 # ==========================
 # Déclaration variables
 # ==========================
-graphes = list()
-ligneGraphe = set()
 
+def createSimilarityMatrix(dpPedia):
+    sujetObjetsGraphes = list()
+    ligneSujetObjetsGraphes = set()
 
-def createSimilarityMatrix():#dpPedia):    
+    compteurSujetNull = 0    
     #mon_fichier = open("dbpedia.json", "w") # Argh j'ai tout écrasé !
     #mon_fichier.write(json.dumps(dpPedia))
     #mon_fichier.close()
 
-    input_file=open('dbpedia.json', 'r', encoding='utf-8')
-    output_file=open('testoutput.json', 'w')
- 
-    dpPedia=json.load(input_file)
+    #input_file=open('dbpedia.json', 'r', encoding='utf-8')
+    with open('output.txt', 'w', encoding='utf-8') as f:
+     
+        #dpPedia=json.load(input_file)
 
-    # ==========================
-    # Extraction du JSON
-    # ==========================
-    
-    print(dpPedia)
-    for graphe in dpPedia:
-        print("graphe", graphe, "\n\n\n")
-        for sujet in graphe:
-            if sujet == None:   
-                break 
-            print("sujet ", sujet, "\n\n\n")
-
-            triplet={}
-            triplet['sujet']=sujet
-            try:
-                ligneGraphe.add(sujet.encode('utf8'))
-            except:
-                ligneGraphe.add(sujet)
-
-            for predicat in graphe[sujet]:
-                if predicat == None:   
-                    break 
-                triplet['predicat'] = predicat
-                #print('predicat', predicat)
-                for objet in graphe[sujet][predicat]:
-                    if objet == None:   
+        # ==========================
+        # Extraction du JSON
+        # ==========================
+        
+        #print(dpPedia)
+        for listeGraphe in dpPedia:
+            for graphe in listeGraphe:
+                ligneSujetObjetsGraphes = set()
+                for sujet in graphe:
+                    #Le sujet n'a pas été retourné par dbpedia
+                    if sujet == None:   
                         break 
+                    #création d'un objet triplet pour retenir les résutats
+                    triplet={}
+                    triplet['sujet']=sujet
 
-                    triplet['objet'] = objet.get('value')
-
+                    #On ajout le sujet dans la liste des sujet Objets du graphe en cours
                     try:
-                        ligneGraphe.add(objet.get('value').encode('utf8'))
+                        ligneSujetObjetsGraphes.add(sujet.encode('utf8'))
                     except:
-                        ligneGraphe.add(objet.get('value'))
+                        ligneSujetObjetsGraphes.add(sujet)
 
-                    #print('objet', objet.get('value'))
-        graphes.append(list(ligneGraphe))
+                    for predicatSubject in graphe[sujet]:
+                        if predicatSubject == None:   
+                            break 
 
-    # ==========================
-    # Calcul de similarité
-    # ==========================
+                        triplet['predicat'] = predicatSubject['predicat'].get('value')
+                        
+                        #Parfois l'objet (predicatSubject['subject']) n'existe pas.
+                        try :
+                            triplet['objet'] = predicatSubject['subject'].get('value')
 
-    matriceIndice = list()
+                            try:
+                                ligneSujetObjetsGraphes.add(triplet['objet'].encode('utf8'))
+                            except:
+                                ligneSujetObjetsGraphes.add(triplet['objet'])
+                        except:
+                            compteurSujetNull += 1
+                sujetObjetsGraphes.append(list(ligneSujetObjetsGraphes))
+        #input_file.close()
+        # ==========================
+        # Calcul de similarité
+        # ==========================
 
-    for iLigne in range(0,len(graphes)) :
-        ligneMatrice = list() 
-        for iCol in range(0,len(graphes)) :
-            ratio = len([val for val in graphes[iLigne] if val in graphes[iCol]]) / (len(list(set(graphes[iLigne] + graphes[iCol]))))
-            ligneMatrice.append(ratio)
-        matriceIndice.append(ligneMatrice)
+        matriceIndice = list()
 
-    return matriceIndice  
+        for iLigne in range(0,len(sujetObjetsGraphes)) :
+            ligneMatrice = list() 
+            for iCol in range(0,len(sujetObjetsGraphes)) :
+                ratio = len([val for val in sujetObjetsGraphes[iLigne] if val in sujetObjetsGraphes[iCol]]) / (len(list(set(sujetObjetsGraphes[iLigne] + sujetObjetsGraphes[iCol]))))
+                ligneMatrice.append(ratio)
+            matriceIndice.append(ligneMatrice)
+
+        print(matriceIndice)
