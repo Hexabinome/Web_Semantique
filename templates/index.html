@@ -10,14 +10,15 @@
         </div>
     </div>
     <div class="row">
-        <form class="form-inline" action="{{ url_for('search') }}" method=post role="form">
-            <div class="form-group">
-                <input class="form-control" placeholder="Search..." required type=text name=search> </input>
+        <form action="{{ url_for('search') }}" method=post role="form">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 form-group">
+                    <input class="form-control" placeholder="Search..." required type=text name=search> </input>
+                </div>
+                <div class="col-md-2 form-group text-left">
+                    <input type="submit" class="btn btn-default" value="Search">
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-default" value="Search">
-            </div>
-
         </form>
     </div>
 {% endblock %}
