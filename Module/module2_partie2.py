@@ -75,12 +75,15 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
         t.join()
 
     # Create out list
-    out_list = listOfListsOfUrls[:]  # Realizes copy of elements
-    for pageIdx in range(len(out_list)):
-        if out_list[pageIdx]:
-            for urlIdx in range(len(out_list[pageIdx])):
-                url = out_list[pageIdx][urlIdx]
-                out_list[pageIdx][urlIdx] = urlDict[url]
+    out_list = [None]* len(listOfListsOfUrls)
+    for pageIdx in range(len(listOfListsOfUrls)):
+        if listOfListsOfUrls[pageIdx]:
+            out_list[pageIdx] = []
+            for urlIdx in range(len(listOfListsOfUrls[pageIdx])):
+                url = listOfListsOfUrls[pageIdx][urlIdx]
+                if urlDict[url]:#Delete None objects
+                    out_list[pageIdx].append(urlDict[url])
+
     return out_list
 
 # Example calls TEST
