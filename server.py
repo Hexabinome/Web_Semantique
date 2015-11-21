@@ -13,7 +13,10 @@ def index():
 @app.route("/search", methods=['POST'])
 def search():
     search = request.form['search']
-    print('you searched ' + search)
+
+    actor = " actor " if request.form.getlist('actors') == ['on'] else " "
+    film = " movie " if request.form.getlist('films') == ['on'] else " "
+    print('you searched ' + search + actor + film)
     search_res = main.DoSearch(search)
     return render_template('results.html', search=search_res)
 
