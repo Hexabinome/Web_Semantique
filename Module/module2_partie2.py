@@ -38,8 +38,9 @@ def subjectAndItem(url):
     return " SELECT * WHERE{{ {{ {0} }}UNION{{ {1} }} }}".format(item(url), subject(url))
 
 
-def getSparqlFromUrlThreaded(url, resultDict, requestType):
-    resultDict[url] = getSparqlFromUrl(url, requestType)
+def getSparqlFromUrlThreaded(urls, resultDict, requestType):
+    for url in urls :
+        resultDict[url] = getSparqlFromUrl(url, requestType)
 
 
 '''
@@ -62,16 +63,16 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
     # storing threads
     threads = []
 
+    size = len(urlTab)
     # Launch threads
-    while urlTab:
-        for x in range(1, 4):
-            t = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlTab.pop(), urlDict, requestType))
-            t.start()
-            threads.append(t)
-        # Wait for threads
-        for t in threads:
-            t.join()
-        threads = []
+    #while urlTab:
+    for x in range(0, 3):
+        t = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlTab[int(x*size/4):int((x+1)*size/4)], urlDict, requestType))
+        t.start()
+        threads.append(t)
+    # Wait for threads
+    for t in threads:
+        t.join()
 
     # Create out list
     out_list = listOfListsOfUrls[:]  # Realizes copy of elements
@@ -80,7 +81,6 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
             for urlIdx in range(len(out_list[pageIdx])):
                 url = out_list[pageIdx][urlIdx]
                 out_list[pageIdx][urlIdx] = urlDict[url]
-
     return out_list
 
 # Example calls TEST
