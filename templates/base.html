@@ -4,18 +4,27 @@
     {% block head %}
         <meta charset="UTF-8">
         <!-- Bootstrap -->
-        <link rel="stylesheet" href="{{ url_for('static',filename= 'css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static',filename='css/custom.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/roboto.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/material.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/ripples.min.css') }}">
 
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
         <!-- Latest compiled JavaScript for bootstrap -->
-        <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
-        <script src="{{ url_for('static',filename='js/ripples.min.js') }}"></script>
-        <script src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/ripples.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/material.min.js') }}"></script>
+
+        <!-- d3-->
+        <script src="//d3js.org/d3.v3.min.js"></script>
+
+        <!-- Custom -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+         <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
         <script>
             $(document).ready(function () {
                 $.material.init();

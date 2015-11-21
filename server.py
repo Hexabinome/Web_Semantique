@@ -1,12 +1,13 @@
 ﻿from flask import Flask, render_template, request
 import main
+from Module import module3_1
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    # return render_template('results.html')
+    #return render_template('results.html')
     return render_template('index.html')
 
 
@@ -20,6 +21,11 @@ def search():
     search_res = main.DoSearch(search)
     return render_template('results.html', search=search_res)
 
+
+@app.route("/test")
+def test():
+	matrice = module3_1.createSimilarityMatrix()
+	return render_template('results.html', matrice=matrice)
 
 if __name__ == "__main__":
     app.debug = True

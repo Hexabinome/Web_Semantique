@@ -7,24 +7,23 @@ import pprint
 import codecs
 import sys
 
-
 # ==========================
 # Déclaration variables
 # ==========================
 
-def createSimilarityMatrix(dpPedia):
+def createSimilarityMatrix():#dpPedia): 
     sujetObjetsGraphes = list()
     ligneSujetObjetsGraphes = set()
 
     compteurSujetNull = 0
-    # mon_fichier = open("dbpedia.json", "w") # Argh j'ai tout écrasé !
-    # mon_fichier.write(json.dumps(dpPedia))
-    # mon_fichier.close()
+    #mon_fichier = open("dbpedia.json", "w") # Argh j'ai tout écrasé !
+    #mon_fichier.write(json.dumps(dpPedia))
+    #mon_fichier.close()
 
-    # input_file=open('dbpedia.json', 'r', encoding='utf-8')
+    input_file=open('dbpedia.json', 'r', encoding='utf-8')
     with open('output.txt', 'w', encoding='utf-8') as f:
 
-        # dpPedia=json.load(input_file)
+        dpPedia=json.load(input_file)
 
         # ==========================
         # Extraction du JSON
@@ -80,4 +79,8 @@ def createSimilarityMatrix(dpPedia):
                 ligneMatrice.append(ratio)
             matriceIndice.append(ligneMatrice)
 
-        print(matriceIndice)
+        #print(matriceIndice)
+        return matriceIndice
+    input_file.close()
+
+createSimilarityMatrix()
