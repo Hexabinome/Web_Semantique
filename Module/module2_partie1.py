@@ -17,6 +17,7 @@ def getUrlsFromText(text):
         'Accept': 'application/json',
         'User-Agent':
             'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
+
     req = requests.post(url, data, headers=header)
 
     # TODO can throw error. Check status code 200
@@ -30,20 +31,28 @@ def getUrlsFromText(text):
     return deleteDoublonFromUrlList(urlList)
 
 
-def getUrlsFromTextThreaded(jsonText, result, i):
-    result[i] = getUrlsFromText(jsonText)
+def getUrlsFromTextThreaded(texts, result):
+    for text in texts:
+        for url in getUrlsFromText(text['text']):
+            result.append(url)
 
-
+'''
+Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts returned by Alchemy
+Requests for each text DBPedia spotlight
+Return : A list of all urls found in the different texts
+'''
 def getUrlsFromTexts(jsonTexts):
     nbTexts = len(jsonTexts)
-    allUrls = [None] * nbTexts
-    threads = [None] * nbTexts
+    allUrls = []
+    threads = []
     # Launch threads
-    for i in range(nbTexts):
-        threads[i] = threading.Thread(
+    nbThreads = min(5, nbTexts)
+    for i in range(nbThreads):
+        t = threading.Thread(
             target=getUrlsFromTextThreaded,
-            args=(jsonTexts[i]['text'], allUrls, i))
-        threads[i].start()
+            args=(jsonTexts[int(i*nbTexts/nbThreads):int((i+1)*nbTexts/nbThreads)], allUrls))
+        t.start()
+        threads.append(t)
 
     # Wait for threads
     for thread in threads:
@@ -67,6 +76,6 @@ def deleteDoublonFromUrlList(urlList):
 # res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break
 #    for students included in last year's economic stimulus package, arguing
 #    that the policy provides more generous assistance.""")
-# res = getUrlsFromTexts(["Berlin Germany beer Warsaw", """President Obama called Wednesday on Congress to extend a tax break
-#    for students included in last year's economic stimulus package, arguing
-#    that the policy provides more generous assistance."""])
+res = getUrlsFromTexts([{'text':"Berlin Germany beer Warsaw", 'url':'http://dbpedia.osef.org'}, {'url':'coucou', 'text':"""President Obama called Wednesday on Congress to extend a tax break
+    for students included in last year's economic stimulus package, arguing
+    that the policy provides more generous assistance."""}])
