@@ -34,7 +34,7 @@ def getUrlsFromText(text):
 def getUrlsFromTextThreaded(texts, result):
     for text in texts:
         for url in getUrlsFromText(text['text']):
-            result.append(url)
+            result.add(url)
 
 '''
 Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts returned by Alchemy
@@ -43,7 +43,7 @@ Return : A list of all urls found in the different texts
 '''
 def getUrlsFromTexts(jsonTexts):
     nbTexts = len(jsonTexts)
-    allUrls = []
+    allUrls = set()
     threads = []
     # Launch threads
     nbThreads = min(5, nbTexts)

@@ -57,20 +57,18 @@ def getSparqlFromUrlThreaded(urls, resultUrlDict, resultTargetDict, requestType,
             resultTargetDict[url] = url
 
 '''
-Parameter is a list of lists of urls. It
+Parameter is a list of urls.
 Launches a sparql query for each different url
-Returns a list (of pages) of lists of jsonDBPediaContent
+Returns a dictionnary like {'http://dbpedia.org/resource/Truc': 'jsonDBPediaContent'}
 '''
-def getSparqlFromUrls(listOfListsOfUrls, requestType, target):
+def getSparqlFromUrls(listsOfUrls, requestType, target):
     # Copy urls in one set => unique elements
     urlDict = {}
     urlTab = []
     targetDict = {}
-    for page in listOfListsOfUrls:
-        if page:
-            for url in page:
-                urlDict[url] = None
-                urlTab.append(url)
+    for url in listsOfUrls:
+        urlDict[url] = None
+        urlTab.append(url)
 
     # storing threads
     threads = []
@@ -86,27 +84,19 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType, target):
     for t in threads:
         t.join()
 
-    # Create out list
-    out_list = [None]* len(listOfListsOfUrls)
-    for pageIdx in range(len(listOfListsOfUrls)):
-        if listOfListsOfUrls[pageIdx]:
-            out_list[pageIdx] = []
-            for urlIdx in range(len(listOfListsOfUrls[pageIdx])):
-                url = listOfListsOfUrls[pageIdx][urlIdx]
-                if urlDict[url]:#Delete None objects
-                    out_list[pageIdx].append(urlDict[url])
-    print(targetDict)
-
-    return out_list
-
+    return urlDict
 
 # Example calls TEST
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
-# redirige l'output sur le fichier
-sys.stdout = open('console.txt', 'w', encoding='utf-8')
-results = getSparqlFromUrls(
-  [['http://dbpedia.org/resource/Brad_Pitt'],
-   ['http://dbpedia.org/resource/France'],
-   ['http://dbpedia.org/resource/Angelina_Jolie'],
-   ['http://dbpedia.org/resource/Brad_Davis_(actor)']], 0, 0)
-# print(results)
+
+if __name__ == '__main__':
+    results = getSparqlFromUrls(
+      [['http://dbpedia.org/resource/Brad_Pitt'],
+       ['http://dbpedia.org/resource/France'],
+       ['http://dbpedia.org/resource/Angelina_Jolie'],
+       ['http://dbpedia.org/resource/Brad_Davis_(actor)']], 0, 0)
+    #results = getSparqlFromUrls(['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany'], 0)
+      # ['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
+      #  ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette',
+      #   'http://dbpedia.org/resource/Europe'], 0)
+    print(results)
