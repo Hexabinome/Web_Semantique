@@ -27,7 +27,7 @@ def getUrlsFromText(text):
     urlList = []
     for resource in jsonResponse[u'Resources']:
         urlList.append(resource[u'@URI'])
-    return urlList
+    return deleteDoublonFromUrlList(urlList)
 
 
 def getUrlsFromTextThreaded(jsonText, result, i):
@@ -50,6 +50,18 @@ def getUrlsFromTexts(jsonTexts):
         thread.join()
 
     return allUrls
+
+
+def deleteDoublonFromUrlList(urlList):
+    cleanList = []
+    for url in urlList:
+       if url not in cleanList:
+          cleanList.append(url)
+    return cleanList
+
+# test deleteDoublonFromUrlList
+# print(getUrlsFromText("BRAD is the comprehensive online authority for essential advertising information on over 12,800 UK media titles. We've found BRAD to be a great data resource for us, which allows us to build highly targeted lists in an instant. They have been extremely helpful, from running comprehensive training sessions to dealing with last minute requests."))
+# print(deleteDoublonFromUrlList(['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Comprehensive_school', 'http://dbpedia.org/resource/Authority', 'http://dbpedia.org/resource/Essentialism', 'http://dbpedia.org/resource/Advertising', 'http://dbpedia.org/resource/Title', 'http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Data', 'http://dbpedia.org/resource/Resource', 'http://dbpedia.org/resource/Building', 'http://dbpedia.org/resource/Running', 'http://dbpedia.org/resource/Comprehensive_school', 'http://dbpedia.org/resource/Training']))
 
 # TEST
 # res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break

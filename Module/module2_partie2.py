@@ -86,6 +86,7 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType):
 
     return out_list
 
+
 # Example calls TEST
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
 # results = getSparqlFromUrls(
