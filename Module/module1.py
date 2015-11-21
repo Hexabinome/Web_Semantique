@@ -7,6 +7,7 @@ import json
 # Le moteur de recherche est configuré pour privilégier les résultats qui sont liés au cinema
 GOOGLE_API_KEY = "AIzaSyB1Tqy8xyxFx7JqfsxNL2yyVrJdLxAMv14"
 GOOGLE_API_KEY_2 = "AIzaSyDnspc_W9FF5TIWfpNXc8kENjRVdp-GpW0"
+GOOGLE_API_KEY_3 = "AIzaSyAURhklAaMmv8UG0cLBAMdVJqbVDUbU_s0"
 CX = "002939247705119679953:0kfwzt0baty"
 CX_TEST = "017576662512468239146:omuauf_lfve"
 
