@@ -76,6 +76,9 @@ def deleteDoublonFromUrlList(urlList):
 # res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break
 #    for students included in last year's economic stimulus package, arguing
 #    that the policy provides more generous assistance.""")
-res = getUrlsFromTexts([{'text':"Berlin Germany beer Warsaw", 'url':'http://dbpedia.osef.org'}, {'url':'coucou', 'text':"""President Obama called Wednesday on Congress to extend a tax break
+
+
+if __name__ == '__main__':
+    res = getUrlsFromTexts([{'text':"Berlin Germany beer Warsaw", 'url':'http://dbpedia.osef.org'}, {'url':'coucou', 'text':"""President Obama called Wednesday on Congress to extend a tax break
     for students included in last year's economic stimulus package, arguing
     that the policy provides more generous assistance."""}])
