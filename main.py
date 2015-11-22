@@ -4,20 +4,31 @@ from flask import json
 import sys, time
 
 def DoSearch(search):
+    googleRequestInFile = True
+
     # TODO change requestType
     requestType = 2
     # TODO change targetList
     targetType = 0
+
     # call module 1 REQUEST TO URL TO TEXT URL
     print('Beginning')
     start = time.time()
     totalStart = time.time()
     #subprocess.check_call(['./Module/module1.sh', search, '1'])
-    pageResults = module1.do_module1_job(search)
+    if(googleRequestInFile == False):
+        pageResults = module1.do_module1_job(search)
     print('Module 1 : {0} sec'.format(time.time() - start))
 
-    #with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
-    #   pageResults = f.read()
+    if(googleRequestInFile == False):
+        with open('Module/output/alchemy_brad_pitt.json', 'a', encoding='utf-8') as f:
+            f.write(pageResults)
+        googleRequestInFile = True
+        print("appelle google fait")
+    else:
+        with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
+            pageResults = f.read()
+
     dict = json.loads(pageResults)
     jsonlist = dict['resultats']
 
@@ -52,4 +63,4 @@ if __name__ == '__main__':
     #sys.stdout = open('console.txt', 'w')
 
     #term = input()
-    DoSearch("plane")#term)[1]))
+    DoSearch("Brad")#term)[1]))
