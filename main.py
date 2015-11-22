@@ -42,4 +42,4 @@ if __name__ == '__main__':
     #sys.stdout = open('console.txt', 'w')
 
     #term = input()
-    print((DoSearch("")))#term)[1]))
+    print((DoSearch("plane")))#term)[1]))

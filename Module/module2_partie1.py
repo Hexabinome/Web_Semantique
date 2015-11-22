@@ -1,40 +1,66 @@
 ﻿# ------------------------------------------
 #           get_spotlight_uri
 # ------------------------------------------
-import requests
-import json
-import threading
+import requests, json, threading, os
 
+CACHE_DIRECTORY = 'cache'
 
 # TODO: making the confidence and support changeable
-def getUrlsFromText(text):
-    data = {
-        'text': text,
-        'confidence': '0.2',
-        'support': '20'}
-    url = 'http://spotlight.dbpedia.org/rest/annotate/'
-    header = {
-        'Accept': 'application/json',
-        'User-Agent':
-            'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
+def getUrlsFromText(url, text):
 
-    req = requests.post(url, data, headers=header)
+    cache_file = '{0}/{1}.spotlight.txt'.format(CACHE_DIRECTORY, url.replace('http://', '').replace('/', '_'))
+    # Try finding URIs in cache
+    if os.path.isfile(cache_file):
+        urlList = []
+        with open(cache_file, 'r') as f:
+            try:
+                urlList = f.read().split('\n')
+                if len(urlList) > 0:
+                    print("Got uri of {0} from cache".format(cache_file))
+            except:
+                pass
+        # If the cache_content is still false, remove existing invalid cache file + send request
+        if len(urlList) == 0:
+            os.remove(cache_file)
+            return getUrlsFromText(url, text)
+    else:
+        data = {
+            'text': text,
+            'confidence': '0.2',
+            'support': '20'}
+        url = 'http://spotlight.dbpedia.org/rest/annotate/'
+        header = {
+            'Accept': 'application/json',
+            'User-Agent':
+                'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
 
-    # TODO can throw error. Check status code 200
-    if req.status_code != 200:
-        raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
-    jsonResponse = json.loads(req.text)
-    # print(jsonResponse.keys())
-    urlList = []
-    for resource in jsonResponse[u'Resources']:
-        urlList.append(resource[u'@URI'])
-    return deleteDoublonFromUrlList(urlList)
+        req = requests.post(url, data, headers=header)
+
+        # TODO can throw error. Check status code 200
+        if req.status_code != 200:
+            raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
+        jsonResponse = json.loads(req.text)
+        # print(jsonResponse.keys())
+        urlList = []
+        for resource in jsonResponse[u'Resources']:
+            urlList.append(resource[u'@URI'])
+        # Save in cache
+        if not os.path.exists(CACHE_DIRECTORY):
+            os.makedirs(CACHE_DIRECTORY)
+        try:
+            with open(cache_file, 'w') as f:
+                f.write('\n'.join(urlList))
+        except:
+            print('Cache writing error (spotlight) {0}'.format(cache_file))
+            pass
+        
+    return urlList
 
 
 def getUrlsFromTextThreaded(texts, result):
     for text in texts:
-        for url in getUrlsFromText(text['text']):
-            result[text['url']].append(url)
+        for url in getUrlsFromText(text['url'], text['text']):
+            result[text['url']].add(url)
 
 '''
 Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts returned by Alchemy
@@ -45,7 +71,7 @@ def getUrlsFromTexts(jsonTexts):
     nbTexts = len(jsonTexts)
     result = {}
     for dict in jsonTexts:
-        result[dict['url']] = []
+        result[dict['url']] = set()
     threads = []
     # Launch threads
     nbThreads = min(5, nbTexts)
@@ -61,14 +87,6 @@ def getUrlsFromTexts(jsonTexts):
         thread.join()
 
     return result
-
-
-def deleteDoublonFromUrlList(urlList):
-    cleanList = []
-    for url in urlList:
-       if url not in cleanList:
-          cleanList.append(url)
-    return cleanList
 
 # test deleteDoublonFromUrlList
 # print(getUrlsFromText("BRAD is the comprehensive online authority for essential advertising information on over 12,800 UK media titles. We've found BRAD to be a great data resource for us, which allows us to build highly targeted lists in an instant. They have been extremely helpful, from running comprehensive training sessions to dealing with last minute requests."))
