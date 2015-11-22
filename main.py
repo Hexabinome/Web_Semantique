@@ -13,11 +13,11 @@ def DoSearch(search):
     start = time.time()
     totalStart = time.time()
     #subprocess.check_call(['./Module/module1.sh', search, '1'])
-    #pageResults = module1.do_module1_job(search)
-    # print('Module 1 : {0} sec'.format(time.time() - start))
+    pageResults = module1.do_module1_job(search)
+    print('Module 1 : {0} sec'.format(time.time() - start))
 
-    with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
-       pageResults = f.read()
+    #with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
+    #   pageResults = f.read()
     dict = json.loads(pageResults)
     jsonlist = dict['resultats']
 
@@ -38,13 +38,12 @@ def DoSearch(search):
     # call module 4 RDF TO RESULTS
     start = time.time()
     target = module4.getInfoTargetFromUrls(['http://dbpedia.org/resource/Brad_Pitt',   'http://dbpedia.org/resource/Angelina_Jolie',   'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
-
     print("Module 4 : {0} sec".format(time.time() - start))
 
     print("Total time : {0} sec".format(time.time() - totalStart))
 
     res = {}
-    res["matrice"] = ""#matrix
+    res["matrice"] = matrix
     res["target"] = target
     return res
 
@@ -53,4 +52,4 @@ if __name__ == '__main__':
     #sys.stdout = open('console.txt', 'w')
 
     #term = input()
-    DoSearch("")#term)[1]))
+    DoSearch("plane")#term)[1]))

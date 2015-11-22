@@ -7,14 +7,14 @@ import pprint
 import codecs
 import sys
 import time
+import threading
 
 # ==========================
 # Déclaration variables
 # ==========================
 
-def createSimilarityMatrix(dpPedia): 
-    sujetObjetsGraphes = list()
-    ligneSujetObjetsGraphes = set()
+def createSimilarityMatrix(dbPedia): 
+    sujetObjetsGraphes = {}
 
     # ==========================
     # Extraction du JSON
@@ -52,17 +52,27 @@ def createSimilarityMatrix(dpPedia):
     # Calcul de similarité
     # ==========================
     matriceIndice = {}
+    threads = []
 
-    # Calcul d'une moitié de la matrice
+    # Calcul d'une moitié de la matrice, 1 thread par URL
     for urlLigne in sujetObjetsGraphes:
         matriceIndice[urlLigne] = {}
-        for urlCol in sujetObjetsGraphes:
-            ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
-                len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
-            matriceIndice[urlLigne][urlCol] = ratio
+        t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlLigne, sujetObjetsGraphes))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
 
     #print(matriceIndice)
     return matriceIndice
+
+def ratioCalcThread(resultMatrice, urlLigne, sujetObjetsGraphes):
+        for urlCol in sujetObjetsGraphes:
+            ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
+                len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+            resultMatrice[urlLigne][urlCol] = ratio
+            print("{2}\t{0}\t{1}".format(urlLigne, urlCol, ratio))
 
 if __name__ == '__main__':
     createSimilarityMatrix()
