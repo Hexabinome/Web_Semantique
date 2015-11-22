@@ -6,81 +6,75 @@ import json
 import pprint
 import codecs
 import sys
+import time
 
 # ==========================
 # Déclaration variables
 # ==========================
 
-def createSimilarityMatrix():#dpPedia): 
-    sujetObjetsGraphes = list()
-    ligneSujetObjetsGraphes = set()
+def createSimilarityMatrix(dbPedia): 
+    sujetObjetsGraphes = {}
 
-    compteurSujetNull = 0
-    #mon_fichier = open("dbpedia.json", "w") # Argh j'ai tout écrasé !
-    #mon_fichier.write(json.dumps(dpPedia))
-    #mon_fichier.close()
+    # ==========================
+    # Extraction du JSON
+    # ==========================
 
-    input_file=open('dbpedia.json', 'r', encoding='utf-8')
-    with open('output.txt', 'w', encoding='utf-8') as f:
-
-        dpPedia=json.load(input_file)
-
-        # ==========================
-        # Extraction du JSON
-        # ==========================
-
-        # print(dpPedia)
-        #for listeGraphe in dpPedia:
-        for graphe in dpPedia:
-            ligneSujetObjetsGraphes = set()
-            for sujet in graphe:
-                # Le sujet n'a pas été retourné par dbpedia
-                if sujet == None:
-                    break
-                    # création d'un objet triplet pour retenir les résutats
-                triplet = {}
-                triplet['sujet'] = sujet
-
-                # On ajout le sujet dans la liste des sujet Objets du graphe en cours
+    # Pour chaque page/url
+    for url in dbPedia:
+        sujetObjetsGraphes[url] = set()
+        # Pour chaque uri dans cette page
+        for uri in dbPedia[url]:
+            # Pour chaque triplet dans cette uri
+            for triplet in dbPedia[url][uri]:
                 try:
-                    ligneSujetObjetsGraphes.add(sujet.encode('utf8'))
+                    sujet = triplet['subject']['value']
                 except:
-                    ligneSujetObjetsGraphes.add(sujet)
+                    sujet = ''
+                try:
+                    predicat = triplet['predicat']['value']
+                except:
+                    predicat = ''
+                try:
+                    objet = triplet['valeur']['value']
+                except:
+                    objet = ''
+    
+                if sujet:
+                    sujetObjetsGraphes[url].add(sujet)
+                #if predicat:
+                    #sujetObjetsGraphes[url].add(predicat)
+                if objet:
+                    sujetObjetsGraphes[url].add(objet)
+        sujetObjetsGraphes[url] = list(sujetObjetsGraphes[url])
 
-                for predicatSubject in graphe[sujet]:
-                    if predicatSubject == None:
-                        break
+    # ==========================
+    # Calcul de similarité
+    # ==========================
+    matriceIndice = {}
 
-                    triplet['predicat'] = predicatSubject['predicat'].get('value')
+    # Calcul d'une moitié de la matrice
+    nbLigne = 0
+    for urlLigne in sujetObjetsGraphes:
+        matriceIndice[urlLigne] = {}
+        nbCol = -1
+        for urlCol in sujetObjetsGraphes:
+            nbCol += 1
+            print('{2}\t{0}\t{1}'.format(urlLigne, urlCol, time.time()))
+            if nbCol < nbLigne:
+                matriceIndice[urlLigne][urlCol] = -1
+                continue
+            ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
+                len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+            matriceIndice[urlLigne][urlCol] = ratio
+        nbLigne += 1
 
-                    # Parfois l'objet (predicatSubject['subject']) n'existe pas.
-                    try:
-                        triplet['objet'] = predicatSubject['subject'].get('value')
+    # Duplication sur l'autre moitié de la matrice (un peu trop de duplication, un peu redondante, mais au final ça influe que peu)
+    for urlCol in matriceIndice:
+        for urlLigne in matriceIndice:
+            matriceIndice[urlCol][urlLigne] = matriceIndice[urlLigne][urlCol]
 
-                        try:
-                            ligneSujetObjetsGraphes.add(triplet['objet'].encode('utf8'))
-                        except:
-                            ligneSujetObjetsGraphes.add(triplet['objet'])
-                    except:
-                        compteurSujetNull += 1
-            sujetObjetsGraphes.append(list(ligneSujetObjetsGraphes))
-        # input_file.close()
-        # ==========================
-        # Calcul de similarité
-        # ==========================
+    #print(matriceIndice)
+    return matriceIndice
 
-        matriceIndice = list()
-
-        for iLigne in range(0, len(sujetObjetsGraphes)):
-            ligneMatrice = list()
-            for iCol in range(0, len(sujetObjetsGraphes)):
-                ratio = len([val for val in sujetObjetsGraphes[iLigne] if val in sujetObjetsGraphes[iCol]]) / (
-                len(list(set(sujetObjetsGraphes[iLigne] + sujetObjetsGraphes[iCol]))))
-                ligneMatrice.append(ratio)
-            matriceIndice.append(ligneMatrice)
-
-        #print(matriceIndice)
-        return matriceIndice
-    input_file.close()
-
-createSimilarityMatrix()
+if __name__ == '__main__':
+    createSimilarityMatrix()
