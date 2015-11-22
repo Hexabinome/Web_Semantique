@@ -1,4 +1,4 @@
-# ==========================
+﻿# ==========================
 # Import
 # ==========================
 import os
@@ -30,40 +30,40 @@ def createSimilarityMatrix():#dpPedia):
         # ==========================
 
         # print(dpPedia)
-        for listeGraphe in dpPedia:
-            for graphe in listeGraphe:
-                ligneSujetObjetsGraphes = set()
-                for sujet in graphe:
-                    # Le sujet n'a pas été retourné par dbpedia
-                    if sujet == None:
+        #for listeGraphe in dpPedia:
+        for graphe in dpPedia:
+            ligneSujetObjetsGraphes = set()
+            for sujet in graphe:
+                # Le sujet n'a pas été retourné par dbpedia
+                if sujet == None:
+                    break
+                    # création d'un objet triplet pour retenir les résutats
+                triplet = {}
+                triplet['sujet'] = sujet
+
+                # On ajout le sujet dans la liste des sujet Objets du graphe en cours
+                try:
+                    ligneSujetObjetsGraphes.add(sujet.encode('utf8'))
+                except:
+                    ligneSujetObjetsGraphes.add(sujet)
+
+                for predicatSubject in graphe[sujet]:
+                    if predicatSubject == None:
                         break
-                        # création d'un objet triplet pour retenir les résutats
-                    triplet = {}
-                    triplet['sujet'] = sujet
 
-                    # On ajout le sujet dans la liste des sujet Objets du graphe en cours
+                    triplet['predicat'] = predicatSubject['predicat'].get('value')
+
+                    # Parfois l'objet (predicatSubject['subject']) n'existe pas.
                     try:
-                        ligneSujetObjetsGraphes.add(sujet.encode('utf8'))
-                    except:
-                        ligneSujetObjetsGraphes.add(sujet)
+                        triplet['objet'] = predicatSubject['subject'].get('value')
 
-                    for predicatSubject in graphe[sujet]:
-                        if predicatSubject == None:
-                            break
-
-                        triplet['predicat'] = predicatSubject['predicat'].get('value')
-
-                        # Parfois l'objet (predicatSubject['subject']) n'existe pas.
                         try:
-                            triplet['objet'] = predicatSubject['subject'].get('value')
-
-                            try:
-                                ligneSujetObjetsGraphes.add(triplet['objet'].encode('utf8'))
-                            except:
-                                ligneSujetObjetsGraphes.add(triplet['objet'])
+                            ligneSujetObjetsGraphes.add(triplet['objet'].encode('utf8'))
                         except:
-                            compteurSujetNull += 1
-                sujetObjetsGraphes.append(list(ligneSujetObjetsGraphes))
+                            ligneSujetObjetsGraphes.add(triplet['objet'])
+                    except:
+                        compteurSujetNull += 1
+            sujetObjetsGraphes.append(list(ligneSujetObjetsGraphes))
         # input_file.close()
         # ==========================
         # Calcul de similarité

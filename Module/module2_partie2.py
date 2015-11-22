@@ -3,26 +3,54 @@
 #           get_sparql_graph
 # ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
-import threading, json, sys
+import threading, json, os, ast
+
+DIRECTORY = 'cache'
 
 # TODO : Reflechir sur les requetes a effectuee
 '''
 requestType is a number to change the dbpedia query
 '''
 def getSparqlFromUrl(url, requestType):
+    # ATTENTION. Si on modifie les requêtes associées aux indices, il faut supprimer (à la main) les fichiers en cache !!!
     options = {0: subject,
                1: item,
                2: subjectAndItem
                }
-    query = options[requestType](url)
-    return doQuery(url, query)
 
-def testIsTargetType(url, target):
-    options = {0: actor,
-               1: film
-            }
-    query = options[target](url)
-    return doQuery(url, query)[url]
+    cache_file = '{0}/{1}_{2}.txt'.format(DIRECTORY, url.replace('http://', '').replace('/', '_'), requestType)
+    # Try finding url dbpedia content in cache
+    if os.path.isfile(cache_file):
+        cache_content = False
+        with open(cache_file, 'r') as f:
+            try:
+                cache_content = ast.literal_eval(f.read())
+                if len(cache_content[url]) == 0: # Not loaded correctly
+                    cache_content = False
+                else:
+                    print("Loaded {0} from cache".format(cache_file))
+            except:
+                pass
+        # If the cache_content is still false, remove existing invalid cache file + send request
+        if not cache_content:
+            os.remove(cache_file)
+            return getSparqlFromUrl(url, requestType)
+    # Else, query dbpedia
+    else:
+        query = options[requestType](url)
+        cache_content = doQuery(url, query)
+
+        # Save in cache
+        if not os.path.exists(DIRECTORY):
+            os.makedirs(DIRECTORY)
+        try:
+            with open(cache_file, 'w') as f:
+                f.write(str(cache_content))
+        except:
+            #print('Cache writing error {0}'.format(cache_file))
+            pass
+
+    return cache_content
 
 def doQuery(url, query):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -32,6 +60,13 @@ def doQuery(url, query):
     jsonResponse = sparql.query().convert()
     rdfTripletList = jsonResponse['results']['bindings']
     return {url: json.loads(json.dumps(rdfTripletList))}
+
+def testIsTargetType(url, target):
+    options = {0: actor,
+               1: film
+            }
+    query = options[target](url)
+    return doQuery(url, query)[url]
 
 def subject(url):
     request = "SELECT * WHERE {{ <{0}> ?predicat ?valeur}}".format(url)
@@ -76,7 +111,7 @@ def getSparqlFromUrls(listsOfUrls, requestType, target):
     size = len(urlTab)
     # Launch threads
     #while urlTab:
-    for x in range(0, 3):
+    for x in range(4):
         t = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlTab[int(x*size/4):int((x+1)*size/4)], urlDict, targetDict, requestType, target))
         t.start()
         threads.append(t)
