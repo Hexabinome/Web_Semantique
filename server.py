@@ -24,8 +24,8 @@ def search():
 
 @app.route("/test")
 def test():
-	matrice = module3_1.createSimilarityMatrix()
-	return render_template('results.html', matrice=matrice)
+	res = main.DoSearch("")
+	return render_template('results.html', matrice=res["matrice"], targets=res["target"])
 
 if __name__ == "__main__":
     app.debug = True

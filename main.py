@@ -3,10 +3,11 @@ from Module import module2_partie1, module2_partie2, module3_1
 from flask import json
 import sys
 
-
 def DoSearch(search):
     # TODO change requestType
     requestType = 2
+    # TODO change targetList
+    targetType = 0
     # call module 1 REQUEST TO URL TO TEXT URL
     print('module 1 call')
     #subprocess.check_call(['./Module/module1.sh', search, '1'])
@@ -20,17 +21,19 @@ def DoSearch(search):
     # call module 2 TEXT URL TO URI TO RDF
     print('module 2 call')
     urllist = module2_partie1.getUrlsFromTexts(jsonlist)
-    print(urllist)
-    dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType)
+    dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType, targetType)
     print('module 2 end')
     # return dbcontent
 
     # call module 3 RDF TO RESULTS
     print('module 3 call')
-    matrix = module3_1.createSimilarityMatrix(dbcontent)
+    matrix = module3_1.createSimilarityMatrix(dbcontent['grapheRDF'])
     print('module 3 end')
 
-    return matrix
+    res = {}
+    res["matrice"] = matrix
+    res["target"] = dbcontent['listeTarget']
+    return res
 
 if __name__ == '__main__':
     # redirige l'output sur le fichier
