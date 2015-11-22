@@ -5,7 +5,7 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 import threading, json, os, ast
 
-DIRECTORY = 'cache'
+CACHE_DIRECTORY = 'cache'
 
 # TODO : Reflechir sur les requetes a effectuee
 '''
@@ -18,7 +18,7 @@ def getSparqlFromUrl(url, requestType):
                2: subjectAndItem
                }
 
-    cache_file = '{0}/{1}_{2}.txt'.format(DIRECTORY, url.replace('http://', '').replace('/', '_'), requestType)
+    cache_file = '{0}/{1}_{2}.txt'.format(CACHE_DIRECTORY, url.replace('http://', '').replace('/', '_').replace(':', '_'), requestType)
     # Try finding url dbpedia content in cache
     if os.path.isfile(cache_file):
         cache_content = False
@@ -28,7 +28,8 @@ def getSparqlFromUrl(url, requestType):
                 if len(cache_content[url]) == 0: # Not loaded correctly
                     cache_content = False
                 else:
-                    print("Loaded {0} from cache".format(cache_file))
+                    #print("Loaded {0} from cache".format(cache_file))
+                    pass
             except:
                 pass
         # If the cache_content is still false, remove existing invalid cache file + send request
@@ -41,8 +42,8 @@ def getSparqlFromUrl(url, requestType):
         cache_content = doQuery(url, query)
 
         # Save in cache
-        if not os.path.exists(DIRECTORY):
-            os.makedirs(DIRECTORY)
+        if not os.path.exists(CACHE_DIRECTORY):
+            os.makedirs(CACHE_DIRECTORY)
         try:
             with open(cache_file, 'w') as f:
                 f.write(str(cache_content))
@@ -59,7 +60,7 @@ def doQuery(url, query):
 
     jsonResponse = sparql.query().convert()
     rdfTripletList = jsonResponse['results']['bindings']
-    return {url: json.loads(json.dumps(rdfTripletList))}
+    return json.loads(json.dumps(rdfTripletList))
 
 def testIsTargetType(url, target):
     options = {0: actor,
@@ -85,51 +86,57 @@ def film(url):
     return "SELECT * WHERE {{ ?a rdf:type ?????. FILTER(?a = <{0}>) } UNION {?film dbo:starring ?acteur. FILTER(?acteur = <{0}>)}}".format(url)
 
 
-def getSparqlFromUrlThreaded(urls, resultUrlDict, resultTargetDict, requestType, target):
-    for url in urls :
-        resultUrlDict[url] = getSparqlFromUrl(url, requestType)
-        if testIsTargetType(url, target) != []:
-            resultTargetDict[url] = url
+def getSparqlFromUrlThreaded(uris, resultUrlDict, resultTargetDict, requestType, target):
+    for uri in uris:
+        resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
+        if testIsTargetType(uri, target) != []:
+            resultTargetDict[uri] = uri
 
 '''
-Parameter is a list of urls.
-Launches a sparql query for each different url
-Returns a dictionnary like {'http://dbpedia.org/resource/Truc': 'jsonDBPediaContent'}
+Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
+Launches a sparql query for each different uri
+Returns dictionnary of a dictionnaries like {url: {uri: dbPedia, uri: dbpedia, uri:dbPedia...}, url: {...}, ...}
 '''
-def getSparqlFromUrls(listsOfUrls, requestType, target):
-    # Copy urls in one set => unique elements
-    urlDict = {}
-    urlTab = []
+def getSparqlFromUrls(urlDict, requestType, target):
+    out_dict = {}
+    uriSet = set() # Copy URIs in one set => unique elements
+    result_dict = {}
     targetDict = {}
-    for url in listsOfUrls:
-        urlDict[url] = None
-        urlTab.append(url)
+    for url in urlDict:
+        out_dict[url] = {}
+        for uri in urlDict[url]:
+            out_dict[url][uri] = None
+            uriSet.add(uri)
+            result_dict[uri] = None
 
     # storing threads
     threads = []
 
-    size = len(urlTab)
+    size = len(uriSet)
+    nbThreads = min(4, size)
     # Launch threads
-    #while urlTab:
-    for x in range(4):
-        t = threading.Thread(target=getSparqlFromUrlThreaded, args=(urlTab[int(x*size/4):int((x+1)*size/4)], urlDict, targetDict, requestType, target))
+    for x in range(nbThreads):
+        t = threading.Thread(target=getSparqlFromUrlThreaded, args=(list(uriSet)[int(x*size/nbThreads):int((x+1)*size/nbThreads)], result_dict, targetDict, requestType, target))
         t.start()
         threads.append(t)
     # Wait for threads
     for t in threads:
         t.join()
 
-    return urlDict
+    # Fill out dict
+    for url in out_dict:
+        for uri in out_dict[url]:
+            out_dict[url][uri] = result_dict[uri]
 
-# Example calls TEST
-# res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
+    #print(targetDict)
+
+    return out_dict
+
 
 if __name__ == '__main__':
-    results = getSparqlFromUrls(
-      [['http://dbpedia.org/resource/Brad_Pitt'],
-       ['http://dbpedia.org/resource/France'],
-       ['http://dbpedia.org/resource/Angelina_Jolie'],
-       ['http://dbpedia.org/resource/Brad_Davis_(actor)']], 0, 0)
+    results = getSparqlFromUrls({'http://osef.org': ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie'],
+                                'http://test.fr': ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Brad_Davis_(actor)', 'http://dbpedia.org/resource/Brad_Pitt']}
+                        , 0, 0)
     #results = getSparqlFromUrls(['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany'], 0)
       # ['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
       #  ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette',
