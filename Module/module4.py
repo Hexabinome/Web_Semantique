@@ -11,13 +11,19 @@ requestType is a number to change the dbpedia query
 '''
 def getInfoFromUrl(url, targetType):
     # actors
+    resultDict = {}
     if(targetType == 0):
-        resultDict = {}
         resultDict['resume'] = doQuery(url, resume(url))
         resultDict['birth'] = doQuery(url, birthDate(url))
         resultDict['thumbnail'] = doQuery(url, thumbnail(url))
         resultDict['alias'] = doQuery(url, alias(url))
-        return resultDict
+    elif(targetType == 1):
+        resultDict['runtime'] = doQuery(url, runtime(url))
+        resultDict['budget'] = doQuery(url, budget(url))
+        resultDict['director'] = doQuery(url, director(url))
+        resultDict['comment'] = doQuery(url, comment(url))
+        resultDict['name'] = doQuery(url, name(url))
+    return resultDict
 
 def doQuery(url, query):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -41,6 +47,21 @@ def thumbnail(url):
 
 def alias(url):
     return "SELECT ?alias WHERE {{<{0}> dbo:alias ?alias. FILTER (lang(?alias ) = 'en')}}".format(url)
+
+def runtime(url):
+    return "SELECT ?runtime WHERE {{<{0}> dbo:Work/runtime ?runtime.}}".format(url)
+
+def budget(url):
+    return "SELECT ?budget WHERE {{<{0}> dbp:budget ?budget.}}".format(url)
+
+def director(url):
+    return "SELECT ?director WHERE {{<{0}> dbo:director ?director.}}".format(url)
+
+def name(url):
+    return "SELECT ?name WHERE {{<{0}> dbp:name ?name.}}".format(url)
+
+def comment(url):
+    return "SELECT ?comment WHERE {{<{0}> rdfs:comment ?comment.}}".format(url)
 
 def getInfoFromUrlThreaded(urls, resultDict, targetType):
     for url in urls :
