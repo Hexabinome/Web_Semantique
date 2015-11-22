@@ -6,28 +6,28 @@ import requests, json, threading, os
 CACHE_DIRECTORY = 'cache'
 
 # TODO: making the confidence and support changeable
-def getUrlsFromText(url, text):
+def getUrlsFromText(url, text, confidence, support):
 
-    cache_file = '{0}/{1}.spotlight.txt'.format(CACHE_DIRECTORY, url.replace('http://', '').replace('/', '_'))
+    cache_file = '{0}/{1}_{2}_{3}.spotlight.txt'.format(CACHE_DIRECTORY, url.replace('http://', '').replace('/', '_').replace(':', '_'), confidence, support)
     # Try finding URIs in cache
     if os.path.isfile(cache_file):
         urlList = []
         with open(cache_file, 'r') as f:
             try:
                 urlList = f.read().split('\n')
-                if len(urlList) > 0:
-                    print("Got uri of {0} from cache".format(cache_file))
+                #if len(urlList) > 0:
+                #    print("Got uri of {0} from cache".format(cache_file))
             except:
                 pass
         # If the cache_content is still false, remove existing invalid cache file + send request
         if len(urlList) == 0:
             os.remove(cache_file)
-            return getUrlsFromText(url, text)
+            return getUrlsFromText(url, text, confidence, support)
     else:
         data = {
             'text': text,
-            'confidence': '0.2',
-            'support': '20'}
+            'confidence': confidence,
+            'support': support}
         url = 'http://spotlight.dbpedia.org/rest/annotate/'
         header = {
             'Accept': 'application/json',
@@ -51,7 +51,7 @@ def getUrlsFromText(url, text):
             with open(cache_file, 'w') as f:
                 f.write('\n'.join(urlList))
         except:
-            print('Cache writing error (spotlight) {0}'.format(cache_file))
+            #print('Cache writing error (spotlight) {0}'.format(cache_file))
             pass
         
     return urlList
@@ -59,7 +59,8 @@ def getUrlsFromText(url, text):
 
 def getUrlsFromTextThreaded(texts, result):
     for text in texts:
-        for url in getUrlsFromText(text['url'], text['text']):
+        # TODO : make confidence & support changeable
+        for url in getUrlsFromText(text['url'], text['text'], 0.2, 20):
             result[text['url']].add(url)
 
 '''
@@ -87,16 +88,6 @@ def getUrlsFromTexts(jsonTexts):
         thread.join()
 
     return result
-
-# test deleteDoublonFromUrlList
-# print(getUrlsFromText("BRAD is the comprehensive online authority for essential advertising information on over 12,800 UK media titles. We've found BRAD to be a great data resource for us, which allows us to build highly targeted lists in an instant. They have been extremely helpful, from running comprehensive training sessions to dealing with last minute requests."))
-# print(deleteDoublonFromUrlList(['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Comprehensive_school', 'http://dbpedia.org/resource/Authority', 'http://dbpedia.org/resource/Essentialism', 'http://dbpedia.org/resource/Advertising', 'http://dbpedia.org/resource/Title', 'http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Data', 'http://dbpedia.org/resource/Resource', 'http://dbpedia.org/resource/Building', 'http://dbpedia.org/resource/Running', 'http://dbpedia.org/resource/Comprehensive_school', 'http://dbpedia.org/resource/Training']))
-
-# TEST
-# res = getUrlsFromText("""President Obama called Wednesday on Congress to extend a tax break
-#    for students included in last year's economic stimulus package, arguing
-#    that the policy provides more generous assistance.""")
-
 
 if __name__ == '__main__':
     res = getUrlsFromTexts([{'text':"Berlin Germany beer Warsaw", 'url':'http://dbpedia.osef.org'}, {'url':'coucou', 'text':"""President Obama called Wednesday on Congress to extend a tax break

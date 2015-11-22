@@ -23,7 +23,6 @@ def DoSearch(search):
     # call module 2 TEXT URL TO URI TO RDF
     start = time.time()
     urllist = module2_partie1.getUrlsFromTexts(jsonlist)
-    print(urllist)
     print("Module 2 (spotlight) : {0} sec".format(time.time() - start))
     start = time.time()
     dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType)
