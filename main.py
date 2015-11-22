@@ -32,8 +32,7 @@ def DoSearch(search):
 
     # call module 3 RDF TO RESULTS
     start = time.time()
-    #matrix = module3_1.createSimilarityMatrix(dbcontent['grapheRDF'])
-
+    matrix = module3_1.createSimilarityMatrix(dbcontent['grapheRDF'])
     print("Module 3 : {0} sec".format(time.time() - start))
 
     # call module 4 RDF TO RESULTS
