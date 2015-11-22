@@ -6,3 +6,9 @@ Module/output.txt
 console.txt
 cache
 Module/cache
+.vs
+bin/
+obj/
+*.sln
+*.pyproj
+*.config

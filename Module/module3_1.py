@@ -70,12 +70,13 @@ def createSimilarityMatrix(dbPedia):
 
 
 def ratioCalcThread(resultMatrice, urlLigne, sujetObjetsGraphes):
-    for urlCol in sujetObjetsGraphes:
-        ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
-            len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
-        resultMatrice[urlLigne][urlCol] = ratio
-        print("{2}\t{0}\t{1}".format(urlLigne, urlCol, ratio))
-
+        for urlCol in sujetObjetsGraphes:
+            if urlLigne == urlCol:
+                ratio = 1.0
+            else:
+                ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
+                    len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+            resultMatrice[urlLigne][urlCol] = ratio
 
 if __name__ == '__main__':
     createSimilarityMatrix()
