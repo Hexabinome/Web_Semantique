@@ -7,6 +7,7 @@ import sys, time
 def DoSearch(search):
     # TODO change requestType
     requestType = 2
+    targetType = 0
     # call module 1 REQUEST TO URL TO TEXT URL
     print('Beginning')
     start = time.time()
@@ -25,7 +26,7 @@ def DoSearch(search):
     urllist = module2_partie1.getUrlsFromTexts(jsonlist)
     print("Module 2 (spotlight) : {0} sec".format(time.time() - start))
     start = time.time()
-    dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType)
+    dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType, targetType)
     print("Module 2 (dbpedia content) : {0} sec".format(time.time() - start))
 
     # call module 3 RDF TO RESULTS

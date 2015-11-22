@@ -63,11 +63,12 @@ def doQuery(url, query):
     return json.loads(json.dumps(rdfTripletList))
 
 def testIsTargetType(url, target):
-    options = {0: actor,
+    return []
+    '''options = {0: actor,
                1: film
             }
     query = options[target](url)
-    return doQuery(url, query)[url]
+    return doQuery(url, query)[url]'''
 
 def subject(url):
     request = "SELECT * WHERE {{ <{0}> ?predicat ?valeur}}".format(url)

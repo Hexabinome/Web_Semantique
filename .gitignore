@@ -1,7 +1,8 @@
 __pycache__
 Module/output/alchemy.json
-
 .idea
 *.json
 Module/output.txt
 console.txt
+cache
+Module/cache
