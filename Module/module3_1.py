@@ -53,25 +53,12 @@ def createSimilarityMatrix(dbPedia):
     matriceIndice = {}
 
     # Calcul d'une moitié de la matrice
-    nbLigne = 0
     for urlLigne in sujetObjetsGraphes:
         matriceIndice[urlLigne] = {}
-        nbCol = -1
         for urlCol in sujetObjetsGraphes:
-            nbCol += 1
-            print('{2}\t{0}\t{1}'.format(urlLigne, urlCol, time.time()))
-            if nbCol < nbLigne:
-                matriceIndice[urlLigne][urlCol] = -1
-                continue
             ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
                 len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
             matriceIndice[urlLigne][urlCol] = ratio
-        nbLigne += 1
-
-    # Duplication sur l'autre moitié de la matrice (un peu trop de duplication, un peu redondante, mais au final ça influe que peu)
-    for urlCol in matriceIndice:
-        for urlLigne in matriceIndice:
-            matriceIndice[urlCol][urlLigne] = matriceIndice[urlLigne][urlCol]
 
     #print(matriceIndice)
     return matriceIndice
