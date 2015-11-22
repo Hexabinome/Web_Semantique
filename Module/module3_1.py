@@ -11,7 +11,7 @@ import sys
 # Déclaration variables
 # ==========================
 
-def createSimilarityMatrix():#dpPedia): 
+def createSimilarityMatrix(dpPedia): 
     sujetObjetsGraphes = list()
     ligneSujetObjetsGraphes = set()
 
@@ -20,10 +20,10 @@ def createSimilarityMatrix():#dpPedia):
     #mon_fichier.write(json.dumps(dpPedia))
     #mon_fichier.close()
 
-    input_file=open('dbpedia.json', 'r', encoding='utf-8')
+     # input_file=open('dbpedia.json', 'r', encoding='utf-8')
     with open('output.txt', 'w', encoding='utf-8') as f:
 
-        dpPedia=json.load(input_file)
+        # dpPedia=json.load(input_file)
 
         # ==========================
         # Extraction du JSON
@@ -65,6 +65,8 @@ def createSimilarityMatrix():#dpPedia):
                         compteurSujetNull += 1
             sujetObjetsGraphes.append(list(ligneSujetObjetsGraphes))
         # input_file.close()
+
+
         # ==========================
         # Calcul de similarité
         # ==========================
@@ -83,4 +85,6 @@ def createSimilarityMatrix():#dpPedia):
         return matriceIndice
     input_file.close()
 
-createSimilarityMatrix()
+
+# Example calls TEST
+# createSimilarityMatrix()

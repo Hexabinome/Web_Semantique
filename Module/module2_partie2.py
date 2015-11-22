@@ -86,7 +86,6 @@ def actor(url):
 def film(url):
     return "SELECT * WHERE {{ ?a rdf:type ?????. FILTER(?a = <{0}>) } UNION {?film dbo:starring ?acteur. FILTER(?acteur = <{0}>)}}".format(url)
 
-
 def getSparqlFromUrlThreaded(uris, resultUrlDict, resultTargetDict, requestType, target):
     for uri in uris:
         resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
@@ -131,7 +130,10 @@ def getSparqlFromUrls(urlDict, requestType, target):
 
     #print(targetDict)
 
-    return out_dict
+    res = {}
+    res['grapheRDF'] = out_dict
+    res['listeTarget'] = targetDict
+    return res
 
 
 if __name__ == '__main__':
@@ -143,3 +145,11 @@ if __name__ == '__main__':
       #  ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette',
       #   'http://dbpedia.org/resource/Europe'], 0)
     print(results)
+                    
+
+
+# results = getSparqlFromUrls(
+#   [['http://dbpedia.org/resource/Brad_Pitt'],
+#    ['http://dbpedia.org/resource/France'],
+#    ['http://dbpedia.org/resource/Angelina_Jolie'],
+#    ['http://dbpedia.org/resource/Brad_Davis_(actor)']], 0, 0)
