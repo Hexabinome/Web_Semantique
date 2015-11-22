@@ -1,6 +1,6 @@
 import subprocess
-from Module import module2_partie1, module2_partie2, module3_1
-from flask import json
+from Module import module2_partie1, module2_partie2, module3_1, module4
+import json
 import sys
 
 def DoSearch(search):
@@ -32,7 +32,8 @@ def DoSearch(search):
 
     res = {}
     res["matrice"] = matrix
-    res["target"] = dbcontent['listeTarget']
+    res["target"] = module4.getInfoTargetFromUrls(['http://dbpedia.org/resource/Brad_Pitt',   'http://dbpedia.org/resource/Angelina_Jolie',   'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0) #list(dbcontent['listeTarget'].keys()), 0)
+    print(json.dumps(res["target"]))
     return res
 
 if __name__ == '__main__':
@@ -40,4 +41,4 @@ if __name__ == '__main__':
     sys.stdout = open('console.txt', 'w')
 
     #term = input()
-    print((DoSearch("")))#term)[1]))
+    DoSearch("")#term)[1]))

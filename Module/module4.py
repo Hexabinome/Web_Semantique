@@ -26,6 +26,8 @@ def doQuery(url, query):
 
     jsonResponse = sparql.query().convert()
     rdfTripletList = jsonResponse['results']['bindings'][0].popitem()[1]['value']
+    if isinstance(rdfTripletList, str):
+        rdfTripletList = rdfTripletList.replace('"', "'")
     return json.loads(json.dumps(rdfTripletList))
 
 def resume(url):
@@ -59,7 +61,7 @@ def getInfoTargetFromUrls(listOfUrls, targetType):
     size = len(listOfUrls)
     # Launch threads
     if(size < 5):
-        for x in range(0, 3):
+        for x in range(0, size):
             t = threading.Thread(target=getInfoFromUrlThreaded, args=([listOfUrls[x]], resDict, targetType))
             t.start()
             threads.append(t)
@@ -78,10 +80,10 @@ def getInfoTargetFromUrls(listOfUrls, targetType):
 # Example calls TEST
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
 # redirige l'output sur le fichier
-sys.stdout = open('console.txt', 'w', encoding='utf-8')
+# sys.stdout = open('console.txt', 'w', encoding="utf-8")
 
-results = getInfoTargetFromUrls(
-  ['http://dbpedia.org/resource/Brad_Pitt',
-   'http://dbpedia.org/resource/Angelina_Jolie',
-   'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
-print(results)
+# results = getInfoTargetFromUrls(
+#   ['http://dbpedia.org/resource/Brad_Pitt',
+#    'http://dbpedia.org/resource/Angelina_Jolie',
+#    'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
+# print(results)

@@ -104,10 +104,10 @@ def getSparqlFromUrls(listOfListsOfUrls, requestType, target):
 # Example calls TEST
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
 # redirige l'output sur le fichier
-sys.stdout = open('console.txt', 'w', encoding='utf-8')
-results = getSparqlFromUrls(
-  [['http://dbpedia.org/resource/Brad_Pitt'],
-   ['http://dbpedia.org/resource/France'],
-   ['http://dbpedia.org/resource/Angelina_Jolie'],
-   ['http://dbpedia.org/resource/Brad_Davis_(actor)']], 0, 0)
-print(results['listeTarget'])
+# sys.stdout = open('console.txt', 'w', encoding='utf-8')
+# results = getSparqlFromUrls(
+#   [['http://dbpedia.org/resource/Brad_Pitt'],
+#    ['http://dbpedia.org/resource/France'],
+#    ['http://dbpedia.org/resource/Angelina_Jolie'],
+#    ['http://dbpedia.org/resource/Brad_Davis_(actor)']], 0, 0)
+# print(results['listeTarget'])

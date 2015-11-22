@@ -4,13 +4,23 @@
 <h1>Results</h1>
 
 <div id="graphe"></div>
+<div >
+	<h1>Acteurs</h1>
+	<div id="acteurs"></div>
+</div>
 
 <script>
 	var matrice = {{matrice}};
-	var acteurs = {{targets}};
+	var acteurs = $.parseJSON("{{targets}}".replace(/&#([0-9]{1,3});/gi, 
+         function(match, numStr) {
+           var num = parseInt(numStr, 10); // read num as normal number
+           return String.fromCharCode(num);    
+         })
+	);
 
-	console.debug(matrice);
-	console.debug(acteurs);
+	$.each(acteurs, function(indice, value){
+		$("#acteurs").append("<div class='row'> <div id='thumbnail' class='col-md-6'> <img src='" + value.thumbnail + "' /> </div> <div class='col-md-6'> <div id='nom' class='row'> <b>Nom :</b> " + value.alias + " </div> <div id='birth' class='row'> <b>Date de naissance :</b>" + value.birth + " <div id='resume' class='row'> <b>Histoire :</b>" + value.resume + " </div></div></div>")
+	})
 
 	var links = [
 		{source: "Microsoft", target: "Amazon", type: "licensing"},
