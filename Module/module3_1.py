@@ -9,11 +9,12 @@ import sys
 import time
 import threading
 
+
 # ==========================
 # Déclaration variables
 # ==========================
 
-def createSimilarityMatrix(dbPedia): 
+def createSimilarityMatrix(dbPedia):
     sujetObjetsGraphes = {}
 
     # ==========================
@@ -39,11 +40,11 @@ def createSimilarityMatrix(dbPedia):
                     objet = triplet['valeur']['value']
                 except:
                     objet = ''
-    
+
                 if sujet:
                     sujetObjetsGraphes[url].add(sujet)
-                #if predicat:
-                    #sujetObjetsGraphes[url].add(predicat)
+                    # if predicat:
+                    # sujetObjetsGraphes[url].add(predicat)
                 if objet:
                     sujetObjetsGraphes[url].add(objet)
         sujetObjetsGraphes[url] = list(sujetObjetsGraphes[url])
@@ -64,15 +65,17 @@ def createSimilarityMatrix(dbPedia):
     for t in threads:
         t.join()
 
-    #print(matriceIndice)
+    # print(matriceIndice)
     return matriceIndice
 
+
 def ratioCalcThread(resultMatrice, urlLigne, sujetObjetsGraphes):
-        for urlCol in sujetObjetsGraphes:
-            ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
-                len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
-            resultMatrice[urlLigne][urlCol] = ratio
-            print("{2}\t{0}\t{1}".format(urlLigne, urlCol, ratio))
+    for urlCol in sujetObjetsGraphes:
+        ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
+            len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+        resultMatrice[urlLigne][urlCol] = ratio
+        print("{2}\t{0}\t{1}".format(urlLigne, urlCol, ratio))
+
 
 if __name__ == '__main__':
     createSimilarityMatrix()

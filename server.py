@@ -4,10 +4,12 @@ from Module import module3_1
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index():
     # return render_template('results.html')
     return render_template('index.html')
+
 
 @app.route("/search", methods=['POST'])
 def search():
@@ -18,6 +20,7 @@ def search():
     print('you searched ' + search + actor + film)
     search_res = main.DoSearch(search + actor + film)
     return render_template('results.html', search=search_res)
+
 
 @app.route("/test")
 def test():

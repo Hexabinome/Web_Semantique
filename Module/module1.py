@@ -40,7 +40,8 @@ def alchemy_api(url):
     :return: {"url" : "http://...", "text":"zeiruyzeiur"}
     """
 
-    cache_file = '{0}/{1}.alchemy.txt'.format(CACHE_DIRECTORY, url.replace('http://', '').replace('/','_').replace(':', '_'))
+    cache_file = '{0}/{1}.alchemy.txt'.format(CACHE_DIRECTORY,
+                                              url.replace('http://', '').replace('/', '_').replace(':', '_'))
     # Load cache
     if os.path.isfile(cache_file):
         text = ''
@@ -48,7 +49,7 @@ def alchemy_api(url):
             try:
                 text = f.read()
                 json_string = {'url': url, 'text': text}
-                #print("Loaded {0} from cache".format(cache_file))
+                # print("Loaded {0} from cache".format(cache_file))
             except:
                 pass
         # After loading, if didn't work or file was empty, delete cache and send request as usual
@@ -74,7 +75,7 @@ def alchemy_api(url):
             with open(cache_file, 'w') as f:
                 f.write(text)
         except:
-            #print('Cache writing error (alchemy) {0}'.format(cache_file))
+            # print('Cache writing error (alchemy) {0}'.format(cache_file))
             pass
 
     json_string = {"url": url, "text": text}

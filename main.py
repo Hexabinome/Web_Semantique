@@ -1,7 +1,8 @@
-#import subprocess
+# import subprocess
 from Module import module1, module2_partie1, module2_partie2, module3_1, module4
 from flask import json
 import sys, time
+
 
 def DoSearch(search):
     googleRequestInFile = True
@@ -15,12 +16,12 @@ def DoSearch(search):
     print('Beginning')
     start = time.time()
     totalStart = time.time()
-    #subprocess.check_call(['./Module/module1.sh', search, '1'])
-    if(googleRequestInFile == False):
+    # subprocess.check_call(['./Module/module1.sh', search, '1'])
+    if (googleRequestInFile == False):
         pageResults = module1.do_module1_job(search)
     print('Module 1 : {0} sec'.format(time.time() - start))
 
-    if(googleRequestInFile == False):
+    if (googleRequestInFile == False):
         with open('Module/output/alchemy_brad_pitt.json', 'a', encoding='utf-8') as f:
             f.write(pageResults)
         googleRequestInFile = True
@@ -48,7 +49,9 @@ def DoSearch(search):
 
     # call module 4 RDF TO RESULTS
     start = time.time()
-    target = module4.getInfoTargetFromUrls(['http://dbpedia.org/resource/Brad_Pitt',   'http://dbpedia.org/resource/Angelina_Jolie',   'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
+    target = module4.getInfoTargetFromUrls(
+        ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie',
+         'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
     print("Module 4 : {0} sec".format(time.time() - start))
 
     print("Total time : {0} sec".format(time.time() - totalStart))
@@ -58,9 +61,10 @@ def DoSearch(search):
     res["target"] = target
     return res
 
+
 if __name__ == '__main__':
     # redirige l'output sur le fichier
-    #sys.stdout = open('console.txt', 'w')
+    # sys.stdout = open('console.txt', 'w')
 
-    #term = input()
-    DoSearch("Brad")#term)[1]))
+    # term = input()
+    DoSearch("Brad")  # term)[1]))

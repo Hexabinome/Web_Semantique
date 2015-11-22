@@ -5,17 +5,19 @@ import requests, json, threading, os
 
 CACHE_DIRECTORY = 'cache'
 
+
 # TODO: making the confidence and support changeable
 def getUrlsFromText(url, text, confidence, support):
-
-    cache_file = '{0}/{1}_{2}_{3}.spotlight.txt'.format(CACHE_DIRECTORY, url.replace('http://', '').replace('/', '_').replace(':', '_'), confidence, support)
+    cache_file = '{0}/{1}_{2}_{3}.spotlight.txt'.format(CACHE_DIRECTORY,
+                                                        url.replace('http://', '').replace('/', '_').replace(':', '_'),
+                                                        confidence, support)
     # Try finding URIs in cache
     if os.path.isfile(cache_file):
         urlList = []
         with open(cache_file, 'r') as f:
             try:
                 urlList = f.read().split('\n')
-                #if len(urlList) > 0:
+                # if len(urlList) > 0:
                 #    print("Got uri of {0} from cache".format(cache_file))
             except:
                 pass
@@ -51,9 +53,9 @@ def getUrlsFromText(url, text, confidence, support):
             with open(cache_file, 'w') as f:
                 f.write('\n'.join(urlList))
         except:
-            #print('Cache writing error (spotlight) {0}'.format(cache_file))
+            # print('Cache writing error (spotlight) {0}'.format(cache_file))
             pass
-        
+
     return urlList
 
 
@@ -63,11 +65,14 @@ def getUrlsFromTextThreaded(texts, result):
         for url in getUrlsFromText(text['url'], text['text'], 0.2, 20):
             result[text['url']].add(url)
 
+
 '''
 Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts returned by Alchemy
 Requests for each text DBPedia spotlight
 Return : A dictionnary {url1: [foundUrl, foundUrl, ...], url2: [],...}
 '''
+
+
 def getUrlsFromTexts(jsonTexts):
     nbTexts = len(jsonTexts)
     result = {}
@@ -79,7 +84,7 @@ def getUrlsFromTexts(jsonTexts):
     for i in range(nbThreads):
         t = threading.Thread(
             target=getUrlsFromTextThreaded,
-            args=(jsonTexts[int(i*nbTexts/nbThreads):int((i+1)*nbTexts/nbThreads)], result))
+            args=(jsonTexts[int(i * nbTexts / nbThreads):int((i + 1) * nbTexts / nbThreads)], result))
         t.start()
         threads.append(t)
 
@@ -89,7 +94,9 @@ def getUrlsFromTexts(jsonTexts):
 
     return result
 
+
 if __name__ == '__main__':
-    res = getUrlsFromTexts([{'text':"Berlin Germany beer Warsaw", 'url':'http://dbpedia.osef.org'}, {'url':'coucou', 'text':"""President Obama called Wednesday on Congress to extend a tax break
+    res = getUrlsFromTexts(
+        [{'text': "Berlin Germany beer Warsaw", 'url': 'http://dbpedia.osef.org'}, {'url': 'coucou', 'text': """President Obama called Wednesday on Congress to extend a tax break
     for students included in last year's economic stimulus package, arguing
     that the policy provides more generous assistance."""}])
