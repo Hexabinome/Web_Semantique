@@ -34,23 +34,25 @@ def getUrlsFromText(text):
 def getUrlsFromTextThreaded(texts, result):
     for text in texts:
         for url in getUrlsFromText(text['text']):
-            result.add(url)
+            result[text['url']].append(url)
 
 '''
 Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts returned by Alchemy
 Requests for each text DBPedia spotlight
-Return : A list of all urls found in the different texts
+Return : A dictionnary {url1: [foundUrl, foundUrl, ...], url2: [],...}
 '''
 def getUrlsFromTexts(jsonTexts):
     nbTexts = len(jsonTexts)
-    allUrls = set()
+    result = {}
+    for dict in jsonTexts:
+        result[dict['url']] = []
     threads = []
     # Launch threads
     nbThreads = min(5, nbTexts)
     for i in range(nbThreads):
         t = threading.Thread(
             target=getUrlsFromTextThreaded,
-            args=(jsonTexts[int(i*nbTexts/nbThreads):int((i+1)*nbTexts/nbThreads)], allUrls))
+            args=(jsonTexts[int(i*nbTexts/nbThreads):int((i+1)*nbTexts/nbThreads)], result))
         t.start()
         threads.append(t)
 
@@ -58,7 +60,7 @@ def getUrlsFromTexts(jsonTexts):
     for thread in threads:
         thread.join()
 
-    return allUrls
+    return result
 
 
 def deleteDoublonFromUrlList(urlList):
