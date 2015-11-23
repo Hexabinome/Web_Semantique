@@ -2,19 +2,47 @@
 {% block title %} - Results {% endblock %}
 {% block content %}
 <h1>Results</h1>
-
-<div id="graphe"></div>
-<div >
-	<h1>Acteurs</h1>
-	<div id="acteurs"></div>
-</div>
-
+{% if type == 0 %}
+  <div id="graphe"></div>
+  <div >
+    <h1>Acteurs</h1>
+    <div id="acteurs"></div>
+  </div>
+  <ul>
+  {% for actor, info in search["target"].items() %}
+    <li>
+    <img src="{{info['thumbnail']}}">
+    {{info["alias"]}}
+    {{info["birth"]}}
+    {{info["resume"]}}
+    sources:{{actor}}
+    </li>
+  {% endfor %}
+  </ul>
+{% elif type == 1 %}
+   <div >
+    <h1>Acteurs</h1>
+    <div id="acteurs"></div>
+  </div>
+  <ul>
+  {% for film, info in search["target"].items() %}
+    <li>
+    {{info["budget"]}}
+    {{info["name"]}}
+    {{info["director"]}}
+    {{info["comment"]}}
+    {{info["runtime"]}}
+    sources:{{film}}
+    </li>
+  {% endfor %}
+  </ul>
+{% endif %}
 <script>
 	//var matrice = {{matrice}};
-	var acteurs = $.parseJSON("{{targets}}".replace(/&#([0-9]{1,3});/gi, 
+	var acteurs = $.parseJSON("{{targets}}".replace(/&#([0-9]{1,3});/gi,
          function(match, numStr) {
            var num = parseInt(numStr, 10); // read num as normal number
-           return String.fromCharCode(num);    
+           return String.fromCharCode(num);
          })
 	);
 
@@ -52,7 +80,7 @@
 		{source: "Kodak", target: "RIM", type: "suit"},
 		{source: "Nokia", target: "Qualcomm", type: "suit"}
 	];
-	
+
 	d3Graphe(links, "#graphe");
 
 </script>

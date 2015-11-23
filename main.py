@@ -50,8 +50,10 @@ def DoSearch(search):
     # call module 4 RDF TO RESULTS
     start = time.time()
     target = module4.getInfoTargetFromUrls(
-        ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie',
-         'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
+            #['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie',
+            #'http://dbpedia.org/resource/Brad_Davis_(actor)'],0)
+            ['http://dbpedia.org/resource/Interstellar_(film)',
+            'http://dbpedia.org/resource/Pulp_Fiction'], 1)
     print("Module 4 : {0} sec".format(time.time() - start))
 
     print("Total time : {0} sec".format(time.time() - totalStart))
@@ -67,4 +69,9 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    DoSearch("Brad")  # term)[1]))
+    res = DoSearch("Brad")  # term)[1]))
+    for k,v in res["target"].items():
+        print(k.encode("utf-8","ignore"))
+        for key, value in v.items():
+            print(key.encode("utf-8","ignore"))
+            print(value.encode("utf-8","ignore"))

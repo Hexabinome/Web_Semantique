@@ -57,7 +57,7 @@ def alias(url):
 
 
 def runtime(url):
-    return "SELECT ?runtime WHERE {{<{0}> dbo:Work/runtime ?runtime.}}".format(url)
+    return "SELECT ?runtime WHERE {{<{0}> dbo:runtime ?runtime.}}".format(url)
 
 
 def budget(url):
@@ -73,7 +73,7 @@ def name(url):
 
 
 def comment(url):
-    return "SELECT ?comment WHERE {{<{0}> rdfs:comment ?comment.}}".format(url)
+    return "SELECT ?comment WHERE {{<{0}> dbo:abstract ?comment. FILTER (lang(?comment)='en')}}".format(url)
 
 
 def getInfoFromUrlThreaded(urls, resultDict, targetType):
