@@ -3,52 +3,87 @@
 {% block content %}
 <h1>Results</h1>
 {% if type == 0 %}
-  <div id="graphe"></div>
-  <div >
+  <div id="graphe">
+  </div>
+  <div>
     <h1>Acteurs</h1>
-    <div id="acteurs"></div>
+    <div id="acteurs">
+    </div>
   </div>
   <ul>
+
   {% for actor, info in search["target"].items() %}
     <li>
-    <img src="{{info['thumbnail']}}">
-    {{info["alias"]}}
-    {{info["birth"]}}
-    {{info["resume"]}}
-    sources:{{actor}}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">{{info["alias"]}}  -  {{info["birth"]}}</h3>
+        </div>
+        <div class='row panel-body'>
+          <div id='thumbnail' class='col-md-6 col-lg-4'>
+            <img src="{{info['thumbnail']}}">
+            <div class="caption">
+              <h3> {{info["alias"]}}</h3>
+            </div>
+            <!-- Do we really need this ?? -->
+            <!-- <div id='source'>
+              <b> sources </b> {{actor}}
+            </div> -->
+          </div>
+          <div class='col-md-6 col-lg-8 right-padding'>
+            <div id='resume' class='row'> <b> Histoire :</b> {{info["resume"]}}
+            </div>
+          </div>
+        </div>
+      </div>
     </li>
   {% endfor %}
   </ul>
 {% elif type == 1 %}
    <div >
-    <h1>Acteurs</h1>
-    <div id="acteurs"></div>
+    <h1>Films</h1>
+    <div id="Films"></div>
   </div>
   <ul>
   {% for film, info in search["target"].items() %}
     <li>
-    {{info["budget"]}}
-    {{info["name"]}}
-    {{info["director"]}}
-    {{info["comment"]}}
-    {{info["runtime"]}}
-    sources:{{film}}
+    <div class='row'>
+      <div id='thumbnail' class='col-md-6 col-md-offset-3'> <img src='" + value.thumbnail + "' />
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-md-12'>
+        <div id='nom' class='row'>
+          <b>Titre :</b> {{info["name"]}}
+        </div>
+        <div id='birth' class='row'>
+          <b>Budget :</b> {{info["budget"]}}
+        </div>
+        <div id='director' class='row'> <b> Director :</b> {{info["director"]}}
+        </div>
+        <div id='resume' class='row'> <b> Résumé :</b> {{info["comment"]}}
+        </div>
+        <div id='source' class='row'> <b> runtime :</b> {{info["runtime"]}}
+        </div>
+        <div id='source' class='row'> <b> sources :</b> {{film}}
+        </div>
+      </div>
+    </div>
     </li>
   {% endfor %}
   </ul>
 {% endif %}
 <script>
-	//var matrice = {{matrice}};
-	var acteurs = $.parseJSON("{{targets}}".replace(/&#([0-9]{1,3});/gi,
-         function(match, numStr) {
-           var num = parseInt(numStr, 10); // read num as normal number
-           return String.fromCharCode(num);
-         })
-	);
+	// var matrice = {{matrice}};
+	// var acteurs = $.parseJSON("{{targets}}".replace(/&#([0-9]{1,3});/gi,
+ //         function(match, numStr) {
+ //           var num = parseInt(numStr, 10); // read num as normal number
+ //           return String.fromCharCode(num);
+ //         })
+	// );
 
-	$.each(acteurs, function(indice, value){
-		$("#acteurs").append("<div class='row'> <div id='thumbnail' class='col-md-6'> <img src='" + value.thumbnail + "' /> </div> <div class='col-md-6'> <div id='nom' class='row'> <b>Nom :</b> " + value.alias + " </div> <div id='birth' class='row'> <b>Date de naissance :</b>" + value.birth + " <div id='resume' class='row'> <b>Histoire :</b>" + value.resume + " </div></div></div>")
-	})
+	// $.each(acteurs, function(indice, value){
+	// 	$("#acteurs").append("<div class='row'> <div id='thumbnail' class='col-md-6'> <img src='" + value.thumbnail + "' /> </div> <div class='col-md-6'> <div id='nom' class='row'> <b>Nom :</b> " + value.alias + " </div> <div id='birth' class='row'> <b>Date de naissance :</b>" + value.birth + " <div id='resume' class='row'> <b>Histoire :</b>" + value.resume + " </div></div></div>")
+	// })
 
 	var links = [
 		{source: "Microsoft", target: "Amazon", type: "licensing"},

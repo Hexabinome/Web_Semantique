@@ -23,3 +23,12 @@ body{
   font: 10px sans-serif;
   pointer-events: none;
 }
+
+li {
+    list-style-type:none;
+}
+
+.panel-body{
+  margin-right: 0;
+  margin-left: 0;
+}
