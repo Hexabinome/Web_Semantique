@@ -50,10 +50,10 @@ def DoSearch(search):
     # call module 4 RDF TO RESULTS
     start = time.time()
     target = module4.getInfoTargetFromUrls(
-            ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie',
-            'http://dbpedia.org/resource/Brad_Davis_(actor)'],0)
-            # ['http://dbpedia.org/resource/Interstellar_(film)',
-            # 'http://dbpedia.org/resource/Pulp_Fiction'], 1)
+            # ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie',
+            # 'http://dbpedia.org/resource/Brad_Davis_(actor)'],0)
+            ['http://dbpedia.org/resource/Interstellar_(film)',
+            'http://dbpedia.org/resource/Pulp_Fiction'], 1)
     print("Module 4 : {0} sec".format(time.time() - start))
 
     print("Total time : {0} sec".format(time.time() - totalStart))
