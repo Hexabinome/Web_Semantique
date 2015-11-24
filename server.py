@@ -1,13 +1,14 @@
-﻿from flask import Flask, render_template, request
-import main, json
-from Module import module3_1
+﻿import json
+
+from flask import Flask, render_template, request
+
+import main
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    # return render_template('results.html')
     return render_template('index.html')
 
 
