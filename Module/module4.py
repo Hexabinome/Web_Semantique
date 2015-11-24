@@ -10,7 +10,6 @@ import threading, json, sys
 requestType is a number to change the dbpedia query
 '''
 
-
 def getInfoFromUrl(url, targetType):
     # actors
     resultDict = {}
@@ -82,18 +81,29 @@ def comment(url):
     return "SELECT ?comment WHERE {{<{0}> dbo:abstract ?comment. FILTER (lang(?comment)='en')}}".format(url)
 
 
-def getInfoFromUrlThreaded(urls, resultDict, targetType):
-    for url in urls:
-        resultDict[url] = getInfoFromUrl(url, targetType)
+def getInfoFromUrlThreaded(uris, resultDict, targetType):
+    for uri in uris:
+        resultDict[uri] = getInfoFromUrl(uri, targetType)
 
 
 '''
-Parameter is a list of lists of urls. It
-Launches a sparql query for each different url
-Returns a list (of pages) of lists of jsonDBPediaContent
+Paramètre : une liste d'uri identifié comme ressource voulue, et type voulu
+type :  0 : actor
+        1 : film
+Returns a list de dictionnaire de type :
+# Actors
+    resultDict['resume']
+    resultDict['birth']
+    resultDict['thumbnail']
+    resultDict['alias']
+
+# Films
+    resultDict['runtime']
+    resultDict['budget']
+    resultDict['director']
+    resultDict['comment']
+    resultDict['name']
 '''
-
-
 def getInfoTargetFromUrls(setUrls, targetType):
     # Copy urls in one set => unique elements
     listOfUrls = list(setUrls)
@@ -103,19 +113,16 @@ def getInfoTargetFromUrls(setUrls, targetType):
     # storing threads
     threads = []
 
-    size = len(listOfUrls)
+    nbURI = len(listOfUrls)
     # Launch threads
-    if (size < 5):
-        for x in range(0, size):
-            t = threading.Thread(target=getInfoFromUrlThreaded, args=([listOfUrls[x]], resDict, targetType))
-            t.start()
-            threads.append(t)
-    else:
-        for x in range(0, 3):
-            t = threading.Thread(target=getInfoFromUrlThreaded,
-                                 args=(listOfUrls[int(x * size / 4):int((x + 1) * size / 4)], resDict, targetType))
-            t.start()
-            threads.append(t)
+    nbThreads = min(4, nbURI)
+    for x in range(nbThreads):
+        t = threading.Thread(target=getInfoFromUrlThreaded,
+                             args=(list(listOfUrls)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
+                                   resDict,
+                                   targetType))
+        t.start()
+        threads.append(t)
     # Wait for threads
     for t in threads:
         t.join()
@@ -123,13 +130,13 @@ def getInfoTargetFromUrls(setUrls, targetType):
     return resDict
 
 
-    # Example calls TEST
-    # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
-    # redirige l'output sur le fichier
-    # sys.stdout = open('console.txt', 'w', encoding="utf-8")
+# Example calls TEST
+# res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
+# redirige l'output sur le fichier
+# sys.stdout = open('console.txt', 'w', encoding="utf-8")
 
-    # results = getInfoTargetFromUrls(
-    #   ['http://dbpedia.org/resource/Brad_Pitt',
-    #    'http://dbpedia.org/resource/Angelina_Jolie',
-    #    'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
-    # print(results)
+# results = getInfoTargetFromUrls(
+#   ['http://dbpedia.org/resource/Brad_Pitt',
+#    'http://dbpedia.org/resource/Angelina_Jolie',
+#    'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
+# print(results)

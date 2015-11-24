@@ -35,16 +35,18 @@ def DoSearch(search, seuil, type, filtre):
     #Matrice renvoyer par le module 3
     outMatrix = []
     #Retour module 4
-    outTarget = []
+    outTarget = [None]
 
     threads = []
 
-    t = threading.Thread(target=Module3, args=(dbcontent['grapheRDF'], outMatrix))
-    threads.append(t)
-    t.start()
+    # Module 3 - [URL : graphe RDF] -> matrice similarté
+    #t = threading.Thread(target=Module3, args=(dbcontent['grapheRDF'], outMatrix))
+    #threads.append(t)
+    #t.start()
 
     #On souhaite retrouvé quelque chose : on va donc afficher les informations que l'on a obtenus
     if filtre == 0:
+        # Module 4 - [URI actor/film] -> information enrichies
         t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], type, outTarget))
         threads.append(t)
         t.start()
@@ -59,8 +61,8 @@ def DoSearch(search, seuil, type, filtre):
         t.join()
 
     res = {}
-    res["graph"] = module3_1.extractGraph(outMatrix, seuil)
-    res["target"] = outTarget
+    res["graph"] = {}#module3_1.extractGraph(outMatrix, seuil)
+    res["target"] = outTarget[0]
     return res
 
 def Module1_GoogleAndAlchemy(searchKeyword):
@@ -105,7 +107,7 @@ def Module3(grapheRDF, outMatrix):
 def Module4(setURI, targetType, outTarget):
     # call module 4 RDF TO RESULTS
     start = time.time()
-    outTarget = module4.getInfoTargetFromUrls(setURI, targetType)
+    outTarget[0] = module4.getInfoTargetFromUrls(setURI, targetType)
     print("Module 4 : {0} sec".format(time.time() - start))
 
 def Module5():
@@ -141,9 +143,10 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("Brad actor", 0.3)  # term)[1]))
-    for k, v in res["target"].items():
+    res = DoSearch("Brad actor", 0.3, 0, 0)  # term)[1]))
+    '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():
             print(key.encode("utf-8", "ignore"))
             print(value.encode("utf-8", "ignore"))
+    '''

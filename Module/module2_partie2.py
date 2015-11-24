@@ -12,8 +12,6 @@ CACHE_DIRECTORY = 'cache/dbpedia'
 '''
 requestType is a number to change the dbpedia query
 '''
-
-
 def getSparqlFromUrl(url, requestType):
     # ATTENTION. Si on modifie les requêtes associées aux indices, il faut supprimer (à la main) les fichiers en cache !!!
     options = {0: subject,
@@ -92,7 +90,7 @@ def film(url):
 
 def getSparqlFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target):
     for uri in uris:
-        resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
+        #resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
         if testIsTargetType(uri, target) != []:
             targetSet.add(uri)
 

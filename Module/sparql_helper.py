@@ -8,10 +8,10 @@ def runQuery_returnBool(query):
 def runQuery_returnBindings(query):
     return json.loads(json.dumps(runQuery(query)))
 
-def runQuery(query):
+def runQuery(query, timeout = 2):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(query)
-    sparql.setTimeout(3)
+    sparql.setTimeout(timeout)
     sparql.setReturnFormat(JSON)
 
     try:
