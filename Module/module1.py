@@ -1,11 +1,15 @@
-﻿import requests
+﻿# -*- coding: utf-8 -*-
+
+import requests
 import re
 from urllib.parse import quote
 import json
 import os
 import random
+from ast import literal_eval
 
-CACHE_DIRECTORY = 'cache'
+CACHE_DIRECTORY_ALCHEMY = 'cache/alchemy'
+CACHE_DIRECTORY_GOOGLE = 'cache/google'
 
 # Note : on est limité à 100 requêtes par jour donc à utiliser avec parcimonie
 # Le moteur de recherche est configuré pour privilégier les résultats qui sont liés au cinema
@@ -35,13 +39,43 @@ def google_search(search_input, start_page):
     :param start_page: index tu premier resultat
     :return: [{link : "http://..."},{link : "http://..."}]
     """
-    search_input = quote(search_input)
-    request_url = "https://www.googleapis.com/customsearch/v1"
-    payload = {'key': get_random_api_key(), 'cx': CX, 'q': search_input, 'start': start_page, 'item': 'items(link)'}
-    response = requests.get(request_url, params=payload)
-    assert response.status_code == 200
-    # pprint(respone.json()["items"])
-    return response.json()["items"]
+    cache_file = '{0}/{1}.{2}.google.txt'.format(CACHE_DIRECTORY_GOOGLE,
+        searchInput.replace('http://', '').replace('/', '_').replace(':', '_').replace('?', '_'),
+        start_page)
+
+    if os.path.isfile(cache_file):
+        resp = {}
+        with open(cache_file, 'r') as f:
+            try:
+                resp = literal_eval(f.read())
+                #print("Loaded {0} from cache".format(cache_file))
+            except:
+                pass
+        # After loading, if didn't work or file was empty, delete cache and send request as usual
+        if len(resp) == 0:
+            os.remove(cache_file)
+            print("Error loading from cache")
+            return google_search(searchInput, start_page)
+    else:
+        searchInput = quote(searchInput)
+        request_url = "https://www.googleapis.com/customsearch/v1"
+        payload = {'key': get_random_api_key(), 'cx': CX, 'q': searchInput, 'start': start_page, 'item': 'items(link)'}
+        response = requests.get(request_url, params=payload)
+        assert response.status_code == 200
+        resp = response.json()["items"]
+
+        # Save in cache
+        if not os.path.exists(CACHE_DIRECTORY_GOOGLE):
+            os.makedirs(CACHE_DIRECTORY_GOOGLE)
+        try:
+            with open(cache_file, 'w') as f:
+                f.write(str(resp))
+                #print('Saved in cache (alchemy) {0}'.format(cache_file))
+        except:
+            #print('Cache writing error (alchemy) {0}'.format(cache_file))
+            pass
+
+    return resp
 
 
 def alchemy_api(url):
@@ -51,21 +85,22 @@ def alchemy_api(url):
     :return: {"url" : "http://...", "text":"zeiruyzeiur"}
     """
 
-    cache_file = '{0}/{1}.alchemy.txt'.format(CACHE_DIRECTORY,
-                                              url.replace('http://', '').replace('/', '_').replace(':', '_'))
+    cache_file = '{0}/{1}.alchemy.txt'.format(CACHE_DIRECTORY_ALCHEMY,
+                                              url.replace('http://', '').replace('/', '_').replace(':', '_').replace('?', '_'))
     # Load cache
     if os.path.isfile(cache_file):
         text = ''
-        with open(cache_file, 'r') as f:
+        with open(cache_file, 'r', encoding='utf-8') as f:
             try:
-                text = f.read()
+                text = str(f.read())
                 json_string = {'url': url, 'text': text}
-                # print("Loaded {0} from cache".format(cache_file))
+                #print("Loaded {0} from cache".format(cache_file))
             except:
                 pass
         # After loading, if didn't work or file was empty, delete cache and send request as usual
         if not text.strip():
             os.remove(cache_file)
+            #print("Error loading from cache")
             return alchemy_api(url)
     # No cache existing
     else:
@@ -80,13 +115,14 @@ def alchemy_api(url):
         text = text.replace('\t', '')
         text = re.sub(' +', ' ', text)
         # Save in cache
-        if not os.path.exists(CACHE_DIRECTORY):
-            os.makedirs(CACHE_DIRECTORY)
+        if not os.path.exists(CACHE_DIRECTORY_ALCHEMY):
+            os.makedirs(CACHE_DIRECTORY_ALCHEMY)
         try:
             with open(cache_file, 'w') as f:
-                f.write(text)
+                f.write(str(text.encode('utf-8')))
+                #print('Saved in cache (alchemy) {0}'.format(cache_file))
         except:
-            # print('Cache writing error (alchemy) {0}'.format(cache_file))
+            #print('Cache writing error (alchemy) {0}'.format(cache_file))
             pass
 
     json_string = {"url": url, "text": text}
