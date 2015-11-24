@@ -3,10 +3,10 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import json
 
 def runQuery_returnBool(query):
-    return len(runQuery) != 0
+    return len(runQuery(query)) != 0
 
-def runQuery_returnBindins(query):
-    return json.loads(json.dumps(runQuery(runQuery)))
+def runQuery_returnBindings(query):
+    return json.loads(json.dumps(runQuery(query)))
 
 def runQuery(query):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")

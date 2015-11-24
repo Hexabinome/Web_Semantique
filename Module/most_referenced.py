@@ -16,7 +16,7 @@ def findMostReferenced(uriList, type):
             }
 
     for uri in sorted(mostVisitedResources, key=mostVisitedResources.get, reverse=True):
-        print("{0}\t{1}".format(mostVisitedResources[uri], uri))
+        # print("{0}\t{1}".format(mostVisitedResources[uri], uri))
         if isSomething[type](uri):
             return uri
 

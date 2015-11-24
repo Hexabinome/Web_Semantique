@@ -12,44 +12,17 @@ def DoSearch(search, seuil):
     # TODO change targetList
     targetType = 0
 
-    # call module 1 REQUEST TO URL TO TEXT URL
-    print('Beginning')
-    start = time.time()
-    totalStart = time.time()
-    # subprocess.check_call(['./Module/module1.sh', search, '1'])
-    #if (googleRequestInFile == False):
-    pageResults = module1.do_module1_job(search)
-    print('Module 1 : {0} sec'.format(time.time() - start))
-
-    '''if (googleRequestInFile == False):
-        with open('Module/output/alchemy_brad_pitt.json', 'a', encoding='utf-8') as f:
-            f.write(pageResults)
-
-        googleRequestInFile = True
-        print("appelle google fait")
-    else:
-        with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
-            pageResults = f.read()'''
-
-    dict = json.loads(pageResults)
-    jsonlist = dict['resultats']
-
-    # call module 2 TEXT URL TO URI TO RDF
-    start = time.time()
-    urllist = module2_partie1.getUrlsFromTexts(jsonlist)
-    print("Module 2 (spotlight) : {0} sec".format(time.time() - start))
+    # Module 1 - REQUEST -> URLs -> TEXT IN URLs
+    jsonlist = Module1_GoogleAndAlchemy(search)
+    
+    # Module 2.1 - TEXT IN URLs -> URIs
+    urllist = Module2_1_Spotlight(jsonlist)
 
     # What has been searched ?
-    flatUriList = []
-    for url in urllist:
-        for uri in urllist[url]:
-            flatUriList.append(uri)
-    mostReferencedUri = most_referenced.findMostReferenced(flatUriList, 0)
-    print("RETURNED : {0}".format(mostReferencedUri))
+    mostReferenced = FindMostReferenced(urllist, 0) # Unused here
 
-    start = time.time()
-    dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType, targetType)
-    print("Module 2 (dbpedia content) : {0} sec".format(time.time() - start))
+    # Module 2.2 - URIs -> DBPEDIA RDF GRAPHs
+    dbcontent = Module2_2_DBPedia(urllist, requestType, targetType)
 
     #Thread le module 3 et 4
     #Matrice renvoyer par le module 3
@@ -70,12 +43,43 @@ def DoSearch(search, seuil):
     for t in threads:
         t.join()
 
-    print("Total time : {0} sec".format(time.time() - totalStart))
-
     res = {}
     res["graph"] = module3_1.extractGraph(outMatrix, seuil)
     res["target"] = outTarget
     return res
+
+def Module1_GoogleAndAlchemy(searchKeyword):
+    """
+    Parameter : keywords to search for
+    Query to google API so find 10 first URLs
+    Send each link to Alchemy to extract text of page
+    Return : A list of {'url': 'http://...', 'text': 'page content...'}
+    """
+    start = time.time()
+    # subprocess.check_call(['./Module/module1.sh', search, '1'])
+    pageResults = module1.do_module1_job(searchKeyword)
+    dict = json.loads(pageResults)
+    jsonlist = dict['resultats']
+    print('Module 1 : {0} sec'.format(time.time() - start))
+
+    return jsonlist
+
+def Module2_1_Spotlight(jsonList):
+    """
+    Parameter : A list of {'url': 'http://...', 'text': 'page content...'}
+    Sends for each url, the text to DBPedia Spotlight
+    Return : A dictionnary where the key is a URL, and the value a list of URIs
+    """
+    start = time.time()
+    urlList = module2_partie1.getUrlsFromTexts(jsonList)
+    print("Module 2-1 (spotlight) : {0} sec".format(time.time() - start))
+    return urlList
+
+def Module2_2_DBPedia(urList, requestType, targetType):
+    start = time.time()
+    dbpediaContent = module2_partie2.getSparqlFromUrls(urList, requestType, targetType)
+    print("Module 2-2 (dbpedia content) : {0} sec".format(time.time() - start))
+    return dbpediaContent
 
 def Module3(grapheRDF, outMatrix):
     # call module 3 RDF TO RESULTS
@@ -93,6 +97,23 @@ def SearchLike(uri, searchType, ratio):
     rdf = module2_partie2.getInfoTargetFromUrls(uri, 0, 1)
     svector = createSimilarityVector(rdf, 'film', ratio)
     return svector
+
+def FindMostReferenced(urlDic, elementType):
+    """
+    Parameters :
+        urlDic : Dictionnary : key = a URL, value = list of URIs
+        elementType : 0 = movie, 1 = actor
+    Returns : a URI
+    """
+    start = time.time()
+    flatUriList = []
+    for url in urllist:
+        for uri in urllist[url]:
+            flatUriList.append(uri)
+    mostReferencedUri = most_referenced.findMostReferenced(flatUriList, 0)
+    print("Most referenced : {0}".format(mostReferencedUri))
+    print("Find most referenced : {0} sec".format(time.time() - start))
+    return mostReferencedUri
 
 if __name__ == '__main__':
     # redirige l'output sur le fichier
