@@ -10,6 +10,7 @@ import threading, json, sys
 requestType is a number to change the dbpedia query
 '''
 
+
 def getInfoFromUrl(url, targetType):
     # actors
     resultDict = {}
@@ -44,6 +45,7 @@ def doQuery(url, query):
     except:
         pass
     return []
+
 
 def resume(url):
     return "SELECT ?resume WHERE {{<{0}> dbo:abstract ?resume. FILTER (lang(?resume) = 'en')}}".format(url)
@@ -104,6 +106,8 @@ Returns a list de dictionnaire de type :
     resultDict['comment']
     resultDict['name']
 '''
+
+
 def getInfoTargetFromUrls(setUrls, targetType):
     # Copy urls in one set => unique elements
     listOfUrls = list(setUrls)
@@ -128,7 +132,6 @@ def getInfoTargetFromUrls(setUrls, targetType):
         t.join()
 
     return resDict
-
 
 # Example calls TEST
 # res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
