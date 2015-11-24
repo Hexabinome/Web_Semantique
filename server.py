@@ -14,13 +14,16 @@ def index():
 @app.route("/search", methods=['POST'])
 def search():
     search = request.form['search']
+    seuil = request.form['seuil']
 
     actor = " actor " if request.form.getlist('actors') == ['on'] else " "
     film = " movie " if request.form.getlist('films') == ['on'] else " "
-    print('you searched ' + search + actor + film)
-    search_res = main.DoSearch(search + actor + film)
-    print(str(search_res).encode('utf-8', 'ignore'))
-    return render_template('results.html', results=search_res, type=1)
+
+    print('you searched ' + search + actor + film + 'With ratio = ' + seuil)
+    search_res = main.DoSearch(search + actor + film, seuil)
+    print(str(search_res).encode('utf-8','ignore'))
+    return render_template('results.html', search=search_res, type=1)
+
 
 
 @app.route("/test")

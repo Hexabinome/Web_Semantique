@@ -111,36 +111,21 @@
         var dic = {};
 
 
-        {% if type == 0 %}//actors
-            //  TODO : remplir la matrice avec les bons parametres
-            {% for triplet, info in results["matrice"].items() %}
-                {% for cible in results["matrice"][triplet].items() %}
+	{% for source in search["graph"].items() %}
+      {% for target in search["graph"][source] %}
 
-                    dic['source'] = '{{triplet}}';
-                    dic['target'] = '{{results["matrice"][triplet][cible]}}';
-                    dic['type'] = 'coucou';
-                    matrice.push(dic);
-                    dic = {};
+        dic['source'] = '{{source}}';
+        dic['target'] = '{{target}}';
+        dic['type'] = 'coucou';
+        matrice.push( dic );
+        dic = {};
 
-                {% endfor %}
-            {% endfor %}
+       {% endfor %}
+    {% endfor %}
 
-        {% elif type == 1 %}//movies
-            {% for subject, info in results["matrice"].items() %}
-                {% for cible in info %}
 
-                    dic['source'] = '{{subject}}';
-                    dic['target'] = '{{cible}}';
-                    dic['type'] = 'coucou';
-                    matrice.push(dic);
-                    dic = {};
-
-                {% endfor %}
-            {% endfor %}
-        {% endif %}
-
-        d3Graphe(matrice, "#graphe");
-        // d3Graphe(links, "#graphe");
+    d3Graphe(matrice, "#graphe");
+    // d3Graphe(links, "#graphe");
 
     </script>
 {% endblock %}

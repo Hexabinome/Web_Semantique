@@ -4,7 +4,7 @@ from flask import json
 import sys, time
 
 
-def DoSearch(search):
+def DoSearch(search, seuil):
     googleRequestInFile = True
 
     # TODO change requestType
@@ -60,7 +60,8 @@ def DoSearch(search):
 
     res = {}
     res["userquery"] = search
-    res["matrice"] = matrix
+
+    res["graph"] = module3_1.extractGraph(matrix, seuil)
     res["target"] = target
     return res
 

@@ -80,21 +80,31 @@ def createSimilarityMatrix(dbPedia):
     # print(matriceIndice)
     return matriceIndice
 
+def extractGraph(matrice, seuil):
+    graph={}
+    
+    for urlCol in matrice:
+        graph[urlCol]=[]
+        for urlLigne in matrice[urlCol]:
+            if((matrice[urlCol][urlLigne] > seuil) or (matrice[urlCol][urlLigne] != 1)):
+                graph[urlCol].append(urlLigne)
+    
+    return graph
 
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
-        for idxCol in range(idxLigne, len(urlTab)):
-            urlLigne = urlTab[idxLigne]
-            urlCol = urlTab[idxCol]
-            if idxLigne == idxCol:
-                ratio = 1.0
-            else:
-                try:
-                    ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
-                        len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
-                except ZeroDivisionError:
-                    ratio = 0
+    for idxCol in range(idxLigne, len(urlTab)):
+        urlLigne = urlTab[idxLigne]
+        urlCol = urlTab[idxCol]
+        if idxLigne == idxCol:
+            ratio = 1.0
+        else:
+            try:
+                ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
+                    len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+            except ZeroDivisionError:
+                ratio = 0
 
-            resultMatrice[urlLigne][urlCol] = ratio
+        resultMatrice[urlLigne][urlCol] = ratio
 
 if __name__ == '__main__':
     createSimilarityMatrix()
