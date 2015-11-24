@@ -36,7 +36,7 @@ def getUrlsFromText(url, text, confidence, support):
             'User-Agent':
                 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
 
-        req = requests.post(urlSpotlight, data, headers=header)
+        req = requests.post(urlSpotlight, data, headers=header, timeout=3)
 
         # TODO can throw error. Check status code 200
         if req.status_code != 200:
@@ -71,8 +71,6 @@ Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts ret
 Requests for each text DBPedia spotlight
 Return : A dictionnary {url1: [foundUrl, foundUrl, ...], url2: [],...}
 '''
-
-
 def getUrlsFromTexts(jsonTexts):
     result = {}
     for dict in jsonTexts:
