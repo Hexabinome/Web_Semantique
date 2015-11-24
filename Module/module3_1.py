@@ -2,11 +2,25 @@
 # Import
 # ==========================
 import threading
-
+import json
 
 # ==========================
 # Déclaration variables
 # ==========================
+def createSimilarityVector(filmRDF, searchType):
+    similarityVector = {}
+    if searchType == "film":
+        with open('Data/films.json', 'r') as f:
+            allData = json.loads(f.read())
+    elif searchType == "actor":
+        with open('Data/actors.json', 'r') as f:
+            allData = json.loads(f.read())
+    else:
+        return {}
+    for uri in allData:
+        similarityVector[uri] = similarity(filmRDF, allData[uri])
+    return similarityVector
+
 
 def createSimilarityMatrix(dbPedia):
     sujetObjetsGraphes = {}
@@ -66,12 +80,16 @@ def createSimilarityMatrix(dbPedia):
     for idxCol in range(len(urlTab)):
         for idxLigne in range(idxCol+1, len(urlTab)):
             matriceIndice[urlTab[idxLigne]][urlTab[idxCol]] = matriceIndice[urlTab[idxCol]][urlTab[idxLigne]]
-    
+
     for idxCol in range(len(urlTab)):
         for idxLigne in range(len(urlTab)):
             print(urlTab[idxLigne],urlTab[idxCol],matriceIndice[urlTab[idxLigne]][urlTab[idxCol]])
 
     return matriceIndice
+
+def similarity(RDF1, RDF2):
+    common = [val for val in RDF1 if val in RDF2]
+    return len(common)/len(RDF2)
 
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
     for idxCol in range(idxLigne, len(urlTab)):
