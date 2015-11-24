@@ -22,7 +22,7 @@ def search():
     request_type = 0 if type == 'actors' else 1
     print('you searched ' + search_query + " " + type + 'With ratio = ' + seuil + "With filtre : " + request_filtre)
 
-    search_res = main.DoSearch(search_query + " " + type, float(seuil), request_filtre)
+    search_res = main.DoSearch(search_query + " " + type, float(seuil), request_type, request_filtre)
 
     search_res["search"] = search_query
 

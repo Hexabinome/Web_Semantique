@@ -1,16 +1,23 @@
 ﻿# -*- coding: utf-8 -*-
-from Module import module1, module2_partie1, module2_partie2, module3_1, module4, most_referenced
+from Module import module1, module2_partie1, module2_partie2, module3_1, module4, most_referenced, module5
 from flask import json
 import time, threading
 
-
-def DoSearch(search, seuil, request_filtre):
+'''
+search : la requête de l'utilisateur
+seuil : le seuil de similartié pour le graphe
+filtre : 0 : retrouvé quelque chose
+         1 : similaire
+type :  0 : actor
+        1 : film
+'''
+def DoSearch(search, seuil, type, filtre):
     # googleRequestInFile = True
 
-    # TODO change requestType
+    # 0: subject,
+    # 1: item,
+    # 2: subjectAndItem
     requestType = 2
-    # TODO change targetList
-    targetType = 0
 
     # Module 1 - REQUEST -> URLs -> TEXT IN URLs
     jsonlist = Module1_GoogleAndAlchemy(search)
@@ -22,9 +29,9 @@ def DoSearch(search, seuil, request_filtre):
     mostReferenced = FindMostReferenced(urllist, 0) # Unused here
 
     # Module 2.2 - URIs -> DBPEDIA RDF GRAPHs
-    dbcontent = Module2_2_DBPedia(urllist, requestType, targetType)
+    dbcontent = Module2_2_DBPedia(urllist, requestType, type)
 
-    #Thread le module 3 et 4
+    #Thread le module 3 et le 4 ou 5
     #Matrice renvoyer par le module 3
     outMatrix = []
     #Retour module 4
@@ -36,9 +43,17 @@ def DoSearch(search, seuil, request_filtre):
     threads.append(t)
     t.start()
 
-    t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], targetType, outTarget))
-    threads.append(t)
-    t.start()
+    #On souhaite retrouvé quelque chose : on va donc afficher les informations que l'on a obtenus
+    if filtre == 0:
+        t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], type, outTarget))
+        threads.append(t)
+        t.start()
+
+    #On souhaite afficher un graphe de similarité par rapport à la requête
+    elif filtre == 1:
+        t = threading.Thread(target=Module5, args=())
+        threads.append(t)
+        t.start()
 
     for t in threads:
         t.join()
@@ -91,6 +106,12 @@ def Module4(setURI, targetType, outTarget):
     # call module 4 RDF TO RESULTS
     start = time.time()
     outTarget = module4.getInfoTargetFromUrls(setURI, targetType)
+    print("Module 4 : {0} sec".format(time.time() - start))
+
+def Module5():
+    # call module 4 RDF TO RESULTS
+    start = time.time()
+    #outTarget = module.getInfoTargetFromUrls(setURI, targetType)
     print("Module 4 : {0} sec".format(time.time() - start))
 
 def SearchLike(uri, searchType, ratio):
