@@ -3,30 +3,32 @@ import re
 from urllib.parse import quote
 import json
 import os
+import pprint
 
 CACHE_DIRECTORY = 'cache'
 
 # Note : on est limité à 100 requêtes par jour donc à utiliser avec parcimonie
 # Le moteur de recherche est configuré pour privilégier les résultats qui sont liés au cinema
-GOOGLE_API_KEY_old = "AIzaSyB1Tqy8xyxFx7JqfsxNL2yyVrJdLxAMv14"
-GOOGLE_API_KEY = "AIzaSyDnspc_W9FF5TIWfpNXc8kENjRVdp-GpW0"
+GOOGLE_API_KEY_1 = "AIzaSyB1Tqy8xyxFx7JqfsxNL2yyVrJdLxAMv14"
+GOOGLE_API_KEY_2 = "AIzaSyDnspc_W9FF5TIWfpNXc8kENjRVdp-GpW0"
 GOOGLE_API_KEY_3 = "AIzaSyAURhklAaMmv8UG0cLBAMdVJqbVDUbU_s0"
+# Identifiant de notre moteur de recherche
 CX = "002939247705119679953:0kfwzt0baty"
 CX_TEST = "017576662512468239146:omuauf_lfve"
 
 ALCHEMY_API_KEY = "691b05b66974d5e2c59a2d3d3fa950e7b98d5fcd"
 
 
-def google_search(searchInput, start_page):
+def google_search(search_input, start_page):
     """
     Effectue une recherche sur google et renvoie les résultats sous forme de liens en json
-    :param searchInput: le texte à chercher
+    :param search_input: le texte à chercher
     :param start_page: index tu premier resultat
     :return: [{link : "http://..."},{link : "http://..."}]
     """
-    searchInput = quote(searchInput)
+    search_input = quote(search_input)
     request_url = "https://www.googleapis.com/customsearch/v1"
-    payload = {'key': GOOGLE_API_KEY, 'cx': CX, 'q': searchInput, 'start': start_page, 'item': 'items(link)'}
+    payload = {'key': GOOGLE_API_KEY_2, 'cx': CX, 'q': search_input, 'start': start_page, 'item': 'items(link)'}
     response = requests.get(request_url, params=payload)
     assert response.status_code == 200
     # pprint(respone.json()["items"])
