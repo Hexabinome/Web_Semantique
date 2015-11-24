@@ -26,9 +26,9 @@ def getSparqlFromUrl(url, requestType):
     # Try finding url dbpedia content in cache
     if os.path.isfile(cache_file):
         cache_content = False
-        with open(cache_file, 'r') as f:
+        with open(cache_file, 'r', encoding='utf-8') as f:
             try:
-                cache_content = ast.literal_eval(f.read())
+                cache_content = ast.literal_eval(ast.literal_eval(f.read()).decode('utf-8'))
                 if len(cache_content[url]) == 0:  # Not loaded correctly
                     cache_content = False
                 else:
@@ -152,12 +152,23 @@ def getSparqlFromUrls(urlDict, requestType, target):
                 out_dict[url][uri] = result_dict[uri]
 
     # print(targetDict)
+    movieUri = findMostReferencedMovie(result_dict)
 
     res = {}
     res['grapheRDF'] = out_dict
     res['listeTarget'] = targetDict
     return res
 
+'''
+Paramètre : dictionnaire {uri: grapheRDF, uri: ...}
+'''
+def findMostReferencedMovie(dict):
+    mostVisitedResources = {}
+    for uri in dict:
+        rdf = dict[uri]
+        for triplet in rdf:
+
+            pass
 
 if __name__ == '__main__':
     results = getSparqlFromUrls(
