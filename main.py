@@ -63,6 +63,7 @@ def DoSearch(search, seuil, type, filtre):
     res = {}
     res["graph"] = {}#module3_1.extractGraph(outMatrix, seuil)
     res["target"] = outTarget[0]
+
     return res
 
 def Module1_GoogleAndAlchemy(searchKeyword):

@@ -84,8 +84,8 @@ def actor(url):
 
 
 def film(url):
-    return "SELECT * WHERE {{ ?a rdf:type ?????. FILTER(?a = <{0}>) } UNION {?film dbo:starring ?acteur. FILTER(?acteur = <{0}>)}}".format(
-        url)
+    return "SELECT DISTINCT ?film WHERE {{ {{?film a dbo:Film. FILTER(?film= <{0}>).}} UNION {{ ?film a <http://schema.org/Movie>. FILTER(?film= <{0}>).}} }}"\
+        .format(url)
 
 
 def getSparqlFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target):
@@ -98,6 +98,13 @@ def getSparqlFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
 Launches a sparql query for each different uri
 Returns dictionnary of a dictionnaries like {url: {uri: dbPedia, uri: dbpedia, uri:dbPedia...}, url: {...}, ...}
+requestType :
+# 0: subject,
+    # 1: item,
+    # 2: subjectAndItem
+targetType :
+    0 : actor
+    1 : film
 '''
 def getSparqlFromUrls(urlDict, requestType, targetType):
     #key : url, valeur: graphe RDF
@@ -149,6 +156,7 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
     res = {}
     res['grapheRDF'] = out_dict
     res['setTarget'] = targetSet
+    print(targetSet)
     return res
 
 if __name__ == '__main__':

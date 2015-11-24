@@ -52,29 +52,31 @@
         </div>
         <ul>
             {% for film, info in results["target"].items() %}
-                <li>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h1 class="panel-title">{{ info["name"] }} - <a href="{{ info["director"] }}"> Director</a>
-                            </h1>
-                        </div>
-                        <div class="row panel-body">
-                            <div id="thumbnail" class='col-md-6'><img src="">
+                {% if results["search"] in info["alias"]%}
+                    <li>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">{{ info["alias"] }} - <a href='{{ info["director"] }}'> Director</a>
+                                </h1>
                             </div>
-                            <div class="col-md-6">
-                                <div id="birth" class="row">
-                                    <b>Budget :</b> {{ info["budget"] }}
+                            <div class="row panel-body">
+                                <div id="thumbnail" class='col-md-6'><img src="">
                                 </div>
-                                <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
-                                </div>
-                                <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
-                                </div>
-                                <div id="source" class='row'><b> sources :</b> {{ film }}
+                                <div class="col-md-6">
+                                    <div id="birth" class="row">
+                                        <b>Budget :</b> {{ info["budget"] }}
+                                    </div>
+                                    <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
+                                    </div>
+                                    <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
+                                    </div>
+                                    <div id="source" class='row'><b> sources :</b> {{ film }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% endif %}

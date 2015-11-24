@@ -25,7 +25,7 @@ def getInfoFromUrl(url, targetType):
         resultDict['budget'] = doQuery(url, budget(url))
         resultDict['director'] = doQuery(url, director(url))
         resultDict['comment'] = doQuery(url, comment(url))
-        resultDict['name'] = doQuery(url, name(url))
+        resultDict['alias'] = doQuery(url, name(url))
     return resultDict
 
 
@@ -88,7 +88,7 @@ def getInfoFromUrlThreaded(uris, resultDict, targetType):
 
 '''
 Paramètre : une liste d'uri identifié comme ressource voulue, et type voulu
-type :  0 : actor
+targetType :  0 : actor
         1 : film
 Returns a list de dictionnaire de type :
 # Actors
