@@ -32,7 +32,7 @@ def get_random_api_key():
     return random.choice(liste_api)
 
 
-def google_search(search_input, start_page):
+def google_search(searchInput, start_page):
     """
     Effectue une recherche sur google et renvoie les résultats sous forme de liens en json
     :param search_input: le texte à chercher
