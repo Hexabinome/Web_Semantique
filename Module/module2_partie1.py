@@ -76,10 +76,7 @@ Return : A dictionnary {url1: [foundUrl, foundUrl, ...], url2: [],...}
 def getUrlsFromTexts(jsonTexts):
     result = {}
     for dict in jsonTexts:
-        if not dict['text']:
-            jsonTexts.remove(dict) # Remove where text is empty
-        else:
-            result[dict['url']] = set()
+        result[dict['url']] = set()
     threads = []
     nbTexts = len(jsonTexts)
     # Launch threads
