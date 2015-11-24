@@ -4,7 +4,7 @@ from flask import json
 import time, threading
 
 
-def DoSearch(search, seuil):
+def DoSearch(search, seuil, request_filtre):
     # googleRequestInFile = True
 
     # TODO change requestType
@@ -95,8 +95,8 @@ def Module4(setURI, targetType, outTarget):
 
 def SearchLike(uri, searchType, ratio):
     rdf = module2_partie2.getInfoTargetFromUrls(uri, 0, 1)
-    svector = createSimilarityVector(rdf, 'film', ratio)
-    return svector
+    #svector = createSimilarityVector(rdf, 'film', ratio)
+    #return svector
 
 def FindMostReferenced(urlDic, elementType):
     """

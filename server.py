@@ -15,12 +15,17 @@ def index():
 def search():
     search_query = request.form['search']
     seuil = request.form['seuil']
-    filtre = request.form['filtre']  # Récuperation de la valeur du radio button
+    type = request.form['type']  # Récuperation de la valeur du radio button
+    filtre = request.form['filtre']
 
-    request_type = 0 if filtre == 'actors' else 1
-    print('you searched ' + search_query + " " + filtre + 'With ratio = ' + seuil)
-    search_res = main.DoSearch(search_query + " " + filtre, float(seuil))
+    request_filtre = 0 if type == 'memento' else 1
+    request_type = 0 if type == 'actors' else 1
+    print('you searched ' + search_query + " " + type + 'With ratio = ' + seuil + "With filtre : " + request_filtre)
+
+    search_res = main.DoSearch(search_query + " " + type, float(seuil), request_filtre)
+
     search_res["search"] = search_query
+
     print(str(search_res).encode('utf-8', 'ignore'))
     return render_template('results.html', results=search_res, type=request_type)
 
