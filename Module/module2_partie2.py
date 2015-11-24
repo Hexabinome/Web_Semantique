@@ -2,8 +2,10 @@
 # ------------------------------------------
 #           get_sparql_graph
 # ------------------------------------------
-import threading, json, os, ast
-import urllib
+import threading
+import os
+import ast
+
 from Module.sparql_helper import runQuery_returnBindings
 
 CACHE_DIRECTORY = 'cache/dbpedia'
@@ -12,12 +14,14 @@ CACHE_DIRECTORY = 'cache/dbpedia'
 '''
 requestType is a number to change the dbpedia query
 '''
-def getSparqlFromUrl(url, requestType):
+
+
+def getRdfFromUrl(url, requestType):
     # ATTENTION. Si on modifie les requêtes associées aux indices, il faut supprimer (à la main) les fichiers en cache !!!
     options = {0: subject,
                1: item,
                2: subjectAndItem
-            }
+               }
 
     cache_file = '{0}/{1}_{2}.txt'.format(CACHE_DIRECTORY,
                                           url.replace('http://', '').replace('/', '_').replace(':', '_'), requestType)
@@ -38,7 +42,7 @@ def getSparqlFromUrl(url, requestType):
         if not cache_content:
             os.remove(cache_file)
             # print("Error cache loading {0}".format(cache_file))
-            return getSparqlFromUrl(url, requestType)
+            return getRdfFromUrl(url, requestType)
     # Else, query dbpedia
     else:
         query = options[requestType](url)
@@ -57,10 +61,11 @@ def getSparqlFromUrl(url, requestType):
 
     return cache_content
 
+
 def testIsTargetType(url, target):
     options = {0: actor,
                1: film
-            }
+               }
     query = options[target](url)
     return runQuery_returnBindings(query)
 
@@ -88,30 +93,33 @@ def film(url):
         url)
 
 
-def getSparqlFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target):
+def getRdfFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target):
     for uri in uris:
-        #resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
+        # resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
         if testIsTargetType(uri, target) != []:
             targetSet.add(uri)
+
 
 '''
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
 Launches a sparql query for each different uri
 Returns dictionnary of a dictionnaries like {url: {uri: dbPedia, uri: dbpedia, uri:dbPedia...}, url: {...}, ...}
 '''
-def getSparqlFromUrls(urlDict, requestType, targetType):
-    #key : url, valeur: graphe RDF
+
+
+def getRdfFromUrls(urlDict, requestType, targetType):
+    # key : url, valeur: graphe RDF
     out_dict = {}
     # Contient toutes les URIs
     uriSet = set()
-    #Dictionnaire temporaire pour remplire ensuite out_dict
+    # Dictionnaire temporaire pour remplire ensuite out_dict
     result_dict = {}
 
-    #Contient tous les acteurs ou films
+    # Contient tous les acteurs ou films
     targetSet = set()
 
-    #créer des entrées dans les dictionnaire pour les toutes les uri
-    #TODO Utile ?
+    # créer des entrées dans les dictionnaire pour les toutes les uri
+    # TODO Utile ?
     for url in urlDict:
         out_dict[url] = {}
         for uri in urlDict[url]:
@@ -125,15 +133,15 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
     nbURI = len(uriSet)
     nbThreads = min(4, nbURI)
     # Créer et lance les thread, qui vont appellé la méthode getSparqlFromUrlThreaded.
-    #Chaque thread a un bout de la liste de toutes les url à traiter et les dictionnaires en entrée / sorties
+    # Chaque thread a un bout de la liste de toutes les url à traiter et les dictionnaires en entrée / sorties
     for x in range(nbThreads):
-        t = threading.Thread(target=getSparqlFromUrlThreaded,
-            args=(
-                list(uriSet)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
-                result_dict,
-                targetSet,
-                requestType,
-                targetType))
+        t = threading.Thread(target=getRdfFromUrlThreaded,
+                             args=(
+                                 list(uriSet)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
+                                 result_dict,
+                                 targetSet,
+                                 requestType,
+                                 targetType))
         t.start()
         threads.append(t)
     # Wait for threads
@@ -151,8 +159,9 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
     res['setTarget'] = targetSet
     return res
 
+
 if __name__ == '__main__':
-    results = getSparqlFromUrls(
+    results = getRdfFromUrls(
         {'http://osef.org': ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie'],
          'http://test.fr': ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Brad_Davis_(actor)',
                             'http://dbpedia.org/resource/Brad_Pitt']}

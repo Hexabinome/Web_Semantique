@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from Module import text_from_request, url_from_text, rdf_from_url, similarity, information, most_referenced, similar_result
+from Module import module1, url_from_text, module2_partie2, similarity, module4, most_referenced, similar_result
 from flask import json
 import time, threading
 
@@ -77,7 +77,7 @@ def Module1_GoogleAndAlchemy(searchKeyword):
     """
     start = time.time()
     # subprocess.check_call(['./Module/module1.sh', search, '1'])
-    pageResults = text_from_request.do_module1_job(searchKeyword)
+    pageResults = module1.do_module1_job(searchKeyword)
     dict = json.loads(pageResults)
     jsonlist = dict['resultats']
     print('Module 1 : {0} sec'.format(time.time() - start))
@@ -99,7 +99,7 @@ def Module2_1_Spotlight(jsonList):
 
 def Module2_2_DBPedia(urList, requestType, targetType):
     start = time.time()
-    dbpediaContent = rdf_from_url.getRdfFromUrls(urList, requestType, targetType)
+    dbpediaContent = module2_partie2.getRdfFromUrls(urList, requestType, targetType)
     print("Module 2-2 (dbpedia content) : {0} sec".format(time.time() - start))
     return dbpediaContent
 
@@ -114,7 +114,7 @@ def Module3(grapheRDF, outMatrix):
 def Module4(setURI, targetType, outTarget):
     # call module 4 RDF TO RESULTS
     start = time.time()
-    outTarget[0] = information.getInfoTargetFromUrls(setURI, targetType)
+    outTarget[0] = module4.getInfoTargetFromUrls(setURI, targetType)
     print("Module 4 : {0} sec".format(time.time() - start))
 
 
