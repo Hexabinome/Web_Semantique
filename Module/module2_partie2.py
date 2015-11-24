@@ -111,8 +111,6 @@ Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
 Launches a sparql query for each different uri
 Returns dictionnary of a dictionnaries like {url: {uri: dbPedia, uri: dbpedia, uri:dbPedia...}, url: {...}, ...}
 '''
-
-
 def getSparqlFromUrls(urlDict, requestType, target):
     out_dict = {}
     uriSet = set()  # Copy URIs in one set => unique elements
