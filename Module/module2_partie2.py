@@ -4,6 +4,7 @@
 # ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
 import threading, json, os, ast
+import urllib
 
 CACHE_DIRECTORY = 'cache/dbpedia'
 
@@ -67,7 +68,7 @@ def doQuery(url, query):
     try:
         jsonResponse = sparql.query().convert()
         rdfTripletList = jsonResponse['results']['bindings']
-    except URLError:
+    except urllib.error.URLError:
         rdfTripletList = [] # Timeout
     return json.loads(json.dumps(rdfTripletList))
 
