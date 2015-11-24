@@ -36,25 +36,33 @@ def getUrlsFromText(url, text, confidence, support):
             'User-Agent':
                 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'}
 
-        req = requests.post(urlSpotlight, data, headers=header, timeout=3)
+        try:
+            req = requests.post(urlSpotlight, data, headers=header, timeout=3)
+        except:
+            # timeout exection
+            return []
 
         # TODO can throw error. Check status code 200
         if req.status_code != 200:
-            raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
+            # raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
+            return []
+
         jsonResponse = json.loads(req.text)
         urlList = []
-        for resource in jsonResponse[u'Resources']:
-            urlList.append(resource[u'@URI'])
-        # Save in cache
-        if not os.path.exists(CACHE_DIRECTORY):
-            os.makedirs(CACHE_DIRECTORY)
         try:
-            with open(cache_file, 'w') as f:
-                f.write('\n'.join(urlList))
+            for resource in jsonResponse[u'Resources']:
+                urlList.append(resource[u'@URI'])
+            # Save in cache
+            if not os.path.exists(CACHE_DIRECTORY):
+                os.makedirs(CACHE_DIRECTORY)
+            try:
+                with open(cache_file, 'w') as f:
+                    f.write('\n'.join(urlList))
+            except:
+                #print('Cache writing error (spotlight) {0}'.format(cache_file))
+                pass
         except:
-            #print('Cache writing error (spotlight) {0}'.format(cache_file))
             pass
-
     return urlList
 
 
@@ -63,7 +71,8 @@ def getUrlsFromTextThreaded(texts, result):
         if text['text'] != "":
         # TODO : make confidence & support changeable
             for uri in getUrlsFromText(text['url'], text['text'], 0.2, 20):
-                result[text['url']].add(uri)
+                if uri != []:
+                    result[text['url']].add(uri)
 
 
 '''

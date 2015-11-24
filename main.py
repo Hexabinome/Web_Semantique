@@ -22,7 +22,7 @@ def DoSearch(search, seuil):
     print('Module 1 : {0} sec'.format(time.time() - start))
 
     if (googleRequestInFile == False):
-        with open('Module/output/alchemy_brad_pitt.json', 'a', encoding='utf-8') as f:
+        with open('Module/output/alchemy_brad_pitt.json', 'w', encoding='utf-8') as f:
             f.write(pageResults)
         googleRequestInFile = True
         print("appelle google fait")
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("Brad")  # term)[1]))
+    res = DoSearch("Brad actor", 0.3)  # term)[1]))
     for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():
