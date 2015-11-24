@@ -16,9 +16,10 @@
                     <input id="searchInput" class="form-control" placeholder="Search..." required type=text
                            name=search>
                 </div>
+
                 <div class="form-group">
                     <input id="seuilInput" class="form-control" placeholder="Ratio" required type=text
-							value=0.8 name=seuil>
+                           value=0.8 name=seuil>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Search">
@@ -26,16 +27,23 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                            <input name="actors" type="checkbox"> Actors
-                        </label>
+
+                    <div class="col-md-4">
+                        <div class="radio radio-primary">
+                            <label>
+                                <input checked value="actors" name="filtre" type="radio"> Actors
+                            </label>
+                        </div>
                     </div>
-                    <div class="checkbox">
-                        <label>
-                            <input name="films" type="checkbox"> Films
-                        </label>
+
+                    <div class="col-md-4">
+                        <div class="radio radio-primary">
+                            <label>
+                                <input value="films" name="filtre" type="radio"> Films
+                            </label>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </form>

@@ -1,18 +1,22 @@
 {% extends "base.html" %}
-{% block title %} - Results {% endblock %}
+{% block title %} - Results for '{{ results["search"] }}' {% endblock %}
 {% block content %}
-    <h1>Results for</h1>
-    {% if type == 0 %}
+    <h1>Results for '{{ results["search"] }}'</h1>
+    <div class="row">
         <div id="graphe">
         </div>
+    </div>
+
+    {% if type == 0 %}
         <div>
             <h1>Acteurs</h1>
-
             <div id="acteurs">
             </div>
         </div>
         <ul>
+
             {% for actor, info in results["target"].items() %}
+                <h1>Mes acteurs</h1>
                 <li>
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -40,8 +44,6 @@
             {% endfor %}
         </ul>
     {% elif type == 1 %}
-        <div id="graphe">
-        </div>
         <div>
             <h1>Films</h1>
 
@@ -111,8 +113,8 @@
         var dic = {};
 
 
-	{% for source in search["graph"].items() %}
-      {% for target in search["graph"][source] %}
+	{% for source in results["graph"].items() %}
+      {% for target in results["graph"][source] %}
 
         dic['source'] = '{{source}}';
         dic['target'] = '{{target}}';
@@ -124,8 +126,8 @@
     {% endfor %}
 
 
+
     d3Graphe(matrice, "#graphe");
     // d3Graphe(links, "#graphe");
-
     </script>
 {% endblock %}

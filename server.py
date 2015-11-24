@@ -13,17 +13,16 @@ def index():
 
 @app.route("/search", methods=['POST'])
 def search():
-    search = request.form['search']
+    search_query = request.form['search']
     seuil = request.form['seuil']
+    filtre = request.form['filtre']  # Récuperation de la valeur du radio button
 
-    actor = " actor " if request.form.getlist('actors') == ['on'] else " "
-    film = " movie " if request.form.getlist('films') == ['on'] else " "
-
-    print('you searched ' + search + actor + film + 'With ratio = ' + seuil)
-    search_res = main.DoSearch(search + actor + film, seuil)
-    print(str(search_res).encode('utf-8','ignore'))
-    return render_template('results.html', search=search_res, type=1)
-
+    request_type = 0 if filtre == 'actors' else 1
+    print('you searched ' + search_query + " " + filtre + 'With ratio = ' + seuil)
+    search_res = main.DoSearch(search_query + " " + filtre, float(seuil))
+    search_res["search"] = search_query
+    print(str(search_res).encode('utf-8', 'ignore'))
+    return render_template('results.html', results=search_res, type=request_type)
 
 
 @app.route("/test")
