@@ -83,8 +83,9 @@ def Module4(setURI, targetType, outTarget):
     print("Module 4 : {0} sec".format(time.time() - start))
 
 def SearchLike(uri, searchType, ratio):
-    rdf = module2_partie2.getInfoTargetFromUrls(uri, 0, 1)
-    svector = createSimilarityVector(rdf, 'film', ratio)
+    rdf = module2_partie2.getSparqlFromUrl(uri, 0)
+    print(str(rdf).encode('utf-8','ignore'))
+    svector = module3_1.createSimilarityVector(rdf, 'film', ratio)
     return svector
 
 if __name__ == '__main__':

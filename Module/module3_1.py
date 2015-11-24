@@ -17,10 +17,11 @@ def createSimilarityVector(filmRDF, searchType, ratio):
             allData = json.loads(f.read())
     else:
         return {}
+    print(allData)
     for uri in allData:
         actualRatio = similarity(filmRDF, allData[uri])
         if actualRatio >= ratio:
-            similarityVector[uri]
+            similarityVector[uri] = actualRatio
     return similarityVector
 
 
@@ -90,7 +91,7 @@ def createSimilarityMatrix(dbPedia):
     return matriceIndice
 
 def similarity(RDF1, RDF2):
-    common = [val for val in RDF1 if val in RDF2]
+    common = [val['predicat']['value'] for val in RDF1 if val['predicat']['value'] in RDF2]
     return len(common)/len(RDF2)
 
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
