@@ -33,12 +33,16 @@ def doQuery(url, query):
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
 
-    jsonResponse = sparql.query().convert()
-    rdfTripletList = jsonResponse['results']['bindings'][0].popitem()[1]['value']
-    if isinstance(rdfTripletList, str):
-        rdfTripletList = rdfTripletList.replace('"', "'")
-    return json.loads(json.dumps(rdfTripletList))
-
+    try:
+        jsonResponse = sparql.query().convert()
+        if jsonResponse['results']['bindings'] != []:
+            rdfTripletList = jsonResponse['results']['bindings'][0].popitem()[1]['value']
+            if isinstance(rdfTripletList, str):
+                rdfTripletList = rdfTripletList.replace('"', "'")
+            return json.loads(json.dumps(rdfTripletList))
+    except:
+        pass
+    return []
 
 def resume(url):
     return "SELECT ?resume WHERE {{<{0}> dbo:abstract ?resume. FILTER (lang(?resume) = 'en')}}".format(url)
@@ -88,8 +92,10 @@ Returns a list (of pages) of lists of jsonDBPediaContent
 '''
 
 
-def getInfoTargetFromUrls(listOfUrls, targetType):
+def getInfoTargetFromUrls(setUrls, targetType):
     # Copy urls in one set => unique elements
+    listOfUrls = list(setUrls)
+
     resDict = {}
 
     # storing threads

@@ -1,7 +1,7 @@
 # import subprocess
 from Module import module1, module2_partie1, module2_partie2, module3_1, module4
 from flask import json
-import sys, time
+import time, threading
 
 
 def DoSearch(search, seuil):
@@ -42,27 +42,43 @@ def DoSearch(search, seuil):
     dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType, targetType)
     print("Module 2 (dbpedia content) : {0} sec".format(time.time() - start))
 
-    # call module 3 RDF TO RESULTS
-    start = time.time()
-    matrix = module3_1.createSimilarityMatrix(dbcontent['grapheRDF'])
-    print("Module 3 : {0} sec".format(time.time() - start))
+    #Thread le module 3 et 4
+    #Matrice renvoyer par le module 3
+    outMatrix = []
+    #Retour module 4
+    outTarget = []
 
-    # call module 4 RDF TO RESULTS
-    start = time.time()
-    target = module4.getInfoTargetFromUrls(
-        # ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie',
-        # 'http://dbpedia.org/resource/Brad_Davis_(actor)'],0)
-        ['http://dbpedia.org/resource/Interstellar_(film)',
-         'http://dbpedia.org/resource/Pulp_Fiction'], 1)
-    print("Module 4 : {0} sec".format(time.time() - start))
+    threads = []
+
+    t = threading.Thread(target=Module3, args=(dbcontent['grapheRDF'], outMatrix))
+    threads.append(t)
+    t.start()
+
+    t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], targetType, outTarget))
+    threads.append(t)
+    t.start()
+
+    for t in threads:
+        t.join()
 
     print("Total time : {0} sec".format(time.time() - totalStart))
 
     res = {}
-    res["graph"] = module3_1.extractGraph(matrix, seuil)
-    res["target"] = target
+    res["graph"] = module3_1.extractGraph(outMatrix, seuil)
+    res["target"] = outTarget
     return res
 
+def Module3(grapheRDF, outMatrix):
+    # call module 3 RDF TO RESULTS
+    start = time.time()
+    outMatrix = module3_1.createSimilarityMatrix(grapheRDF)
+    print("Module 3 : {0} sec".format(time.time() - start))
+
+def Module4(setURI, targetType, outTarget):
+    # call module 4 RDF TO RESULTS
+    start = time.time()
+    outTarget = module4.getInfoTargetFromUrls(setURI, targetType)
+    print("Module 4 : {0} sec".format(time.time() - start))
 
 if __name__ == '__main__':
     # redirige l'output sur le fichier

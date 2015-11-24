@@ -1,12 +1,6 @@
 ﻿# ==========================
 # Import
 # ==========================
-import os
-import json
-import pprint
-import codecs
-import sys
-import time
 import threading
 
 
@@ -76,20 +70,8 @@ def createSimilarityMatrix(dbPedia):
     for idxCol in range(len(urlTab)):
         for idxLigne in range(len(urlTab)):
             print(urlTab[idxLigne],urlTab[idxCol],matriceIndice[urlTab[idxLigne]][urlTab[idxCol]])
-			
-    # print(matriceIndice)
-    return matriceIndice
 
-def extractGraph(matrice, seuil):
-    graph={}
-    
-    for urlCol in matrice:
-        graph[urlCol]=[]
-        for urlLigne in matrice[urlCol]:
-            if((matrice[urlCol][urlLigne] > seuil) or (matrice[urlCol][urlLigne] != 1)):
-                graph[urlCol].append(urlLigne)
-    
-    return graph
+    return matriceIndice
 
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
     for idxCol in range(idxLigne, len(urlTab)):
@@ -106,5 +88,16 @@ def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
 
         resultMatrice[urlLigne][urlCol] = ratio
 
+
+def extractGraph(matrice, seuil):
+    graph={}
+
+    for urlCol in matrice:
+        graph[urlCol]=[]
+        for urlLigne in matrice[urlCol]:
+            if((matrice[urlCol][urlLigne] > seuil) or (matrice[urlCol][urlLigne] != 1)):
+                graph[urlCol].append(urlLigne)
+
+    return graph
 if __name__ == '__main__':
     createSimilarityMatrix()

@@ -162,7 +162,7 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
 
     res = {}
     res['grapheRDF'] = out_dict
-    res['listeTarget'] = targetSet
+    res['setTarget'] = targetSet
     return res
 
 
