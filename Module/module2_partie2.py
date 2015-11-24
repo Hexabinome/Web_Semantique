@@ -67,7 +67,7 @@ def doQuery(url, query):
     try:
         jsonResponse = sparql.query().convert()
         rdfTripletList = jsonResponse['results']['bindings']
-    except:
+    except URLError:
         rdfTripletList = [] # Timeout
     return json.loads(json.dumps(rdfTripletList))
 
