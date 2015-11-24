@@ -54,24 +54,34 @@ def createSimilarityMatrix(dbPedia):
     # ==========================
     matriceIndice = {}
     threads = []
+    urlTab = []
+    for urlLigne in sujetObjetsGraphes:
+        urlTab.append(urlLigne)
 
     # Calcul d'une moitié de la matrice, 1 thread par URL
-    for urlLigne in sujetObjetsGraphes:
-        matriceIndice[urlLigne] = {}
-        t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlLigne, sujetObjetsGraphes))
+    for idxLigne in range(len(urlTab)):
+        matriceIndice[urlTab[idxLigne]] = {}
+        t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlTab, idxLigne, sujetObjetsGraphes))
         threads.append(t)
         t.start()
 
     for t in threads:
         t.join()
 
+    # Copy results of matrix
+    for idxCol in range(len(urlTab)):
+        for idxLigne in range(idxCol+1, len(urlTab)):
+            matriceIndice[urlTab[idxLigne]][urlTab[idxCol]] = matriceIndice[urlTab[idxCol]][urlTab[idxLigne]]
+
     # print(matriceIndice)
     return matriceIndice
 
 
-def ratioCalcThread(resultMatrice, urlLigne, sujetObjetsGraphes):
-        for urlCol in sujetObjetsGraphes:
-            if urlLigne == urlCol:
+def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
+        for idxCol in range(idxLigne, len(urlTab)):
+            urlLigne = urlTab[idxLigne]
+            urlCol = urlTab[idxCol]
+            if idxLigne == idxCol:
                 ratio = 1.0
             else:
                 ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
