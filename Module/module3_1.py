@@ -84,8 +84,12 @@ def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
             if idxLigne == idxCol:
                 ratio = 1.0
             else:
-                ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
-                    len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+                try:
+                    ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
+                        len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
+                except ZeroDivisionError:
+                    ratio = 0
+
             resultMatrice[urlLigne][urlCol] = ratio
 
 if __name__ == '__main__':

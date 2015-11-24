@@ -119,7 +119,7 @@ def getSparqlFromUrls(urlDict, requestType, target):
     for url in urlDict:
         out_dict[url] = {}
         for uri in urlDict[url]:
-            out_dict[url][uri] = None
+            #out_dict[url][uri] = None
             uriSet.add(uri)
             result_dict[uri] = None
 
@@ -142,7 +142,8 @@ def getSparqlFromUrls(urlDict, requestType, target):
     # Fill out dict
     for url in out_dict:
         for uri in out_dict[url]:
-            out_dict[url][uri] = result_dict[uri]
+            if result_dict[uri]:
+                out_dict[url][uri] = result_dict[uri]
 
     # print(targetDict)
 
