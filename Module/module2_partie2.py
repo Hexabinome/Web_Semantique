@@ -29,21 +29,22 @@ def getSparqlFromUrl(url, requestType):
         with open(cache_file, 'r', encoding='utf-8') as f:
             try:
                 cache_content = ast.literal_eval(ast.literal_eval(f.read()).decode('utf-8'))
-                if len(cache_content[url]) == 0:  # Not loaded correctly
+                if len(cache_content) == 0:  # Not loaded correctly
                     cache_content = False
                 else:
-                    #print("Loaded {0} from cache".format(cache_file))
+                    # print("Loaded {0} from cache".format(cache_file))
                     pass
             except:
                 pass
         # If the cache_content is still false, remove existing invalid cache file + send request
         if not cache_content:
             os.remove(cache_file)
-            #print("Error cache loading {0}".format(cache_file))
+            # print("Error cache loading {0}".format(cache_file))
             return getSparqlFromUrl(url, requestType)
     # Else, query dbpedia
     else:
         query = options[requestType](url)
+        # print("Query dbpedia {0}".format(url))
         cache_content = doQuery(url, query)
 
         # Save in cache
@@ -53,16 +54,16 @@ def getSparqlFromUrl(url, requestType):
             with open(cache_file, 'w') as f:
                 f.write(str(str(cache_content).encode('utf-8')))
         except:
-            #print('Cache writing error {0}'.format(cache_file))
+            # print('Cache writing error {0}'.format(cache_file))
             pass
 
     return cache_content
 
 
 def doQuery(url, query):
-    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+    sparql = SPARQLWrapper("http://live.dbpedia.org/sparql")
     sparql.setQuery(query)
-    sparql.setTimeout(2)
+    sparql.setTimeout(3)
     sparql.setReturnFormat(JSON)
 
     try:
@@ -144,8 +145,11 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
     #Chaque thread a un bout de la liste de toutes les url à traiter et les dictionnaires en entrée / sorties
     for x in range(nbThreads):
         t = threading.Thread(target=getSparqlFromUrlThreaded, args=(
-            list(uriSet)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)], result_dict, targetSet,
-            requestType, targetType))
+                list(uriSet)[int(x * size / nbThreads):int((x + 1) * size / nbThreads)],
+                result_dict,
+                targetDict,
+                requestType,
+                target))
         t.start()
         threads.append(t)
     # Wait for threads
@@ -158,24 +162,10 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
             if uri in result_dict:
                 out_dict[url][uri] = result_dict[uri]
 
-    # print(targetDict)
-    movieUri = findMostReferencedMovie(result_dict)
-
     res = {}
     res['grapheRDF'] = out_dict
-    res['setTarget'] = targetSet
-    return res
-
-'''
-Paramètre : dictionnaire {uri: grapheRDF, uri: ...}
-'''
-def findMostReferencedMovie(dict):
-    mostVisitedResources = {}
-    for uri in dict:
-        rdf = dict[uri]
-        for triplet in rdf:
-
-            pass
+    res['listeTarget'] = targetDict
+    return res, movieUri
 
 if __name__ == '__main__':
     results = getSparqlFromUrls(

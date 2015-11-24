@@ -1,11 +1,11 @@
-# import subprocess
-from Module import module1, module2_partie1, module2_partie2, module3_1, module4
+﻿# -*- coding: utf-8 -*-
+from Module import module1, module2_partie1, module2_partie2, module3_1, module4, most_referenced
 from flask import json
 import time, threading
 
 
 def DoSearch(search, seuil):
-    googleRequestInFile = True
+    # googleRequestInFile = True
 
     # TODO change requestType
     requestType = 2
@@ -17,12 +17,11 @@ def DoSearch(search, seuil):
     start = time.time()
     totalStart = time.time()
     # subprocess.check_call(['./Module/module1.sh', search, '1'])
-    if googleRequestInFile == False:
-        pageResults = module1.do_module1_job(search)
+    #if (googleRequestInFile == False):
+    pageResults = module1.do_module1_job(search)
     print('Module 1 : {0} sec'.format(time.time() - start))
 
-
-    if googleRequestInFile == False:
+    '''if (googleRequestInFile == False):
         with open('Module/output/alchemy_brad_pitt.json', 'a', encoding='utf-8') as f:
             f.write(pageResults)
 
@@ -30,7 +29,7 @@ def DoSearch(search, seuil):
         print("appelle google fait")
     else:
         with open('Module/output/alchemy_brad_pitt.json', 'r', encoding='utf-8') as f:
-            pageResults = f.read()
+            pageResults = f.read()'''
 
     dict = json.loads(pageResults)
     jsonlist = dict['resultats']
@@ -38,8 +37,16 @@ def DoSearch(search, seuil):
     # call module 2 TEXT URL TO URI TO RDF
     start = time.time()
     urllist = module2_partie1.getUrlsFromTexts(jsonlist)
-
     print("Module 2 (spotlight) : {0} sec".format(time.time() - start))
+
+    # What has been searched ?
+    flatUriList = []
+    for url in urllist:
+        for uri in urllist[url]:
+            flatUriList.append(uri)
+    mostReferencedUri = most_referenced.findMostReferenced(flatUriList, 0)
+    print("RETURNED : {0}".format(mostReferencedUri))
+
     start = time.time()
     dbcontent = module2_partie2.getSparqlFromUrls(urllist, requestType, targetType)
     print("Module 2 (dbpedia content) : {0} sec".format(time.time() - start))

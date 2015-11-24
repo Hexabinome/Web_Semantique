@@ -101,7 +101,6 @@ def getUrlsFromTexts(jsonTexts):
 
     return result
 
-
 if __name__ == '__main__':
     res = getUrlsFromTexts(
         [{'text': "Berlin Germany beer Warsaw", 'url': 'http://dbpedia.osef.org'}, {'url': 'coucou', 'text': """President Obama called Wednesday on Congress to extend a tax break
