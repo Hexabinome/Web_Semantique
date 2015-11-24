@@ -16,6 +16,8 @@ CACHE_DIRECTORY_GOOGLE = 'cache/google'
 GOOGLE_API_KEY_1 = "AIzaSyB1Tqy8xyxFx7JqfsxNL2yyVrJdLxAMv14"  # Momo
 GOOGLE_API_KEY_2 = "AIzaSyAu37WsyKygVkMwMJ8OFP4NMtP4j9Afys8"  # Momo
 GOOGLE_API_KEY_3 = "AIzaSyAURhklAaMmv8UG0cLBAMdVJqbVDUbU_s0"  # Robin
+GOOGLE_API_KEY_4 = "AIzaSyAcF9vr-X9VdKYau97nbN3PGsqeZrKqT7w"  # Robin
+
 # Identifiant de notre moteur de recherche
 CX = "002939247705119679953:0kfwzt0baty"
 CX_TEST = "017576662512468239146:omuauf_lfve"
@@ -28,7 +30,7 @@ def get_random_api_key():
     Renvoie une clé au hasard parmi l'ensemble des clés à notre disposition
     :return:
     """
-    liste_api = [GOOGLE_API_KEY_1, GOOGLE_API_KEY_2, GOOGLE_API_KEY_3]
+    liste_api = [GOOGLE_API_KEY_1, GOOGLE_API_KEY_2, GOOGLE_API_KEY_3,GOOGLE_API_KEY_4]
     return random.choice(liste_api)
 
 
@@ -48,7 +50,7 @@ def google_search(searchInput, start_page):
         with open(cache_file, 'r') as f:
             try:
                 resp = literal_eval(f.read())
-                #print("Loaded {0} from cache".format(cache_file))
+                # print("Loaded {0} from cache".format(cache_file))
             except:
                 pass
         # After loading, if didn't work or file was empty, delete cache and send request as usual

@@ -17,13 +17,15 @@ def DoSearch(search, seuil):
     start = time.time()
     totalStart = time.time()
     # subprocess.check_call(['./Module/module1.sh', search, '1'])
-    if (googleRequestInFile == False):
+    if googleRequestInFile == False:
         pageResults = module1.do_module1_job(search)
     print('Module 1 : {0} sec'.format(time.time() - start))
 
-    if (googleRequestInFile == False):
-        with open('Module/output/alchemy_brad_pitt.json', 'w', encoding='utf-8') as f:
+
+    if googleRequestInFile == False:
+        with open('Module/output/alchemy_brad_pitt.json', 'a', encoding='utf-8') as f:
             f.write(pageResults)
+
         googleRequestInFile = True
         print("appelle google fait")
     else:
