@@ -68,19 +68,17 @@ def doQuery(url, query):
     try:
         jsonResponse = sparql.query().convert()
         rdfTripletList = jsonResponse['results']['bindings']
-    except urllib.error.URLError:
+    except:
         rdfTripletList = [] # Timeout
     return json.loads(json.dumps(rdfTripletList))
 
 
 def testIsTargetType(url, target):
-    return []
-    '''
     options = {0: actor,
                1: film
             }
     query = options[target](url)
-    return doQuery(url, query)[url]'''
+    return doQuery(url, query)
 
 
 def subject(url):
