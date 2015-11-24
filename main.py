@@ -82,6 +82,11 @@ def Module4(setURI, targetType, outTarget):
     outTarget = module4.getInfoTargetFromUrls(setURI, targetType)
     print("Module 4 : {0} sec".format(time.time() - start))
 
+def SearchLike(uri, searchType, ratio):
+    rdf = module2_partie2.getInfoTargetFromUrls(uri, 0, 1)
+    svector = createSimilarityVector(rdf, 'film', ratio)
+    return svector
+
 if __name__ == '__main__':
     # redirige l'output sur le fichier
     # sys.stdout = open('console.txt', 'w')

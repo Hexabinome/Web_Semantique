@@ -7,7 +7,7 @@ import json
 # ==========================
 # Déclaration variables
 # ==========================
-def createSimilarityVector(filmRDF, searchType):
+def createSimilarityVector(filmRDF, searchType, ratio):
     similarityVector = {}
     if searchType == "film":
         with open('Data/films.json', 'r') as f:
@@ -18,7 +18,9 @@ def createSimilarityVector(filmRDF, searchType):
     else:
         return {}
     for uri in allData:
-        similarityVector[uri] = similarity(filmRDF, allData[uri])
+        actualRatio = similarity(filmRDF, allData[uri])
+        if actualRatio >= ratio:
+            similarityVector[uri]
     return similarityVector
 
 
