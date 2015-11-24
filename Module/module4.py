@@ -14,12 +14,14 @@ requestType is a number to change the dbpedia query
 def getInfoFromUrl(url, targetType):
     # actors
     resultDict = {}
-    if (targetType == 0):
+    if targetType == 0:
+        # Actors
         resultDict['resume'] = doQuery(url, resume(url))
         resultDict['birth'] = doQuery(url, birthDate(url))
         resultDict['thumbnail'] = doQuery(url, thumbnail(url))
         resultDict['alias'] = doQuery(url, alias(url))
-    elif (targetType == 1):
+    elif targetType == 1:
+        # Films
         resultDict['runtime'] = doQuery(url, runtime(url))
         resultDict['budget'] = doQuery(url, budget(url))
         resultDict['director'] = doQuery(url, director(url))

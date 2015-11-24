@@ -8,22 +8,22 @@
     </div>
 
     {% if type == 0 %}
-        <div>
-            <h1>Acteurs</h1>
-            <div id="acteurs">
+        <div class="row">
+            <h1>Actors</h1>
+
+            <div id="actors">
             </div>
         </div>
         <ul>
-
             {% for actor, info in results["target"].items() %}
-                <h1>Mes acteurs</h1>
+
                 <li>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h1 class="panel-title">{{ info["alias"] }} - {{ info["birth"] }}</h1>
                         </div>
-                        <div class='row panel-body'>
-                            <div id='thumbnail' class='col-md-6 col-lg-4'>
+                        <div class="panel-body">
+                            <div id="thumbnail" class="col-md-6 col-lg-4">
                                 <img src="{{ info['thumbnail'] }}">
 
                                 <div class="caption">
@@ -34,8 +34,8 @@
               <b> sources </b> {{actor}}
             </div> -->
                             </div>
-                            <div class='col-md-6 col-lg-8 right-padding'>
-                                <div id='resume' class='row'><b> Histoire :</b> {{ info["resume"] }}
+                            <div class="col-md-6 col-lg-8 right-padding">
+                                <div id="resume" class="row"><b> Histoire :</b> {{ info["resume"] }}
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
             {% endfor %}
         </ul>
     {% elif type == 1 %}
-        <div>
+        <div class="row">
             <h1>Films</h1>
 
             <div id="Films"></div>
@@ -54,20 +54,21 @@
                 <li>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h1 class="panel-title">{{ info["name"] }} -- {{ info["director"] }}</h1>
+                            <h1 class="panel-title">{{ info["name"] }} - <a href="{{ info["director"] }}"> Director</a>
+                            </h1>
                         </div>
-                        <div class='row panel-body'>
-                            <div id='thumbnail' class='col-md-6'><img src="">
+                        <div class="row panel-body">
+                            <div id="thumbnail" class='col-md-6'><img src="">
                             </div>
-                            <div class='col-md-6'>
-                                <div id='birth' class='row'>
+                            <div class="col-md-6">
+                                <div id="birth" class="row">
                                     <b>Budget :</b> {{ info["budget"] }}
                                 </div>
-                                <div id='resume' class='row'><b> Résumé :</b> {{ info["comment"] }}
+                                <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
                                 </div>
-                                <div id='source' class='row'><b> runtime :</b> {{ info["runtime"] }}
+                                <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
                                 </div>
-                                <div id='source' class='row'><b> sources :</b> {{ film }}
+                                <div id="source" class='row'><b> sources :</b> {{ film }}
                                 </div>
                             </div>
                         </div>
@@ -113,21 +114,21 @@
         var dic = {};
 
 
-	{% for source in results["graph"].items() %}
-      {% for target in results["graph"][source] %}
+        {% for source in results["graph"].items() %}
+            {% for target in results["graph"][source] %}
 
-        dic['source'] = '{{source}}';
-        dic['target'] = '{{target}}';
-        dic['type'] = 'coucou';
-        matrice.push( dic );
-        dic = {};
+                dic['source'] = '{{source}}';
+                dic['target'] = '{{target}}';
+                dic['type'] = 'coucou';
+                matrice.push(dic);
+                dic = {};
 
-       {% endfor %}
-    {% endfor %}
+            {% endfor %}
+        {% endfor %}
 
 
 
-    d3Graphe(matrice, "#graphe");
-    // d3Graphe(links, "#graphe");
+        d3Graphe(matrice, "#graphe");
+        // d3Graphe(links, "#graphe");
     </script>
 {% endblock %}
