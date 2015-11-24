@@ -2,9 +2,9 @@
 # ------------------------------------------
 #           get_sparql_graph
 # ------------------------------------------
-from SPARQLWrapper import SPARQLWrapper, JSON
 import threading, json, os, ast
 import urllib
+from Module.sparql_helper import runQuery_returnBindins
 
 CACHE_DIRECTORY = 'cache/dbpedia'
 
@@ -45,7 +45,7 @@ def getSparqlFromUrl(url, requestType):
     else:
         query = options[requestType](url)
         # print("Query dbpedia {0}".format(url))
-        cache_content = doQuery(url, query)
+        cache_content = Module.sparql_helper.runSparq(url, query)
 
         # Save in cache
         if not os.path.exists(CACHE_DIRECTORY):
@@ -59,27 +59,12 @@ def getSparqlFromUrl(url, requestType):
 
     return cache_content
 
-
-def doQuery(url, query):
-    sparql = SPARQLWrapper("http://live.dbpedia.org/sparql")
-    sparql.setQuery(query)
-    sparql.setTimeout(3)
-    sparql.setReturnFormat(JSON)
-
-    try:
-        jsonResponse = sparql.query().convert()
-        rdfTripletList = jsonResponse['results']['bindings']
-    except:
-        rdfTripletList = [] # Timeout
-    return json.loads(json.dumps(rdfTripletList))
-
-
 def testIsTargetType(url, target):
     options = {0: actor,
                1: film
             }
     query = options[target](url)
-    return doQuery(url, query)
+    return runQuery_returnBindins(url, query)
 
 
 def subject(url):
@@ -165,7 +150,7 @@ def getSparqlFromUrls(urlDict, requestType, targetType):
     res = {}
     res['grapheRDF'] = out_dict
     res['listeTarget'] = targetDict
-    return res, movieUri
+    return res
 
 if __name__ == '__main__':
     results = getSparqlFromUrls(

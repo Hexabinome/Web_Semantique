@@ -1,6 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-from SPARQLWrapper import SPARQLWrapper, JSON
-import urllib
+from Module.sparql_helper import runQuery_returnBool
 
 '''
 Parametre : une liste de resources (uri), int pour le type rechercher (0 = film, 1 = acteur)
@@ -31,21 +30,9 @@ def incMap(map, key):
 
 def isMovie(uri):
     query = "SELECT * WHERE {{ ?ok a dbo:Film. FILTER(?ok = <{0}>). }}".format(uri)
-    return sendSparql(query)
+    return runQuery_returnBool(query)
 
 def isActor(uri):
-    #query = "SELECT DISTINCT ?ok WHERE {{ ?movie dbo:starring ?ok. FILTER(?ok = <{0}>). }}".format(uri)
+    # query = "SELECT DISTINCT ?ok WHERE {{ ?movie dbo:starring ?ok. FILTER(?ok = <{0}>). }}".format(uri)
     query = "SELECT ?ok WHERE {{ ?ok a <http://umbel.org/umbel/rc/Actor>. FILTER(?ok = <{0}>). }}".format(uri)
-    return sendSparql(query)
-
-def sendSparql(query):
-    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-    sparql.setQuery(query)
-    sparql.setTimeout(3)
-    sparql.setReturnFormat(JSON)
-
-    try:
-        jsonResponse = sparql.query().convert()
-        return len(jsonResponse['results']['bindings']) == 1
-    except urllib.error.URLError:
-        return False
+    return runQuery_returnBool(query)
