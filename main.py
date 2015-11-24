@@ -59,6 +59,7 @@ def DoSearch(search):
     print("Total time : {0} sec".format(time.time() - totalStart))
 
     res = {}
+    res["userquery"] = search
     res["matrice"] = matrix
     res["target"] = target
     return res

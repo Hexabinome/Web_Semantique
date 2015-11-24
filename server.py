@@ -19,8 +19,8 @@ def search():
     film = " movie " if request.form.getlist('films') == ['on'] else " "
     print('you searched ' + search + actor + film)
     search_res = main.DoSearch(search + actor + film)
-    print(str(search_res).encode('utf-8','ignore'))
-    return render_template('results.html', search=search_res, type=1)
+    print(str(search_res).encode('utf-8', 'ignore'))
+    return render_template('results.html', results=search_res, type=1)
 
 
 @app.route("/test")
