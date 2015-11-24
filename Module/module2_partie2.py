@@ -5,7 +5,7 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 import threading, json, os, ast
 
-CACHE_DIRECTORY = 'cache'
+CACHE_DIRECTORY = 'cache/dbpedia'
 
 # TODO : Reflechir sur les requetes a effectuee
 '''
@@ -31,13 +31,14 @@ def getSparqlFromUrl(url, requestType):
                 if len(cache_content[url]) == 0:  # Not loaded correctly
                     cache_content = False
                 else:
-                    # print("Loaded {0} from cache".format(cache_file))
+                    print("Loaded {0} from cache".format(cache_file))
                     pass
             except:
                 pass
         # If the cache_content is still false, remove existing invalid cache file + send request
         if not cache_content:
             os.remove(cache_file)
+            print("Error cache loading {0}".format(cache_file))
             return getSparqlFromUrl(url, requestType)
     # Else, query dbpedia
     else:
@@ -49,9 +50,9 @@ def getSparqlFromUrl(url, requestType):
             os.makedirs(CACHE_DIRECTORY)
         try:
             with open(cache_file, 'w') as f:
-                f.write(str(cache_content))
+                f.write(str(str(cache_content).encode('utf-8')))
         except:
-            # print('Cache writing error {0}'.format(cache_file))
+            print('Cache writing error {0}'.format(cache_file))
             pass
 
     return cache_content
