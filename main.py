@@ -107,8 +107,8 @@ def FindMostReferenced(urlDic, elementType):
     """
     start = time.time()
     flatUriList = []
-    for url in urllist:
-        for uri in urllist[url]:
+    for url in urlDic:
+        for uri in urlDic[url]:
             flatUriList.append(uri)
     mostReferencedUri = most_referenced.findMostReferenced(flatUriList, 0)
     print("Most referenced : {0}".format(mostReferencedUri))
