@@ -61,10 +61,14 @@ def getSparqlFromUrl(url, requestType):
 def doQuery(url, query):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(query)
+    sparql.setTimeout(2)
     sparql.setReturnFormat(JSON)
 
-    jsonResponse = sparql.query().convert()
-    rdfTripletList = jsonResponse['results']['bindings']
+    try:
+        jsonResponse = sparql.query().convert()
+        rdfTripletList = jsonResponse['results']['bindings']
+    except:
+        rdfTripletList = [] # Timeout
     return json.loads(json.dumps(rdfTripletList))
 
 
