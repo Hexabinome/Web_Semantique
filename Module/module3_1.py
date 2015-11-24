@@ -72,7 +72,11 @@ def createSimilarityMatrix(dbPedia):
     for idxCol in range(len(urlTab)):
         for idxLigne in range(idxCol+1, len(urlTab)):
             matriceIndice[urlTab[idxLigne]][urlTab[idxCol]] = matriceIndice[urlTab[idxCol]][urlTab[idxLigne]]
-
+    
+    for idxCol in range(len(urlTab)):
+        for idxLigne in range(len(urlTab)):
+            print(urlTab[idxLigne],urlTab[idxCol],matriceIndice[urlTab[idxLigne]][urlTab[idxCol]])
+			
     # print(matriceIndice)
     return matriceIndice
 
