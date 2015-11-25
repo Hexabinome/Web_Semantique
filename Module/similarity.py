@@ -20,7 +20,7 @@ def createSimilarityVector(filmRDF, searchType, ratio):
         return {}
     for uri in allData:
         actualRatio = similarity(filmRDF, allData[uri], searchType)
-        #TODO enlever quand on compare un acteur avec lui même
+        # TODO enlever quand on compare un acteur avec lui même
         if actualRatio >= ratio:
             similarityVector[uri] = actualRatio
     return similarityVector
@@ -95,16 +95,16 @@ def createSimilarityMatrix(dbPedia):
 def similarity(RDF1, RDF2, type):
     value = 'valeur' if type == 1 else 'subject'
     common = 0
-    #RDF2 = [i for i in RDF2 if i]
+    # RDF2 = [i for i in RDF2 if i]
     initLen = len(RDF2)
     for i in RDF1:
         for j in RDF2:
             if not j:
                 continue
-            if(i[value]['value'] == j[1]):
+            if (i[value]['value'] == j[1]):
                 common += 1
                 RDF2.remove(j)
-    return common/initLen
+    return common / initLen
 
 
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):

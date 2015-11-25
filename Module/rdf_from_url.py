@@ -5,7 +5,6 @@
 import threading
 import os
 import ast
-
 from Module.sparql_helper import runQuery_returnBindings
 
 CACHE_DIRECTORY = 'cache/dbpedia'
@@ -26,7 +25,7 @@ def getRdfFromUrl(url, requestType):
                                           url.replace('http://', '').replace('/', '_').replace(':', '_'), requestType)
     # Try finding url dbpedia content in cache
     if os.path.isfile(cache_file):
-        #print('cache found')
+        # print('cache found')
         cache_content = False
         with open(cache_file, 'r', encoding='utf-8') as f:
             try:
@@ -45,7 +44,7 @@ def getRdfFromUrl(url, requestType):
             return getRdfFromUrl(url, requestType)
     # Else, query dbpedia
     else:
-        #print("Query dbpedia {0}".format(url))
+        # print("Query dbpedia {0}".format(url))
         query = options[requestType](url)
         cache_content = runQuery_returnBindings(query)
 
@@ -61,6 +60,7 @@ def getRdfFromUrl(url, requestType):
 
     return cache_content
 
+
 def subject(url):
     request = "SELECT * WHERE {{ <{0}> ?predicat ?valeur}}".format(url)
     return request
@@ -73,9 +73,11 @@ def item(url):
 def subjectAndItem(url):
     return " SELECT * WHERE{{ {{ {0} }}UNION{{ {1} }} }}".format(item(url), subject(url))
 
+
 def getRdfFromUrlThreaded(uris, resultUrlDict, requestType):
     for uri in uris:
         resultUrlDict[uri] = getRdfFromUrl(uri, requestType)
+
 
 '''
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
@@ -86,6 +88,8 @@ requestType :
     # 1: item,
     # 2: subjectAndItem
 '''
+
+
 def getRdfFromUrls(urlDict, requestType):
     # key : url, valeur: graphe RDF
     out_dict = {}
@@ -129,6 +133,7 @@ def getRdfFromUrls(urlDict, requestType):
                 out_dict[url][uri] = result_dict[uri]
 
     return out_dict
+
 
 if __name__ == '__main__':
     results = getRdfFromUrls(
