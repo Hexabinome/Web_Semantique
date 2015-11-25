@@ -12,7 +12,7 @@ def runQuery_returnBindings(query):
 
 
 def runQuery(query, timeout=2):
-    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+    sparql = SPARQLWrapper("http://live.dbpedia.org/sparql")
     sparql.setQuery(query)
     sparql.setTimeout(timeout)
     sparql.setReturnFormat(JSON)

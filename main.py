@@ -12,7 +12,7 @@ type :  0 : actor
 '''
 
 
-def DoSearch(search, seuil, type, filtre):
+def DoSearch(search, seuil, type):
     # googleRequestInFile = True
 
     # 0: subject,
@@ -46,17 +46,11 @@ def DoSearch(search, seuil, type, filtre):
     # t.start()
 
     # On souhaite retrouvé quelque chose : on va donc afficher les informations que l'on a obtenus
-    if filtre == 0:
-        # Module 4 - [URI actor/film] -> information enrichies
-        t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], type, outTarget))
-        threads.append(t)
-        t.start()
+    # Module 4 - [URI actor/film] -> information enrichies
+    t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], type, outTarget))
+    threads.append(t)
+    t.start()
 
-    # On souhaite afficher un graphe de similarité par rapport à la requête
-    elif filtre == 1:
-        t = threading.Thread(target=Module5, args=())
-        threads.append(t)
-        t.start()
 
     for t in threads:
         t.join()
@@ -121,12 +115,40 @@ def Module4(setURI, targetType, outTarget):
 def Module5(uri, targetType, ratio):
     # call module 5, one RDF TO similars RDFs
     start = time.time()
-    outTarget = similar_result.getSimilar(uri, targetType, ratio)
+    similars = similar_result.getSimilar(uri, targetType, ratio)
     print("Module 5 : {0} sec".format(time.time() - start))
+    return similars
+
+'''
+search : la requête de l'utilisateur
+ratio : le seuil de similartié pour le graphe
+type :  0 : actor
+        1 : film
+'''
+
+def DoSimilar(search, ratio, type):
+    # 0: subject,
+    # 1: item,
+    # 2: subjectAndItem
+    requestType = 2
+
+    # Module 1 - REQUEST -> URLs -> TEXT IN URLs
+    jsonlist = Module1_GoogleAndAlchemy(search)
+
+    # Module 2.1 - TEXT IN URLs -> URIs
+    urllist = Module2_1_Spotlight(jsonlist)
+
+    # What has been searched ?
+    mostReferenced = FindMostReferenced(urllist, type)
+    print(mostReferenced)
+    similars = Module5(mostReferenced, type, ratio)
+    print(similars)
+    res = {'target':{}}
+    for uri in similars:
+        res['target'][uri] = information.getInfoTargetFromUrl(uri, type)
+    return res
 
 
-def DoSimilar(search, seuil, type):
-    pass
 def FindMostReferenced(urlDic, elementType):
     """
     Parameters :

@@ -21,10 +21,11 @@ def search():
 
     request_filtre = 0 if filtre == 'memento' else 1
     request_type = 0 if type == 'actors' else 1
-    print('you searched ', search_query, " ", type, 'With ratio = ', seuil, "With filtre : ", request_filtre)
-
-    search_res = main.DoSearch(search_query + " " + type, float(seuil), request_type, request_filtre)
-
+    print('you searched ', search_query, " ", type, 'With ratio = ', seuil, "With filter : ", request_filtre)
+    if request_filtre == 0:
+        search_res = main.DoSearch(search_query + " " + type, float(seuil), request_type)
+    elif request_filtre == 1:
+        search_res = main.DoSimilar(search_query + " " + type, float(seuil), request_type)
     search_res["search"] = search_query
 
     print(str(search_res).encode('utf-8', 'ignore'))

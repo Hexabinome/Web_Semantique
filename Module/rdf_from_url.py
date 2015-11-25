@@ -22,11 +22,11 @@ def getRdfFromUrl(url, requestType):
                1: item,
                2: subjectAndItem
                }
-
     cache_file = '{0}/{1}_{2}.txt'.format(CACHE_DIRECTORY,
                                           url.replace('http://', '').replace('/', '_').replace(':', '_'), requestType)
     # Try finding url dbpedia content in cache
     if os.path.isfile(cache_file):
+        #print('cache found')
         cache_content = False
         with open(cache_file, 'r', encoding='utf-8') as f:
             try:
@@ -45,8 +45,8 @@ def getRdfFromUrl(url, requestType):
             return getRdfFromUrl(url, requestType)
     # Else, query dbpedia
     else:
+        #print("Query dbpedia {0}".format(url))
         query = options[requestType](url)
-        # print("Query dbpedia {0}".format(url))
         cache_content = runQuery_returnBindings(query)
 
         # Save in cache
@@ -95,7 +95,7 @@ def film(url):
 
 def getRdfFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target):
     for uri in uris:
-        # resultUrlDict[uri] = getSparqlFromUrl(uri, requestType)
+        resultUrlDict[uri] = getRdfFromUrl(uri, requestType)
         if testIsTargetType(uri, target) != []:
             targetSet.add(uri)
 
