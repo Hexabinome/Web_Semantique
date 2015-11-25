@@ -16,31 +16,32 @@
         </div>
         <ul>
             {% for actor, info in results["target"].items() %}
-
-                <li>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h1 class="panel-title">{{ info["alias"] }} - {{ info["birth"] }}</h1>
-                        </div>
-                        <div class="panel-body">
-                            <div id="thumbnail" class="col-md-6 col-lg-4">
-                                <img src="{{ info['thumbnail'] }}">
-
-                                <div class="caption">
-                                    <h3> {{ info["alias"] }}</h3>
-                                </div>
-                                <!-- Do we really need this ?? -->
-                                <!-- <div id='source'>
-              <b> sources </b> {{actor}}
-            </div> -->
+                {% if results["search"] in info["alias"]%}
+                    <li>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">{{ info["alias"] }} - {{ info["birth"] }}</h1>
                             </div>
-                            <div class="col-md-6 col-lg-8 right-padding">
-                                <div id="resume" class="row"><b> Histoire :</b> {{ info["resume"] }}
+                            <div class="panel-body">
+                                <div id="thumbnail" class="col-md-6 col-lg-4">
+                                    <img src="{{ info['thumbnail'] }}">
+
+                                    <div class="caption">
+                                        <h3> {{ info["alias"] }}</h3>
+                                    </div>
+                                    <!-- Do we really need this ?? -->
+                                    <!-- <div id='source'>
+                  <b> sources </b> {{actor}}
+                </div> -->
+                                </div>
+                                <div class="col-md-6 col-lg-8 right-padding">
+                                    <div id="resume" class="row"><b> Histoire :</b> {{ info["resume"] }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% elif type == 1 %}
@@ -51,29 +52,31 @@
         </div>
         <ul>
             {% for film, info in results["target"].items() %}
-                <li>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h1 class="panel-title">{{ info["name"] }} - <a href="{{ info["director"] }}"> Director</a>
-                            </h1>
-                        </div>
-                        <div class="row panel-body">
-                            <div id="thumbnail" class='col-md-6'><img src="">
+                {% if results["search"] in info["alias"]%}
+                    <li>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">{{ info["alias"] }} - <a href='{{ info["director"] }}'> Director</a>
+                                </h1>
                             </div>
-                            <div class="col-md-6">
-                                <div id="birth" class="row">
-                                    <b>Budget :</b> {{ info["budget"] }}
+                            <div class="row panel-body">
+                                <div id="thumbnail" class='col-md-6'><img src="">
                                 </div>
-                                <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
-                                </div>
-                                <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
-                                </div>
-                                <div id="source" class='row'><b> sources :</b> {{ film }}
+                                <div class="col-md-6">
+                                    <div id="birth" class="row">
+                                        <b>Budget :</b> {{ info["budget"] }}
+                                    </div>
+                                    <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
+                                    </div>
+                                    <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
+                                    </div>
+                                    <div id="source" class='row'><b> sources :</b> {{ film }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
@@ -81,54 +84,23 @@
         // var links = [
         // 	{source: "Microsoft", target: "Amazon", type: "licensing"},
         // 	{source: "Microsoft", target: "HTC", type: "licensing"},
-        // 	{source: "Samsung", target: "Apple", type: "suit"},
-        // 	{source: "Motorola", target: "Apple", type: "suit"},
-        // 	{source: "Nokia", target: "Apple", type: "resolved"},
-        // 	{source: "HTC", target: "Apple", type: "suit"},
-        // 	{source: "Kodak", target: "Apple", type: "suit"},
-        // 	{source: "Microsoft", target: "Barnes & Noble", type: "suit"},
-        // 	{source: "Microsoft", target: "Foxconn", type: "suit"},
-        // 	{source: "Oracle", target: "Google", type: "suit"},
-        // 	{source: "Apple", target: "HTC", type: "suit"},
-        // 	{source: "Microsoft", target: "Inventec", type: "suit"},
-        // 	{source: "Samsung", target: "Kodak", type: "resolved"},
-        // 	{source: "LG", target: "Kodak", type: "resolved"},
-        // 	{source: "RIM", target: "Kodak", type: "suit"},
-        // 	{source: "Sony", target: "LG", type: "suit"},
-        // 	{source: "Kodak", target: "LG", type: "resolved"},
-        // 	{source: "Apple", target: "Nokia", type: "resolved"},
-        // 	{source: "Qualcomm", target: "Nokia", type: "resolved"},
-        // 	{source: "Apple", target: "Motorola", type: "suit"},
-        // 	{source: "Microsoft", target: "Motorola", type: "suit"},
-        // 	{source: "Motorola", target: "Microsoft", type: "suit"},
-        // 	{source: "Huawei", target: "ZTE", type: "suit"},
-        // 	{source: "Ericsson", target: "ZTE", type: "suit"},
-        // 	{source: "Kodak", target: "Samsung", type: "resolved"},
-        // 	{source: "Apple", target: "Samsung", type: "suit"},
-        // 	{source: "Kodak", target: "RIM", type: "suit"},
-        // 	{source: "Nokia", target: "Qualcomm", type: "suit"}
+        // ...
         // ];
 
         //creating the struct to display the graph
         var matrice = [];
         var dic = {};
 
-
         {% for source in results["graph"].items() %}
             {% for target in results["graph"][source] %}
-
                 dic['source'] = '{{source}}';
                 dic['target'] = '{{target}}';
                 dic['type'] = 'coucou';
                 matrice.push(dic);
                 dic = {};
-
             {% endfor %}
         {% endfor %}
 
-
-
         d3Graphe(matrice, "#graphe");
-        // d3Graphe(links, "#graphe");
     </script>
 {% endblock %}

@@ -1,12 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
 
-import requests
 import re
 from urllib.parse import quote
 import json
 import os
 import random
 from ast import literal_eval
+
+import requests
 
 CACHE_DIRECTORY_ALCHEMY = 'cache/alchemy'
 CACHE_DIRECTORY_GOOGLE = 'cache/google'
@@ -30,7 +31,7 @@ def get_random_api_key():
     Renvoie une clé au hasard parmi l'ensemble des clés à notre disposition
     :return:
     """
-    liste_api = [GOOGLE_API_KEY_1, GOOGLE_API_KEY_2, GOOGLE_API_KEY_3,GOOGLE_API_KEY_4]
+    liste_api = [GOOGLE_API_KEY_1, GOOGLE_API_KEY_2, GOOGLE_API_KEY_3, GOOGLE_API_KEY_4]
     return random.choice(liste_api)
 
 
@@ -42,8 +43,10 @@ def google_search(searchInput, start_page):
     :return: [{link : "http://..."},{link : "http://..."}]
     """
     cache_file = '{0}/{1}.{2}.google.txt'.format(CACHE_DIRECTORY_GOOGLE,
-        searchInput.replace('http://', '').replace('/', '_').replace(':', '_').replace('?', '_'),
-        start_page)
+                                                 searchInput.replace('http://', '').replace('/', '_').replace(':',
+                                                                                                              '_').replace(
+                                                     '?', '_'),
+                                                 start_page)
 
     if os.path.isfile(cache_file):
         resp = {}
@@ -72,9 +75,9 @@ def google_search(searchInput, start_page):
         try:
             with open(cache_file, 'w') as f:
                 f.write(str(resp))
-                #print('Saved in cache (alchemy) {0}'.format(cache_file))
+                # print('Saved in cache (alchemy) {0}'.format(cache_file))
         except:
-            #print('Cache writing error (alchemy) {0}'.format(cache_file))
+            # print('Cache writing error (alchemy) {0}'.format(cache_file))
             pass
 
     return resp
@@ -88,7 +91,8 @@ def alchemy_api(url):
     """
 
     cache_file = '{0}/{1}.alchemy.txt'.format(CACHE_DIRECTORY_ALCHEMY,
-                                              url.replace('http://', '').replace('/', '_').replace(':', '_').replace('?', '_'))
+                                              url.replace('http://', '').replace('/', '_').replace(':', '_').replace(
+                                                  '?', '_'))
     # Load cache
     if os.path.isfile(cache_file):
         text = ''
@@ -96,13 +100,13 @@ def alchemy_api(url):
             try:
                 text = str(f.read())
                 json_string = {'url': url, 'text': text}
-                #print("Loaded {0} from cache".format(cache_file))
+                # print("Loaded {0} from cache".format(cache_file))
             except:
                 pass
         # After loading, if didn't work or file was empty, delete cache and send request as usual
         if not text.strip():
             os.remove(cache_file)
-            #print("Error loading from cache")
+            # print("Error loading from cache")
             return alchemy_api(url)
     # No cache existing
     else:
@@ -122,9 +126,9 @@ def alchemy_api(url):
         try:
             with open(cache_file, 'w') as f:
                 f.write(str(text.encode('utf-8')))
-                #print('Saved in cache (alchemy) {0}'.format(cache_file))
+                # print('Saved in cache (alchemy) {0}'.format(cache_file))
         except:
-            #print('Cache writing error (alchemy) {0}'.format(cache_file))
+            # print('Cache writing error (alchemy) {0}'.format(cache_file))
             pass
 
     json_string = {"url": url, "text": text}

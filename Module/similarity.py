@@ -4,6 +4,7 @@
 import threading
 import json
 
+
 # ==========================
 # Déclaration variables
 # ==========================
@@ -81,18 +82,20 @@ def createSimilarityMatrix(dbPedia):
 
     # Copy results of matrix
     for idxCol in range(len(urlTab)):
-        for idxLigne in range(idxCol+1, len(urlTab)):
+        for idxLigne in range(idxCol + 1, len(urlTab)):
             matriceIndice[urlTab[idxLigne]][urlTab[idxCol]] = matriceIndice[urlTab[idxCol]][urlTab[idxLigne]]
 
     for idxCol in range(len(urlTab)):
         for idxLigne in range(len(urlTab)):
-            print(urlTab[idxLigne],urlTab[idxCol],matriceIndice[urlTab[idxLigne]][urlTab[idxCol]])
+            print(urlTab[idxLigne], urlTab[idxCol], matriceIndice[urlTab[idxLigne]][urlTab[idxCol]])
 
     return matriceIndice
 
+
 def similarity(RDF1, RDF2):
-    common = [val['predicat']['value'] for val in RDF1 if val['predicat']['value'] in RDF2]
-    return len(common)/len(RDF2)
+    common = [val for val in RDF1 if val in RDF2]
+    return len(common) / len(RDF2)
+
 
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
     for idxCol in range(idxLigne, len(urlTab)):
@@ -111,14 +114,16 @@ def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
 
 
 def extractGraph(matrice, seuil):
-    graph={}
+    graph = {}
 
     for urlCol in matrice:
-        graph[urlCol]=[]
+        graph[urlCol] = []
         for urlLigne in matrice[urlCol]:
-            if((matrice[urlCol][urlLigne] > seuil) or (matrice[urlCol][urlLigne] != 1)):
+            if ((matrice[urlCol][urlLigne] > seuil) or (matrice[urlCol][urlLigne] != 1)):
                 graph[urlCol].append(urlLigne)
 
     return graph
+
+
 if __name__ == '__main__':
     createSimilarityMatrix()

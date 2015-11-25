@@ -9,7 +9,9 @@ CACHE_DIRECTORY = 'cache/spotlight'
 # TODO: making the confidence and support changeable
 def getUrlsFromText(url, text, confidence, support):
     cache_file = '{0}/{1}_{2}_{3}.spotlight.txt'.format(CACHE_DIRECTORY,
-                                                        url.replace('http://', '').replace('/', '_').replace(':', '_').replace('?', '_'),
+                                                        url.replace('http://', '').replace('/', '_').replace(':',
+                                                                                                             '_').replace(
+                                                            '?', '_'),
                                                         confidence, support)
     # Try finding URIs in cache
     if os.path.isfile(cache_file):
@@ -17,13 +19,13 @@ def getUrlsFromText(url, text, confidence, support):
         with open(cache_file, 'r') as f:
             try:
                 urlList = f.read().split('\n')
-                #print("Loaded from {0} from cache".format(cache_file))
+                # print("Loaded from {0} from cache".format(cache_file))
             except:
                 pass
         # If the cache_content is still false, remove existing invalid cache file + send request
         if len(urlList) == 0:
             os.remove(cache_file)
-            #print("Error loading cache {0}".format(cache_file))
+            # print("Error loading cache {0}".format(cache_file))
             return getUrlsFromText(url, text, confidence, support)
     else:
         data = {
@@ -59,7 +61,7 @@ def getUrlsFromText(url, text, confidence, support):
                 with open(cache_file, 'w') as f:
                     f.write('\n'.join(urlList))
             except:
-                #print('Cache writing error (spotlight) {0}'.format(cache_file))
+                # print('Cache writing error (spotlight) {0}'.format(cache_file))
                 pass
         except:
             pass
@@ -69,7 +71,7 @@ def getUrlsFromText(url, text, confidence, support):
 def getUrlsFromTextThreaded(texts, result):
     for text in texts:
         if text['text'] != "":
-        # TODO : make confidence & support changeable
+            # TODO : make confidence & support changeable
             for uri in getUrlsFromText(text['url'], text['text'], 0.2, 20):
                 if uri != []:
                     result[text['url']].add(uri)
@@ -80,6 +82,8 @@ Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts ret
 Requests for each text DBPedia spotlight
 Return : A dictionnary {url1: [foundUrl, foundUrl, ...], url2: [],...}
 '''
+
+
 def getUrlsFromTexts(jsonTexts):
     result = {}
     for dict in jsonTexts:
