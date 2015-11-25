@@ -70,13 +70,11 @@ def getTargetedUrisFromUrls(urlDict, targetType):
     for t in threads:
         t.join()
 
-    res = {}
-    res['setTarget'] = targetSet
     print(targetSet)
-    return res
+    return targetSet
 
-if __name__ == '__main__':
-    results = getRdfFromUrls(
-        {'a' : ['http://dbpedia.org/resource/Brad_Pitt'], 'b' : ['http://dbpedia.org/resource/France'], 'c' : ['http://dbpedia.org/resource/Angelina_Jolie']}
-        , 0)
-    print(results)
+#if __name__ == '__main__':
+    #results = getRdfFromUrls(
+    #    {'a' : ['http://dbpedia.org/resource/Brad_Pitt'], 'b' : ['http://dbpedia.org/resource/France'], 'c' : ['http://dbpedia.org/resource/Angelina_Jolie']}
+    #    , 0)
+    #print(results)

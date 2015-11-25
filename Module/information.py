@@ -10,7 +10,6 @@ import threading, json, sys
 requestType is a number to change the dbpedia query
 '''
 
-
 def getInfoFromUrl(url, targetType):
     # actors
     resultDict = {}
@@ -50,43 +49,43 @@ def doQuery(url, query):
 def resume(url):
     return "SELECT ?resume WHERE {{<{0}> dbo:abstract ?resume. FILTER (lang(?resume) = 'en')}}".format(url)
 
-
 def birthDate(url):
     return "SELECT ?birth WHERE {{<{0}> dbo:birthDate ?birth .}}".format(url)
-
 
 def thumbnail(url):
     return "SELECT ?thumbnail WHERE {{<{0}> dbo:thumbnail ?thumbnail .}}".format(url)
 
-
 def alias(url):
     return "SELECT ?alias WHERE {{<{0}> dbo:alias ?alias. FILTER (lang(?alias ) = 'en')}}".format(url)
-
 
 def runtime(url):
     return "SELECT ?runtime WHERE {{<{0}> dbo:runtime ?runtime.}}".format(url)
 
-
 def budget(url):
     return "SELECT ?budget WHERE {{<{0}> dbp:budget ?budget.}}".format(url)
-
 
 def director(url):
     return "SELECT ?director WHERE {{<{0}> dbo:director ?director.}}".format(url)
 
-
 def name(url):
     return "SELECT ?name WHERE {{<{0}> dbp:name ?name.}}".format(url)
-
 
 def comment(url):
     return "SELECT ?comment WHERE {{<{0}> dbo:abstract ?comment. FILTER (lang(?comment)='en')}}".format(url)
 
-
-def getInfoFromUrlThreaded(uris, resultDict, targetType):
-    for uri in uris:
-        resultDict[uri] = getInfoFromUrl(uri, targetType)
-
+'''
+Compléte les informations sur une URI afin des les afficher.
+La requête est fait seulement si l'uri contient tous les mots de recherche de l'utilisateur
+'''
+def getInfoFromUrlThreaded(listeUri, resultDict, targetType, listeMotARechercher):
+    for uri in listeUri:
+        contienMotsUtilisateur = True
+        for mot in listeMotARechercher:
+            if mot not in uri:
+                contienMotsUtilisateur = False
+                break
+        if contienMotsUtilisateur:
+            resultDict[uri] = getInfoFromUrl(uri, targetType)
 
 '''
 Paramètre : une liste d'uri identifié comme ressource voulue, et type voulu
@@ -106,25 +105,21 @@ Returns a list de dictionnaire de type :
     resultDict['comment']
     resultDict['name']
 '''
-
-
-def getInfoTargetFromUrls(setUrls, targetType):
-    # Copy urls in one set => unique elements
-    listOfUrls = list(setUrls)
-
+def getInfoTargetFromUrls(setUrls, targetType, tabSearch):
     resDict = {}
 
     # storing threads
     threads = []
 
-    nbURI = len(listOfUrls)
+    nbURI = len(setUrls)
     # Launch threads
     nbThreads = min(4, nbURI)
     for x in range(nbThreads):
         t = threading.Thread(target=getInfoFromUrlThreaded,
-                             args=(list(listOfUrls)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
+                             args=(list(setUrls)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
                                    resDict,
-                                   targetType))
+                                   targetType,
+                                   tabSearch))
         t.start()
         threads.append(t)
     # Wait for threads

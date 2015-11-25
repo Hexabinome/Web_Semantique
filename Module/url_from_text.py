@@ -82,8 +82,6 @@ Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts ret
 Requests for each text DBPedia spotlight
 Return : A dictionnary {url1: [foundUrl, foundUrl, ...], url2: [],...}
 '''
-
-
 def getUrlsFromTexts(jsonTexts):
     result = {}
     for dict in jsonTexts:

@@ -16,32 +16,30 @@
         </div>
         <ul>
             {% for actor, info in results["target"].items() %}
-                {% if results["search"] in info["alias"]%}
-                    <li>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h1 class="panel-title">{{ info["alias"] }} - {{ info["birth"] }}</h1>
-                            </div>
-                            <div class="panel-body">
-                                <div id="thumbnail" class="col-md-6 col-lg-4">
-                                    <img src="{{ info['thumbnail'] }}">
+                <li>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">{{ info["alias"] }} - {{ info["birth"] }}</h1>
+                        </div>
+                        <div class="panel-body">
+                            <div id="thumbnail" class="col-md-6 col-lg-4">
+                                <img src="{{ info['thumbnail'] }}">
 
-                                    <div class="caption">
-                                        <h3> {{ info["alias"] }}</h3>
-                                    </div>
-                                    <!-- Do we really need this ?? -->
-                                    <!-- <div id='source'>
-                  <b> sources </b> {{actor}}
-                </div> -->
+                                <div class="caption">
+                                    <h3> {{ info["alias"] }}</h3>
                                 </div>
-                                <div class="col-md-6 col-lg-8 right-padding">
-                                    <div id="resume" class="row"><b> Histoire :</b> {{ info["resume"] }}
-                                    </div>
+                                <!-- Do we really need this ?? -->
+                                <!-- <div id='source'>
+              <b> sources </b> {{actor}}
+            </div> -->
+                            </div>
+                            <div class="col-md-6 col-lg-8 right-padding">
+                                <div id="resume" class="row"><b> Histoire :</b> {{ info["resume"] }}
                                 </div>
                             </div>
                         </div>
-                    </li>
-                {% endif %}
+                    </div>
+                </li>
             {% endfor %}
         </ul>
     {% elif type == 1 %}
@@ -52,31 +50,29 @@
         </div>
         <ul>
             {% for film, info in results["target"].items() %}
-                {% if results["search"] in info["alias"]%}
-                    <li>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h1 class="panel-title">{{ info["alias"] }} - <a href='{{ info["director"] }}'> Director</a>
-                                </h1>
+                <li>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">{{ info["alias"] }} - <a href='{{ info["director"] }}'> Director</a>
+                            </h1>
+                        </div>
+                        <div class="row panel-body">
+                            <div id="thumbnail" class='col-md-6'><img src="">
                             </div>
-                            <div class="row panel-body">
-                                <div id="thumbnail" class='col-md-6'><img src="">
+                            <div class="col-md-6">
+                                <div id="birth" class="row">
+                                    <b>Budget :</b> {{ info["budget"] }}
                                 </div>
-                                <div class="col-md-6">
-                                    <div id="birth" class="row">
-                                        <b>Budget :</b> {{ info["budget"] }}
-                                    </div>
-                                    <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
-                                    </div>
-                                    <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
-                                    </div>
-                                    <div id="source" class='row'><b> sources :</b> {{ film }}
-                                    </div>
+                                <div id="resume" class="row"><b> Comments :</b> {{ info["comment"] }}
+                                </div>
+                                <div id="source" class='row'><b> runtime :</b> {{ info["runtime"] }}
+                                </div>
+                                <div id="source" class='row'><b> sources :</b> {{ film }}
                                 </div>
                             </div>
                         </div>
-                    </li>
-                {% endif %}
+                    </div>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}
