@@ -18,16 +18,17 @@
                 </div>
 
                 <div class="form-group">
-                    <input id="seuilInput" class="form-control" placeholder="Ratio" required type=text
+                    <input id="seuilInput" class="form-control" placeholder="Ratio" required type=number
                            value=0.8 name=seuil>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Search">
                 </div>
             </div>
+            <br/>
+
             <div class="row">
                 <div class="form-group">
-
                     <div class="col-md-4">
                         <div class="radio radio-primary">
                             <label>
@@ -35,7 +36,6 @@
                             </label>
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div class="radio radio-primary">
                             <label>
@@ -45,11 +45,13 @@
                     </div>
 
                 </div>
-            </div>
-             <div class="row">
-                <div class="form-group">
 
-                    <div class="col-md-8">
+            </div>
+            <br/>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-4">
                         <div class="radio radio-primary">
                             <label>
                                 <input checked value="memento" name="filtre" type="radio"> Retrouver
@@ -57,7 +59,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <div class="radio radio-primary">
                             <label>
                                 <input value="similaire" name="filtre" type="radio"> Similaire
@@ -69,4 +71,5 @@
             </div>
         </form>
     </div>
+    <br/><br/>
 {% endblock %}
