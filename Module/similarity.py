@@ -10,10 +10,10 @@ import json
 # ==========================
 def createSimilarityVector(filmRDF, searchType, ratio):
     similarityVector = {}
-    if searchType == 0:
+    if searchType == 1:
         with open('Data/films.json', 'r') as f:
             allData = json.loads(f.read())
-    elif searchType == 1:
+    elif searchType == 0:
         with open('Data/actors.json', 'r') as f:
             allData = json.loads(f.read())
     else:
@@ -93,19 +93,17 @@ def createSimilarityMatrix(dbPedia):
 
 
 def similarity(RDF1, RDF2, type):
-    value = 'valeur' if type == 0 else 'subject'
+    value = 'valeur' if type == 1 else 'subject'
     common = 0
+    #RDF2 = [i for i in RDF2 if i]
     initLen = len(RDF2)
     for i in RDF1:
-        #print(i)
         for j in RDF2:
-            #print(j)
             if not j:
                 continue
             if(i[value]['value'] == j[1]):
                 common += 1
                 RDF2.remove(j)
-    print(common/initLen)
     return common/initLen
 
 
