@@ -6,7 +6,7 @@ import threading, json, sys, time, traceback
 def getImportantFilm():
   return "SELECT DISTINCT ?description WHERE {?description rdf:type <http://dbpedia.org/ontology/Film>. ?description dbo:budget ?x.}"
 
-# ======== Predicat choisits ========
+# ======== Predicats choisis ========
 # dbo:director
 # dbo:distributor
 # dbp:cinematography
@@ -73,28 +73,23 @@ def populate():
 
     try:
       # ---- request director, distributor, cinematography,subject, musiccomposer -----
-      time.sleep(2)
       predicatCibleTab.append(storePredicatTabToData(data, filmUri, 0,'director' ,sparql))
-      time.sleep(1)
       predicatCibleTab.append(storePredicatTabToData(data, filmUri, 1,'distributor', sparql))
-      time.sleep(1)
+      time.sleep(2)
       predicatCibleTab.append(storePredicatTabToData(data, filmUri, 2,'cinematography', sparql))
-      time.sleep(1)
       predicatCibleTab.append(storePredicatTabToData(data, filmUri, 3,'subject', sparql))
-      time.sleep(1)
+      time.sleep(2)
       predicatCibleTab.append(storePredicatTabToData(data, filmUri, 4,'musicComposer', sparql))
       time.sleep(1)
       # ----------------------------
 
       #  add to dico
       data[filmUri] = predicatCibleTab
-
       lineCounter = lineCounter + 1
-      #  delete first film line
+
 
     # to handle 502 errors from dbpedia
     except Exception as e:
-      print('__________________________DATA:')
       print('__________________________DBPEDIA ERROR :')
       print(traceback.format_exc())
       #  rewrite the file of films minus the link already visited
