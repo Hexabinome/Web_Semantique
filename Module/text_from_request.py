@@ -6,7 +6,6 @@ import json
 import os
 import random
 from ast import literal_eval
-
 import requests
 
 CACHE_DIRECTORY_ALCHEMY = 'cache/alchemy'

@@ -4,6 +4,8 @@ from Module import similarity, rdf_from_url
     targetType 0 : actor
                1 : film
 '''
+
+
 def getSimilar(uri, targetType, ratio):
     # get rdf with items for this object
     rdf = rdf_from_url.getRdfFromUrl(uri, 2)
@@ -14,4 +16,4 @@ def getSimilar(uri, targetType, ratio):
     elif targetType == 0:
         values = [i for i in rdf if ('subject' in i)]
     vector = similarity.createSimilarityVector(values, targetType, ratio)
-    return sorted(vector, key = vector.__getitem__, reverse = True)
+    return sorted(vector, key=vector.__getitem__, reverse=True)

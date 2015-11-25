@@ -5,10 +5,10 @@
 import threading
 import os
 import ast
-
 from Module.sparql_helper import runQuery_returnBindings
 
 CACHE_DIRECTORY = 'cache/dbpedia'
+
 
 # TODO : Reflechir sur les requetes a effectuee
 
@@ -24,14 +24,17 @@ def actor(url):
     return " SELECT ?acteur WHERE{{ {{ ?acteur a umbel-rc:Actor. FILTER(?acteur = <{0}>) }}UNION{{ ?film dbo:starring ?acteur. FILTER(?acteur = <{0}>) }} }}".format(
         url)
 
+
 def film(url):
     return "SELECT DISTINCT ?film WHERE {{ {{?film a dbo:Film. FILTER(?film= <{0}>).}} UNION {{ ?film a <http://schema.org/Movie>. FILTER(?film= <{0}>).}} }}" \
         .format(url)
+
 
 def getUriFromUrlThreaded(uris, targetSet, targetType):
     for uri in uris:
         if testIsTargetType(uri, targetType) != []:
             targetSet.add(uri)
+
 
 '''
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
@@ -41,6 +44,8 @@ targetType :
     0 : actor
     1 : film
 '''
+
+
 def getTargetedUrisFromUrls(urlDict, targetType):
     # Contient toutes les uris acteurs ou films
     targetSet = set()
@@ -74,7 +79,3 @@ def getTargetedUrisFromUrls(urlDict, targetType):
     return targetSet
 
 #if __name__ == '__main__':
-    #results = getRdfFromUrls(
-    #    {'a' : ['http://dbpedia.org/resource/Brad_Pitt'], 'b' : ['http://dbpedia.org/resource/France'], 'c' : ['http://dbpedia.org/resource/Angelina_Jolie']}
-    #    , 0)
-    #print(results)
