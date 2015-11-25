@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from Module import text_from_request, url_from_text, rdf_from_url, similarity, information, most_referenced, similar_result
+from Module import text_from_request, url_from_text, rdf_from_url, similarity, information, most_referenced, \
+    similar_result, targetedUriFromUrl
 from flask import json
 import time
 import threading
@@ -10,9 +11,8 @@ seuil : le seuil de similartié pour le graphe
 type :  0 : actor
         1 : film
 '''
-
-
-def DoSearch(search, seuil, type):
+def DoSearch(search, seuil, targetType):
+    start = time.time()
     # googleRequestInFile = True
 
     # 0: subject,
@@ -26,11 +26,15 @@ def DoSearch(search, seuil, type):
     # Module 2.1 - TEXT IN URLs -> URIs
     urllist = Module2_1_Spotlight(jsonlist)
 
-    # What has been searched ?
-    mostReferenced = FindMostReferenced(urllist, 0)  # Unused here
+    '''
+    Appele le module 2 threader pour plus de rapidité et de cohérence
 
-    # Module 2.2 - URIs -> DBPEDIA RDF GRAPHs
-    dbcontent = Module2_2_DBPedia(urllist, requestType, type)
+    Valeur de retour
+    outThreads['mostReferenced'] = [None]
+    outThreads['dbcontent'] = [None]
+    outThreads['targetedUris'] = [None]
+    '''
+    outThreads = Module2_Threaded(urllist, targetType, requestType)
 
     # Thread le module 3 et le 4 ou 5
     # Matrice renvoyer par le module 3
@@ -41,16 +45,15 @@ def DoSearch(search, seuil, type):
     threads = []
 
     # Module 3 - [URL : graphe RDF] -> matrice similarté
-    # t = threading.Thread(target=Module3, args=(dbcontent['grapheRDF'], outMatrix))
+    # t = threading.Thread(target=Module3, args=(outThreads['dbcontent'], outMatrix))
     # threads.append(t)
     # t.start()
 
     # On souhaite retrouvé quelque chose : on va donc afficher les informations que l'on a obtenus
     # Module 4 - [URI actor/film] -> information enrichies
-    t = threading.Thread(target=Module4, args=(dbcontent['setTarget'], type, outTarget))
+    t = threading.Thread(target=Module4, args=(outThreads['targetedUris'], targetType, outTarget))
     threads.append(t)
     t.start()
-
 
     for t in threads:
         t.join()
@@ -59,8 +62,35 @@ def DoSearch(search, seuil, type):
     res["graph"] = {}  # module3_1.extractGraph(outMatrix, seuil)
     res["target"] = outTarget[0]
 
+    print("Temps total : {0} sec".format(time.time() - start))
     return res
 
+def Module2_Threaded(urllist, targetType, requestType):
+    threads = []
+    outThreads = {}
+    outThreads['mostReferenced'] = [None]
+    outThreads['dbcontent'] = [None]
+    outThreads['targetedUris'] = [None]
+
+    # What has been searched ?
+    t = threading.Thread(target=FindMostReferenced, args=(urllist, targetType, outThreads))
+    threads.append(t)
+    t.start()
+
+    # Module 2.2 - URIs -> DBPEDIA RDF GRAPHs
+    t = threading.Thread(target=Module2_2_DBPedia, args=(urllist, requestType, outThreads))
+    threads.append(t)
+    t.start()
+
+    # Module 2.3 - URIs -> DBPEDIA RDF GRAPHs
+    t = threading.Thread(target=Module2_3_UriResource, args=(urllist, targetType, outThreads))
+    threads.append(t)
+    t.start()
+
+    for t in threads:
+        t.join()
+
+    return outThreads
 
 def Module1_GoogleAndAlchemy(searchKeyword):
     """
@@ -78,7 +108,6 @@ def Module1_GoogleAndAlchemy(searchKeyword):
 
     return jsonlist
 
-
 def Module2_1_Spotlight(jsonList):
     """
     Parameter : A list of {'url': 'http://...', 'text': 'page content...'}
@@ -90,13 +119,16 @@ def Module2_1_Spotlight(jsonList):
     print("Module 2-1 (spotlight) : {0} sec".format(time.time() - start))
     return urlList
 
-
-def Module2_2_DBPedia(urList, requestType, targetType):
+def Module2_2_DBPedia(urList, requestType, outThreads):
     start = time.time()
-    dbpediaContent = rdf_from_url.getRdfFromUrls(urList, requestType, targetType)
+    outThreads['dbcontent'] = rdf_from_url.getRdfFromUrls(urList, requestType)
     print("Module 2-2 (dbpedia content) : {0} sec".format(time.time() - start))
-    return dbpediaContent
 
+def Module2_3_UriResource(urList, targetType, outThreads):
+    start = time.time()
+    dbpediaContent = targetedUriFromUrl.getTargetedUrisFromUrls(urList, targetType)
+    print("Module 2-3 (targeted uri) : {0} sec".format(time.time() - start))
+    outThreads['targetedUris']=  dbpediaContent
 
 def Module3(grapheRDF, outMatrix):
     # call module 3 RDF TO RESULTS
@@ -125,7 +157,6 @@ ratio : le seuil de similartié pour le graphe
 type :  0 : actor
         1 : film
 '''
-
 def DoSimilar(search, ratio, type):
     # 0: subject,
     # 1: item,
@@ -149,7 +180,7 @@ def DoSimilar(search, ratio, type):
     return res
 
 
-def FindMostReferenced(urlDic, elementType):
+def FindMostReferenced(urlDic, elementType, outThreads):
     """
     Parameters :
         urlDic : Dictionnary : key = a URL, value = list of URIs
@@ -164,7 +195,7 @@ def FindMostReferenced(urlDic, elementType):
     mostReferencedUri = most_referenced.findMostReferenced(flatUriList, 0)
     print("Most referenced : {0}".format(mostReferencedUri))
     print("Find most referenced : {0} sec".format(time.time() - start))
-    return mostReferencedUri
+    outThreads['mostReferenced'] = mostReferencedUri
 
 
 if __name__ == '__main__':
@@ -172,7 +203,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("Brad actor", 0.3, 0, 0)  # term)[1]))
+    res = DoSearch("George actor", 0.3, 0)  # term)[1]))
     '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():

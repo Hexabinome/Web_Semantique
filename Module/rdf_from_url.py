@@ -61,15 +61,6 @@ def getRdfFromUrl(url, requestType):
 
     return cache_content
 
-
-def testIsTargetType(url, target):
-    options = {0: actor,
-               1: film
-               }
-    query = options[target](url)
-    return runQuery_returnBindings(query)
-
-
 def subject(url):
     request = "SELECT * WHERE {{ <{0}> ?predicat ?valeur}}".format(url)
     return request
@@ -82,23 +73,9 @@ def item(url):
 def subjectAndItem(url):
     return " SELECT * WHERE{{ {{ {0} }}UNION{{ {1} }} }}".format(item(url), subject(url))
 
-
-def actor(url):
-    return " SELECT ?acteur WHERE{{ {{ ?acteur a umbel-rc:Actor. FILTER(?acteur = <{0}>) }}UNION{{ ?film dbo:starring ?acteur. FILTER(?acteur = <{0}>) }} }}".format(
-        url)
-
-
-def film(url):
-    return "SELECT DISTINCT ?film WHERE {{ {{?film a dbo:Film. FILTER(?film= <{0}>).}} UNION {{ ?film a <http://schema.org/Movie>. FILTER(?film= <{0}>).}} }}" \
-        .format(url)
-
-
-def getRdfFromUrlThreaded(uris, resultUrlDict, targetSet, requestType, target):
+def getRdfFromUrlThreaded(uris, resultUrlDict, requestType):
     for uri in uris:
         resultUrlDict[uri] = getRdfFromUrl(uri, requestType)
-        if testIsTargetType(uri, target) != []:
-            targetSet.add(uri)
-
 
 '''
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
@@ -108,22 +85,14 @@ requestType :
 # 0: subject,
     # 1: item,
     # 2: subjectAndItem
-targetType :
-    0 : actor
-    1 : film
 '''
-
-
-def getRdfFromUrls(urlDict, requestType, targetType):
+def getRdfFromUrls(urlDict, requestType):
     # key : url, valeur: graphe RDF
     out_dict = {}
     # Contient toutes les URIs
     uriSet = set()
     # Dictionnaire temporaire pour remplire ensuite out_dict
     result_dict = {}
-
-    # Contient tous les acteurs ou films
-    targetSet = set()
 
     # créer des entrées dans les dictionnaire pour les toutes les uri
     # TODO Utile ?
@@ -146,9 +115,7 @@ def getRdfFromUrls(urlDict, requestType, targetType):
                              args=(
                                  list(uriSet)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
                                  result_dict,
-                                 targetSet,
-                                 requestType,
-                                 targetType))
+                                 requestType))
         t.start()
         threads.append(t)
     # Wait for threads
@@ -161,28 +128,16 @@ def getRdfFromUrls(urlDict, requestType, targetType):
             if uri in result_dict:
                 out_dict[url][uri] = result_dict[uri]
 
-    res = {}
-    res['grapheRDF'] = out_dict
-    res['setTarget'] = targetSet
-    print(targetSet)
-    return res
-
+    return out_dict
 
 if __name__ == '__main__':
     results = getRdfFromUrls(
         {'http://osef.org': ['http://dbpedia.org/resource/Brad_Pitt', 'http://dbpedia.org/resource/Angelina_Jolie'],
          'http://test.fr': ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Brad_Davis_(actor)',
                             'http://dbpedia.org/resource/Brad_Pitt']}
-        , 0, 0)
+        , 0)
     # results = getSparqlFromUrls(['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany'], 0)
     # ['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
     #  ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette',
     #   'http://dbpedia.org/resource/Europe'], 0)
     print(results)
-
-
-
-# results = getSparqlFromUrls(
-#   [['http://dbpedia.org/resource/Brad_Pitt'],
-#    ['http://dbpedia.org/resource/France'],
-#    ['http://dbpedia.org/resource/Angelina_Jolie'],

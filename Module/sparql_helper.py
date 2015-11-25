@@ -10,7 +10,6 @@ def runQuery_returnBool(query):
 def runQuery_returnBindings(query):
     return json.loads(json.dumps(runQuery(query)))
 
-
 def runQuery(query, timeout=2):
     sparql = SPARQLWrapper("http://live.dbpedia.org/sparql")
     sparql.setQuery(query)
