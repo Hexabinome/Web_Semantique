@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from Module import text_from_request, url_from_text, rdf_from_url, similarity, information, most_referenced, \
-    similar_result, targetedUriFromUrl
+    similar_result, targeted_uri_from_url
 from flask import json
 import time
 import threading
@@ -22,7 +22,6 @@ def DoSearch(search, seuil, targetType):
 
     # Module 1 - REQUEST -> URLs -> TEXT IN URLs
     jsonlist = Module1_GoogleAndAlchemy(search)
-
     # Module 2.1 - TEXT IN URLs -> URIs
     urllist = Module2_1_Spotlight(jsonlist)
     '''
@@ -73,8 +72,8 @@ def Module1_GoogleAndAlchemy(searchKeyword):
     start = time.time()
     # subprocess.check_call(['./Module/module1.sh', search, '1'])
     pageResults = text_from_request.do_module1_job(searchKeyword)
-    dict = json.loads(pageResults)
-    jsonlist = dict['resultats']
+    resultDict = json.loads(pageResults)
+    jsonlist = resultDict['resultats']
     print('Module 1 : {0} sec'.format(time.time() - start))
 
     return jsonlist
@@ -103,7 +102,6 @@ def Module2_Threaded(urllist, targetType, requestType):
 
     for t in threads:
         t.join()
-
     return outThreads
 
 def Module2_1_Spotlight(jsonList):
@@ -124,7 +122,7 @@ def Module2_2_DBPedia(urList, requestType, outThreads):
 
 def Module2_3_UriResource(urList, targetType, outThreads):
     start = time.time()
-    targetedUris = targetedUriFromUrl.getTargetedUrisFromUrls(urList, targetType)
+    targetedUris = targeted_uri_from_url.getTargetedUrisFromUrls(urList, targetType)
     print("Module 2-3 (targeted uri) : {0} sec".format(time.time() - start))
     outThreads['targetedUris']=  targetedUris
 
@@ -168,7 +166,8 @@ def DoSimilar(search, ratio, type):
     urllist = Module2_1_Spotlight(jsonlist)
 
     # What has been searched ?
-    mostReferenced = FindMostReferenced(urllist, type)
+    mostReferenced = {}
+    FindMostReferenced(urllist, type, mostReferenced)
     print(mostReferenced)
     similars = Module5(mostReferenced, type, ratio)
     print(similars)
@@ -182,7 +181,7 @@ def FindMostReferenced(urlDic, elementType, outThreads):
     """
     Parameters :
         urlDic : Dictionnary : key = a URL, value = list of URIs
-        elementType : 0 = movie, 1 = actor
+        elementType : 0 = actor, 1 = movie
     Returns : a URI
     """
     start = time.time()
@@ -190,7 +189,7 @@ def FindMostReferenced(urlDic, elementType, outThreads):
     for url in urlDic:
         for uri in urlDic[url]:
             flatUriList.append(uri)
-    mostReferencedUri = most_referenced.findMostReferenced(flatUriList, 0)
+    mostReferencedUri = most_referenced.findMostReferenced(flatUriList, elementType)
     print("Most referenced : {0}".format(mostReferencedUri))
     print("Find most referenced : {0} sec".format(time.time() - start))
     outThreads['mostReferenced'] = mostReferencedUri
