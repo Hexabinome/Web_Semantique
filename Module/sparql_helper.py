@@ -2,7 +2,6 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 import json
 
-
 def runQuery_returnBool(query):
     return len(runQuery(query)) != 0
 
@@ -12,7 +11,7 @@ def runQuery_returnBindings(query):
 
 
 def runQuery(query, timeout=2):
-    sparql = SPARQLWrapper("http://live.dbpedia.org/sparql")
+    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     sparql.setQuery(query)
     sparql.setTimeout(timeout)
     sparql.setReturnFormat(JSON)

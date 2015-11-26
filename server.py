@@ -54,11 +54,11 @@ def search():
         search_res = main.DoSimilar(search_query + " " + type, float(seuil), request_type)
 
     search_res["search"] = search_query
+    search_res["type"] = request_type
 
-    print(str(search_res).encode('utf-8', 'ignore'))
+    print("fin call main", str(search_res).encode('utf-8', 'ignore'))
 
-    return render_template('results.html', results=search_res, type=request_type)
-
+    return json.dumps(search_res)
 
 '''
 @app.route('/loading')
