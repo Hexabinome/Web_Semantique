@@ -97,6 +97,8 @@ def populate():
   # ========End of the work===========
   print('...Congratulation! Work is over !')
 
+  with open('data/actors.json', 'r+') as outfile:
+    json.dump(data, outfile)
   #  rewrite the file of actors minus the link already visited
   actorsFile = open('data/allActorsDbpedia', 'w')
   for url in lines[lineCounter:]:

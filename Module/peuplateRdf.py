@@ -104,7 +104,17 @@ def populate():
         json.dump(data, outfile)
       print('... you are getting an exception from dbpedia')
       print('your current work is stored, re-run script later')
-      sys.exit()
+      return 0
+  # --- end of loop ---
+  #  stocke the new json data with extra
+  with open('data/films.json', 'r+') as outfile:
+    json.dump(data, outfile)
+  filmsFile = open('data/allFilmsDbpedia', 'w')
+  for url in lines[lineCounter:]:
+    if url != '\n':
+      filmsFile.write(url)
+      filmsFile.write('\n')
+  return 1
 
 
 # First store all the films
@@ -133,7 +143,10 @@ def storeAllFilms():
 # First ypu have to store all disctinct film that have a budget (considered as important)
 # storeAllFilms()
 #  then you have to run  populate until allFilmsDbpedia is empty
-populate()
+end = 0
+while end == 0:
+  end = populate()
+print("Work os over buddy ! ")
 
 
 
