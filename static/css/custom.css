@@ -1,34 +1,80 @@
-body{
-    background-color: #f4f4f4;
+body {
+	text-align: center;
+	background: #4f3722 url('/static/images/darkcurtain.jpg') repeat-x;
+
 }
+
+.title
+{
+	font-family: 'Norican', cursive;
+	/*font-family: 'Crimson Text', serif;*/
+	font-size: 72px;
+	color : white;
+}
+
+.searchText
+{
+    font-size: 18px;
+    color: white;
+}
+
+.subTitle
+{
+    font-family: 'Norican', cursive;
+	/*font-family: 'Crimson Text', serif;*/
+	font-size: 48px;
+	color : white;
+}
+
 
 /* Taille de la zone de recherche */
 #searchInput{
-    width: 525px;
+	width: 525px;
+}
+
+.customInput
+{
+	background-color: white;
+	border-radius: 4px !important;
 }
 
 .link {
-  fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
+	fill: none;
+	stroke: #666;
+	stroke-width: 1.5px;
 }
 
 .node circle {
-  fill: #ccc;
-  stroke: #fff;
-  stroke-width: 1.5px;
+	fill: #ccc;
+	stroke: #fff;
+	stroke-width: 1.5px;
 }
 
 .text {
-  font: 10px sans-serif;
-  pointer-events: none;
+	font: 10px sans-serif;
+	pointer-events: none;
 }
 
 li {
-    list-style-type:none;
+	list-style-type:none;
 }
 
 .panel-body{
-  margin-right: 0;
-  margin-left: 0;
+	margin-right: 0;
+	margin-left: 0;
+}
+
+.screen
+{
+	background-color: white;
+	border-radius: 15px;
+	height: 420px;
+	visibility: hidden;
+}
+
+.search
+{
+	z-index: 5;
+	left: 0px;
+	position: relative;
 }
