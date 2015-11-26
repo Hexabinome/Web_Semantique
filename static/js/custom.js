@@ -3,6 +3,10 @@
 */
 
 //http://bl.ocks.org/mbostock/4062045
+
+//global
+var matriceSimilitude = null;
+
 function d3Graphe(links, div)
 {
 	var nodes = {};
@@ -25,6 +29,9 @@ function d3Graphe(links, div)
 		.on("tick", tick)
 		.start();
 
+  // empty div
+
+  $( div ).empty()
 	var svg = d3.select(div).append("svg")
 		.attr("width", width)
 		.attr("height", height);
@@ -74,15 +81,20 @@ $(document).ready(function() {
                                 'filtre' : $('input[name="filtre"]:checked').val()},
         function(data) {
             data = $.parseJSON(data);
-            console.debug(data.graph);
+            // console.debug(data.graph);
             doCurtain();
-            displayGraph(data.graph);
+            matriceSimilitude = data.graph;
+            displayGraph(data.graph, 0.02);
 
             if($('input[name="type"]:checked').val() == "actors")
                 printActors(data.target);
             else if ($('input[name="type"]:checked').val() == "movies")
                 printFilms(data.target);
         });
+    });
+
+    $( "#similitude" ).change(function() {
+      displayGraph(matriceSimilitude, this.value);
     });
 });
 
@@ -154,14 +166,19 @@ function getDivMovie(alias, director, budget, comment, runtime)
 }
 
 function displayGraph(graph, minimum)  {
+
   var matrice = [];
   for (var mySource in graph) {
     for (var myTarget in graph[mySource]) {
       if (graph[mySource][myTarget] > minimum) {
         matrice.push({source: mySource,
                       target: myTarget,
-                      type: "licensing"    });
+                      type: "licensing"  });
   }}}
+
+
+
+
   d3Graphe( matrice , "#graph");
 }
 
