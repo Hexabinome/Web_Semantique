@@ -107,6 +107,9 @@ $(document).ready(function() {
 
 function ajaxGetSimilar(uri)
 {
+    $("#listeSimilar").html("");
+
+    $(".se-pre-con").fadeIn("slow");
     console.debug(uri);
 
     $("#menu3").removeClass("in");
