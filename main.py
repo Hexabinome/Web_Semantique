@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from Module import text_from_request, url_from_text, rdf_from_url, similarity, information, most_referenced, \
-    similar_result, targetedUriFromUrl
+    similar_result, targeted_uri_from_url
 from flask import json
 import time
 import threading
@@ -124,7 +124,7 @@ def Module2_2_DBPedia(urList, requestType, outThreads):
 
 def Module2_3_UriResource(urList, targetType, outThreads):
     start = time.time()
-    targetedUris = targetedUriFromUrl.getTargetedUrisFromUrls(urList, targetType)
+    targetedUris = targeted_uri_from_url.getTargetedUrisFromUrls(urList, targetType)
     print("Module 2-3 (targeted uri) : {0} sec".format(time.time() - start))
     outThreads['targetedUris']=  targetedUris
 
