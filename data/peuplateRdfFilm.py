@@ -66,10 +66,10 @@ def populate():
   sparql.setReturnFormat(JSON)
 
   #  load the current json file in data
-  with open("data/films.json") as json_file:
+  with open("films.json") as json_file:
     data = json.load(json_file)
   #  load the fils list from allFilmsDbpedia and delete the ones already compute
-  filmsFile = open('data/allFilmsDbpedia', 'r+')
+  filmsFile = open('allFilmsDbpedia', 'r+')
   lines = filmsFile.read().splitlines()
 
   # iterate over each line of allFilmsDbpedia
@@ -98,20 +98,20 @@ def populate():
       print('__________________________DBPEDIA 502 ERROR ')
       # print(traceback.format_exc())
       #  rewrite the file of films minus the link already visited
-      filmsFile = open('data/allFilmsDbpedia', 'w')
+      filmsFile = open('allFilmsDbpedia', 'w')
       for url in lines[lineCounter:]:
         if url != '\n':
           filmsFile.write(url)
           filmsFile.write('\n')
       # filmsFile.close()
       #  stocke the new json data with extra
-      with open('data/films.json', 'r+') as outfile:
+      with open('films.json', 'r+') as outfile:
         json.dump(data, outfile)
       print('... you are getting an exception from dbpedia')
       print('your current work is stored, re-run script later')
       sys.exit()
   #  stocke the new json data with extra
-  with open('data/films.json', 'r+') as outfile:
+  with open('films.json', 'r+') as outfile:
     json.dump(data, outfile)
   print('... you are done with work')
 
@@ -129,7 +129,7 @@ def storeAllFilms():
   sparql.setReturnFormat(JSON)
   importantFilmJson = sparql.query().convert()
 
-  f = open('data/allFilmsDbpedia', 'w')
+  f = open('allFilmsDbpedia', 'w')
   for x in importantFilmJson['results']['bindings']:
     # getting the url of the film
     filmUri = x['description']['value']

@@ -49,10 +49,10 @@ def populate():
   sparql.setReturnFormat(JSON)
 
   #  load the current json file in data
-  with open("data/actors.json") as json_file:
+  with open("actors.json") as json_file:
     data = json.load(json_file)
   #  load the fils list from allActorsDbpedia and delete the ones already compute
-  actorsFile = open('data/allActorsDbpedia', 'r+')
+  actorsFile = open('allActorsDbpedia', 'r+')
   lines = actorsFile.read().splitlines()
 
   # iterate over each line of allActorsDbpedia
@@ -81,14 +81,14 @@ def populate():
       print('__________________________DBPEDIA ERROR :')
       print(traceback.format_exc())
       #  rewrite the file of actors minus the link already visited
-      actorsFile = open('data/allActorsDbpedia', 'w')
+      actorsFile = open('allActorsDbpedia', 'w')
       for url in lines[lineCounter:]:
         if url != '\n':
           actorsFile.write(url)
           actorsFile.write('\n')
       # actorsFile.close()
       #  stocke the new json data with extra
-      with open('data/actors.json', 'r+') as outfile:
+      with open('actors.json', 'r+') as outfile:
         json.dump(data, outfile)
       print('... you are getting an exception from dbpedia')
       print('your current work is stored, re-run script later')
@@ -97,7 +97,7 @@ def populate():
   # ========End of the work===========
   print('...Congratulation! Work is over !')
   #  rewrite the file of actors minus the link already visited
-  actorsFile = open('data/allActorsDbpedia', 'w')
+  actorsFile = open('allActorsDbpedia', 'w')
   for url in lines[lineCounter:]:
     if url != '\n':
       actorsFile.write(url)
@@ -119,7 +119,7 @@ def storeAllActors():
   sparql.setReturnFormat(JSON)
   importantFilmJson = sparql.query().convert()
 
-  f = open('data/allActorsDbpedia', 'w')
+  f = open('allActorsDbpedia', 'w')
   for x in importantFilmJson['results']['bindings']:
     # getting the url of the film
     if  x['actor']['type'] == 'uri':

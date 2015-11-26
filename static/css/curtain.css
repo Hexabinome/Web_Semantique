@@ -1,0 +1,47 @@
+
+/*
+Curtain
+*/
+*{
+     margin:0;
+     padding:0;
+ }
+
+ img{
+    border: none;
+ }
+ .leftcurtain{
+     width: 50%;
+     height: 495px;
+     top: 0px;
+     left: 0px;
+     position: absolute;
+     height: 585px;
+     z-index: 2;
+ }
+ .rightcurtain{
+     width: 51%;
+     height: 495px;
+     right: 0px;
+     top: 0px;
+     position: absolute;
+     height: 585px;
+     z-index: 3;
+
+ }
+ .rightcurtain img, .leftcurtain img{
+     width: 100%;
+     height: 100%;
+
+ }
+ .logo{
+     margin: 0px auto;
+     margin-top: 150px;
+ }
+
+ .rope{
+     position: absolute;
+     top: -40px;
+     left: 80%;
+     z-index: 4;
+ }

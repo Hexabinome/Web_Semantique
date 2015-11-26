@@ -20,7 +20,15 @@
 
         <!-- Custom -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/curtain.css') }}">
          <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+         <script src="{{ url_for('static', filename='js/curtain.js') }}"></script>
+         <script src="{{ url_for('static', filename='js/jquery_easing_1_3.js') }}"></script>
+
+
+        <!-- Font -->
+        <link href='https://fonts.googleapis.com/css?family=Crimson+Text:400,700' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Norican' rel='stylesheet' type='text/css'>
 
         <script>
             $(document).ready(function () {
@@ -28,14 +36,14 @@
             });
         </script>
 
-        <title>MementoCinema {% block title %}{% endblock %}</title>
+        <title>{% block title %}  MementoCinema   {% endblock %}</title>
     {% endblock %}
 </head>
 <body>
 <div class="container text-center">
     <header>
         <div class="row">
-            <img src="{{ url_for('static',filename='images/memento.png') }}">
+            <span class="title"> Memento Cinema </span>
         </div>
     </header>
     {% block content %}{% endblock %}

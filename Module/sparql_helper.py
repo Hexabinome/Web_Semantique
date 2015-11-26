@@ -2,7 +2,6 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 import json
 
-
 def runQuery_returnBool(query):
     return len(runQuery(query)) != 0
 

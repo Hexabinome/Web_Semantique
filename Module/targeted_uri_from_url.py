@@ -3,8 +3,6 @@
 #           get_sparql_graph
 # ------------------------------------------
 import threading
-import os
-import ast
 from Module.sparql_helper import runQuery_returnBindings
 
 CACHE_DIRECTORY = 'cache/dbpedia'
@@ -35,7 +33,6 @@ def getUriFromUrlThreaded(uris, targetSet, targetType):
         if testIsTargetType(uri, targetType) != []:
             targetSet.add(uri)
 
-
 '''
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
 Launches a sparql query for each different uri
@@ -44,8 +41,6 @@ targetType :
     0 : actor
     1 : film
 '''
-
-
 def getTargetedUrisFromUrls(urlDict, targetType):
     # Contient toutes les uris acteurs ou films
     targetSet = set()
