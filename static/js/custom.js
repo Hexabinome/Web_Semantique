@@ -60,3 +60,19 @@ function d3Graphe(links, div)
 	}
 
 }
+
+$(document).ready(function() {
+    /*var source = new EventSource("/progress");
+    source.onmessage = function(event) {
+        $('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
+    }*/
+    target = ($('input[name="type"]:checked').val() == "actors")?0:1;
+    filtre = ($('input[name="filtre"]:checked').val() == "memento")?0:1;
+    $("#searchBtn").bind("click", function(){
+        $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
+                                                                        'type' : target, 'filtre' : filtre}, function(data) {
+            console.debug(data);
+        });
+    })
+
+});
