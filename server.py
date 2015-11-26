@@ -49,7 +49,7 @@ def search():
     print('you searched ', search_query, " ", type, 'With ratio = ', seuil, "With filter : ", request_filtre)
 
     if request_filtre == 0:
-        search_res = main.DoSearch(search_query + " " + type, float(seuil), request_type)
+        search_res = main.DoSearch(search_query + " " + (type if type == 'actors' else ""), float(seuil), request_type)
     elif request_filtre == 1:
         search_res = main.DoSimilar(search_query, float(seuil), request_type)
 

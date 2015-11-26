@@ -94,9 +94,9 @@ $(document).ready(function() {
             displayGraph(data.graph, 0.02);
 
             if($('input[name="type"]:checked').val() == "actors")
-                printActors(data.target);
+                printActors("listeTarget", data.target);
             else if ($('input[name="type"]:checked').val() == "movies")
-                printFilms(data.target);
+                printFilms("listeTarget", data.target);
         });
     });
 
@@ -107,6 +107,8 @@ $(document).ready(function() {
 
 function ajaxGetSimilar(uri)
 {
+    console.debug(uri);
+
     $("#menu3").removeClass("in");
     $("#menu3").removeClass("active");
     $("#tab4").removeClass("active");
@@ -117,26 +119,32 @@ function ajaxGetSimilar(uri)
 
     $.post('/search', {'search': uri, 'seuil' : seuil, 'type' : type, 'filtre' : 'similar'},
         function(data) {
+            $(".se-pre-con").fadeOut("slow");
+
             data = $.parseJSON(data);
-            console.debug(data);
+            if($('input[name="type"]:checked').val() == "actors")
+                printActors("listeSimilar", data.target);
+            else if ($('input[name="type"]:checked').val() == "movies")
+                printFilms("listeSimilar", data.target);
     });
 }
 
-function printActors(data)
+function printActors(ul, data)
 {
     $.each(data, function(uri, val){
-        $("#listeTarget").append(getDivActor(val.alias, val.birth, val.thumbnail, uri, val.resume));
+        $("#"+ul).append(getDivActor(val.alias, val.birth, val.thumbnail, uri, val.resume));
         $("#"+uri.split("/").pop()).bind("click", function(e){
             ajaxGetSimilar($("#"+e.currentTarget.id).data("uri"));
         });
     });
 }
 
-function printFilms(data)
+function printFilms(ul, data)
 {
     $.each(data, function(uri, val){
-        $("#listeTarget").append(getDivMovie(uri, val.alias, val.director, val.budget, val.comment, val.runtime));
-        $("#"+uri.split("/").pop()).bind("click", function(e){
+        $("#"+ul).append(getDivMovie(uri, val.alias, val.director, val.budget, val.comment, val.runtime));
+
+        $("#"+uri.split("/").pop().substr(0, 5)).bind("click", function(e){
             ajaxGetSimilar($("#"+e.currentTarget.id).data("uri"));
         });
     });
@@ -185,7 +193,7 @@ function getDivMovie(uri, alias, director, budget, comment, runtime)
     +'          <div class="col-md-6">'
     +'              <div id="thumbnail" >'
     +'              </div>'
-    +'              <button id="' + uri.split("/").pop() + '" class="btnSimilar btn btn-primary" data-uri = "' + uri + '">'
+    +'              <button id="' + uri.split("/").pop().substr(0, 5) + '" class="btnSimilar btn btn-primary" data-uri = "' + uri + '">'
     +'                  Résultats similaires '
     +'              </button>'
     +'          </div>'
@@ -217,7 +225,6 @@ function displayGraph(graph, minimum)  {
   d3Graphe( matrice , "#graph");
 
 }
-
 
 function displayQuote(){
     // list of list

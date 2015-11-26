@@ -24,7 +24,6 @@ CX_TEST = "017576662512468239146:omuauf_lfve"
 
 ALCHEMY_API_KEY = "691b05b66974d5e2c59a2d3d3fa950e7b98d5fcd"
 
-
 def get_random_api_key():
     """
     Renvoie une clé au hasard parmi l'ensemble des clés à notre disposition

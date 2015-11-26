@@ -24,7 +24,7 @@ def DoSearch(search, seuil, targetType):
     jsonlist = Module1_GoogleAndAlchemy(search)
     # Module 2.1 - TEXT IN URLs -> URIs
     urllist = Module2_1_Spotlight(jsonlist)
-    print(urllist)
+
     targetedUris = Module2_3_UriResource(urllist, targetType)
     print(targetedUris)
     #Remplis dans un dictionnaire d'url les uri qui sont identifié comme targeted
@@ -191,7 +191,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("james bond movies", 0.3, 1)  # term)[1]))
+    res = DoSearch("Emma actor", 0.3, 1)  # term)[1]))
     '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():
