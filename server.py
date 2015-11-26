@@ -51,7 +51,7 @@ def search():
     if request_filtre == 0:
         search_res = main.DoSearch(search_query + " " + type, float(seuil), request_type)
     elif request_filtre == 1:
-        search_res = main.DoSimilar(search_query + " " + type, float(seuil), request_type)
+        search_res = main.DoSimilar(search_query, float(seuil), request_type)
 
     search_res["search"] = search_query
     search_res["type"] = request_type

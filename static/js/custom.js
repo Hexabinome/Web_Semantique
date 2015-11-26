@@ -1,6 +1,9 @@
 /**
 * Created by elmhaidara on 20/11/15.
 */
+var type = -1;
+var search = "";
+var seuil = "";
 
 //http://bl.ocks.org/mbostock/4062045
 function d3Graphe(links, div)
@@ -69,9 +72,12 @@ $(document).ready(function() {
 
     $("#searchBtn").bind("click", function(){
         doLongCurtain();
+        type = $('input[name="type"]:checked').val();
+        search = $("#searchInput").val();
+        seuil = $("#seuilInput").val();
         $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
-                                'type' : $('input[name="type"]:checked').val(),
-                                'filtre' : $('input[name="filtre"]:checked').val()},
+                                'type' : type,
+                                'filtre' : "memento"},
         function(data) {
             data = $.parseJSON(data);
             console.debug(data.graph);
@@ -86,17 +92,40 @@ $(document).ready(function() {
     });
 });
 
+function ajaxGetSimilar(uri)
+{
+    $("#menu3").removeClass("in");
+    $("#menu3").removeClass("active");
+    $("#tab4").removeClass("active");
+
+    $("#tab3").addClass("active");
+    $("#menu2").addClass("active");
+    $("#menu2").addClass("in");
+
+    $.post('/search', {'search': uri, 'seuil' : seuil, 'type' : type, 'filtre' : 'similar'},
+        function(data) {
+            data = $.parseJSON(data);
+            console.debug(data);
+    });
+}
+
 function printActors(data)
 {
     $.each(data, function(uri, val){
         $("#listeTarget").append(getDivActor(val.alias, val.birth, val.thumbnail, uri, val.resume));
+        $("#"+uri.split("/").pop()).bind("click", function(e){
+            ajaxGetSimilar($("#"+e.currentTarget.id).data("uri"));
+        });
     });
 }
 
 function printFilms(data)
 {
     $.each(data, function(uri, val){
-        $("#listeTarget").append(getDivMovie(val.alias, val.director, val.budget, val.comment, val.runtime));
+        $("#listeTarget").append(getDivMovie(uri, val.alias, val.director, val.budget, val.comment, val.runtime));
+        $("#"+uri.split("/").pop()).bind("click", function(e){
+            ajaxGetSimilar($("#"+e.currentTarget.id).data("uri"));
+        });
     });
 }
 
@@ -108,17 +137,23 @@ function getDivActor(alias, birth, thumbnail, uri, resume)
     + '        <h1 class="panel-title">' + alias + ' - ' + birth + '</h1>'
     + '     </div>'
     + '     <div class="panel-body">'
-    + '         <div id="thumbnail" class="col-md-6 col-lg-4">'
-    + '            <img src="' + thumbnail + '" />'
-    + '            <div class="caption">'
-    + '                <h3> ' + alias + '</h3>'
-    + '            </div>'
+    +'          <div class="col-md-6">'
+    +'              <img src="' + thumbnail + '" />'
+    +'              <div>'
+    +'                  <button id="' + uri.split("/").pop() + '" class="btnSimilar btn btn-primary" data-uri="' + uri + '">'
+    +'                      Résultats similaires '
+    +'                  </button>'
+    +'              </div>'
+    +'          </div>'
+    + '         <div class="caption">'
+    + '               <h3> ' + alias + '</h3>'
+    + '         </div>'
     + '            <b> sources </b> '+ uri
-    + '        </div>'
-    + '        <div class="col-md-6 col-lg-8 right-padding">'
-    + '            <div id="resume" class="row"><b> Histoire :</b> {{ '+ resume + ' }}'
-    + '            </div>'
-    + '        </div>'
+    + '         <div class="col-md-6 right-padding">'
+    + '             <div id="resume" class="row"><b> Histoire :</b> '+ resume
+    + '              </div>'
+    + '         </div>'
+    + '       </div>'
     + '    </div>'
     + '</div>'
     + '</li>';
@@ -126,16 +161,20 @@ function getDivActor(alias, birth, thumbnail, uri, resume)
     return str;
 }
 
-function getDivMovie(alias, director, budget, comment, runtime)
+function getDivMovie(uri, alias, director, budget, comment, runtime)
 {
     var str = '<li>'
     +'  <div class="panel panel-default">'
     +'      <div class="panel-heading">'
-    +'          <h1 class="panel-title">' + alias + ' - <a href=' + director + '> Director</a>'
-    +'          </h1>'
+    +'          <h1 class="panel-title">' + alias + ' - ' + director + '</h1>'
     +'      </div>'
     +'      <div class="row panel-body">'
-    +'          <div id="thumbnail" class="col-md-6">'
+    +'          <div class="col-md-6">'
+    +'              <div id="thumbnail" >'
+    +'              </div>'
+    +'              <button id="' + uri.split("/").pop() + '" class="btnSimilar btn btn-primary" data-uri = "' + uri + '">'
+    +'                  Résultats similaires '
+    +'              </button>'
     +'          </div>'
     +'          <div class="col-md-6">'
     +'              <div id="budget" class="row">'
@@ -154,14 +193,16 @@ function getDivMovie(alias, director, budget, comment, runtime)
 }
 
 function displayGraph(graph, minimum)  {
-  var matrice = [];
-  for (var mySource in graph) {
-    for (var myTarget in graph[mySource]) {
-      if (graph[mySource][myTarget] > minimum) {
-        matrice.push({source: mySource,
-                      target: myTarget,
-                      type: "licensing"    });
-  }}}
-  d3Graphe( matrice , "#graph");
+    var matrice = [];
+    for (var mySource in graph) {
+        for (var myTarget in graph[mySource]) {
+          if (graph[mySource][myTarget] > minimum) {
+            matrice.push({source: mySource,
+                          target: myTarget,
+                          type: "licensing"    });
+            }
+        }
+    }
+    d3Graphe( matrice , "#graph");
 }
 

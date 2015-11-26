@@ -25,23 +25,15 @@ def DoSearch(search, seuil, targetType):
     # Module 2.1 - TEXT IN URLs -> URIs
     urllist = Module2_1_Spotlight(jsonlist)
 
-    '''
-    Appele le module 2 threader pour plus de rapidité et de cohérence
-
-    Valeur de retour
-    outThreads['mostReferenced'] = [None]
-    outThreads['dbcontent'] = [None]
-    outThreads['targetedUris'] = [None]
-    '''
-    outThreadsModule2 = Module2_Threaded(urllist, targetType, requestType)
-
+    targetedUris = Module2_3_UriResource(urllist, targetType)
+    print(targetedUris)
     #Remplis dans un dictionnaire d'url les uri qui sont identifié comme targeted
     #Cela évite de récupérer les graphes rdf de tous
     uriListInUrl = {}
 
     for url in urllist:
         uriListInUrl[url] = set()
-        for targetedUri in outThreadsModule2['targetedUris']:
+        for targetedUri in targetedUris:
               if  targetedUri in urllist[url]:
                   uriListInUrl[url].add(targetedUri)
 
@@ -55,18 +47,14 @@ def DoSearch(search, seuil, targetType):
     outThreadsModule3_4['similar'] = []
     outThreadsModule3_4['matrix'] = []
 
-
-
     # Module 3 - [URL : graphe RDF] -> matrice similarté
-
     t = threading.Thread(target=Module3, args=(dbcontent, outThreadsModule3_4))
     threads.append(t)
     t.start()
 
-
     # On souhaite retrouvé quelque chose : on va donc afficher les informations que l'on a obtenus
     # Module 4 - [URI actor/film] -> information enrichies
-    t = threading.Thread(target=Module4, args=(outThreadsModule2['targetedUris'], targetType, outThreadsModule3_4, search.split()))
+    t = threading.Thread(target=Module4, args=(targetedUris, targetType, outThreadsModule3_4, search.split()))
     threads.append(t)
     t.start()
 
@@ -75,7 +63,6 @@ def DoSearch(search, seuil, targetType):
     res = {}
 
     res["graph"] = outThreadsModule3_4['matrix']
-
     res["target"] = outThreadsModule3_4['similar']
 
     print("Temps total : {0} sec".format(time.time() - start))
@@ -97,20 +84,17 @@ def Module1_GoogleAndAlchemy(searchKeyword):
 
     return jsonlist
 
+'''
 def Module2_Threaded(urllist, targetType, requestType):
     threads = []
     outThreads = {}
     outThreads['mostReferenced'] = [None]
-
     outThreads['targetedUris'] = [None]
 
     # What has been searched ?
-    t = threading.Thread(target=FindMostReferenced, args=(urllist, targetType, outThreads))
-    threads.append(t)
-    t.start()
-
-
-
+    #t = threading.Thread(target=FindMostReferenced, args=(urllist, targetType, outThreads))
+    #threads.append(t)
+    #t.start()
 
     # Module 2.3 - URIs -> DBPEDIA RDF GRAPHs
     t = threading.Thread(target=Module2_3_UriResource, args=(urllist, targetType, outThreads))
@@ -121,6 +105,7 @@ def Module2_Threaded(urllist, targetType, requestType):
         t.join()
 
     return outThreads
+'''
 
 def Module2_1_Spotlight(jsonList):
     """
@@ -139,11 +124,11 @@ def Module2_2_DBPedia(urList, requestType):
     print("Module 2-2 (dbpedia content) : {0} sec".format(time.time() - start))
     return dbpedia
 
-def Module2_3_UriResource(urList, targetType, outThreads):
+def Module2_3_UriResource(urList, targetType):
     start = time.time()
     targetedUris = targeted_uri_from_url.getTargetedUrisFromUrls(urList, targetType)
     print("Module 2-3 (targeted uri) : {0} sec".format(time.time() - start))
-    outThreads['targetedUris']=  targetedUris
+    return targetedUris
 
 def Module3(grapheRDF, outThreads):
     # call module 3 RDF TO RESULTS
@@ -176,7 +161,6 @@ def DoSimilar(search, ratio, type):
     # 0: subject,
     # 1: item,
     # 2: subjectAndItem
-    requestType = 2
     ratio = 0.5 if type == 0 else 0.7
     similars = Module5(search, type, ratio)
     res = {'target':{}}
@@ -207,7 +191,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("Brad actor", 0.3, 0)  # term)[1]))
+    res = DoSearch("james bond movies", 0.3, 1)  # term)[1]))
     '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():

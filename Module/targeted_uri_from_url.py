@@ -24,7 +24,7 @@ def actor(url):
 
 
 def film(url):
-    return "SELECT DISTINCT ?film WHERE {{ {{?film a dbo:Film. FILTER(?film= <{0}>).}} UNION {{ ?film a <http://schema.org/Movie>. FILTER(?film= <{0}>).}} }}" \
+    return "SELECT DISTINCT ?film WHERE {{ {{?film a dbo:Film. FILTER(?film= <{0}>).}} UNION {{ ?film a <http://schema.org/Movie>. FILTER(?film= <{0}>).}} UNION {{ ?film a umbel-rc:Movie_CW. FILTER(?film= <{0}>).}} UNION {{ ?film a umbel-rc:Movie_CW. FILTER(?film= <{0}>).}} }}" \
         .format(url)
 
 

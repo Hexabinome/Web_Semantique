@@ -19,7 +19,6 @@ function doLongCurtain()
     return false;
 };
 
-
 function doCurtain()
 {
     $(this).blur();
@@ -49,5 +48,24 @@ function doCurtain()
 
     return false;
 };
+
+$(".rope").bind("click", function() {
+    $(this).blur();
+
+    if ($curtainopen == true){
+        $(".screen").fadeOut(1000, function(){
+            $(".screen").css("visibility", "hidden");
+        });
+
+        $(this).stop().animate({top: '-40px' }, {queue:false, duration:350, easing:'easeOutBounce'});
+        $(".leftcurtain").stop().animate({width:'50%'}, 2000 );
+        $(".rightcurtain").stop().animate({width:'51%'}, 2000 , function(){
+            $(".search").fadeIn(2000);
+        });
+        $curtainopen = false;
+    }
+
+    return false;
+});
 
 
