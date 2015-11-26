@@ -4,7 +4,6 @@
 import threading
 import json
 
-
 # ==========================
 # Déclaration variables
 # ==========================
@@ -25,7 +24,6 @@ def createSimilarityVector(filmRDF, searchType, ratio):
             similarityVector[uri] = actualRatio
     return similarityVector
 
-
 def createSimilarityMatrix(dbPedia):
     sujetObjetsGraphes = {}
 
@@ -44,10 +42,13 @@ def createSimilarityMatrix(dbPedia):
                     sujet = triplet['subject']['value']
                 except:
                     sujet = ''
+                '''
                 try:
                     predicat = triplet['predicat']['value']
                 except:
                     predicat = ''
+                '''
+
                 try:
                     objet = triplet['valeur']['value']
                 except:
@@ -67,11 +68,14 @@ def createSimilarityMatrix(dbPedia):
     matriceIndice = {}
     threads = []
     urlTab = []
+
+    #Insert dans urlTab toutes les urls
     for urlLigne in sujetObjetsGraphes:
         urlTab.append(urlLigne)
 
     # Calcul d'une moitié de la matrice, 1 thread par URL
     for idxLigne in range(len(urlTab)):
+        #Créer une entré dans matriceIndice pour chaque url
         matriceIndice[urlTab[idxLigne]] = {}
         t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlTab, idxLigne, sujetObjetsGraphes))
         threads.append(t)
@@ -91,7 +95,6 @@ def createSimilarityMatrix(dbPedia):
 
     return matriceIndice
 
-
 def similarity(RDF1, RDF2, type):
     value = 'valeur' if type == 1 else 'subject'
     common = 0
@@ -105,8 +108,8 @@ def similarity(RDF1, RDF2, type):
                 RDF2.remove(j)
     return common / initLen
 
-
 def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
+    #Pour toutes les urls
     for idxCol in range(idxLigne, len(urlTab)):
         urlLigne = urlTab[idxLigne]
         urlCol = urlTab[idxCol]
@@ -114,13 +117,13 @@ def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
             ratio = 1.0
         else:
             try:
+                #Calcule du ration
                 ratio = len([val for val in sujetObjetsGraphes[urlLigne] if val in sujetObjetsGraphes[urlCol]]) / (
                     len(set(sujetObjetsGraphes[urlLigne] + sujetObjetsGraphes[urlCol])))
             except ZeroDivisionError:
                 ratio = 0
-
+        #ajout de l'entré dans la matrice
         resultMatrice[urlLigne][urlCol] = ratio
-
 
 def extractGraph(matrice, seuil):
     graph = {}
@@ -132,7 +135,6 @@ def extractGraph(matrice, seuil):
                 graph[urlCol].append(urlLigne)
 
     return graph
-
 
 if __name__ == '__main__':
     createSimilarityMatrix()

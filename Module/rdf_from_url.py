@@ -46,7 +46,7 @@ def getRdfFromUrl(url, requestType):
     else:
         # print("Query dbpedia {0}".format(url))
         query = options[requestType](url)
-        print(query)
+        # print(query)
         cache_content = runQuery_returnBindings(query)
 
         # Save in cache
