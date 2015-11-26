@@ -16,7 +16,7 @@ CACHE_DIRECTORY_GOOGLE = 'cache/google'
 GOOGLE_API_KEY_1 = "AIzaSyB1Tqy8xyxFx7JqfsxNL2yyVrJdLxAMv14"  # Momo
 GOOGLE_API_KEY_2 = "AIzaSyAu37WsyKygVkMwMJ8OFP4NMtP4j9Afys8"  # Momo
 GOOGLE_API_KEY_3 = "AIzaSyAURhklAaMmv8UG0cLBAMdVJqbVDUbU_s0"  # Robin
-GOOGLE_API_KEY_4 = "AIzaSyAcF9vr-X9VdKYau97nbN3PGsqeZrKqT7w"  # Robin
+GOOGLE_API_KEY_4 = "AIzaSyAcF9vr-X9VdKYau97nbN3PGsqeZrKqT7w"  # pas Robin
 
 # Identifiant de notre moteur de recherche
 CX = "002939247705119679953:0kfwzt0baty"

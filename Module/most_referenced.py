@@ -13,8 +13,8 @@ def findMostReferenced(uriList, type):
     for uri in uriList:
         incMap(mostVisitedResources, uri)
 
-    isSomething = {0: isMovie,
-                   1: isActor
+    isSomething = {0: isActor,
+                   1: isMovie
                    }
 
     for uri in sorted(mostVisitedResources, key=mostVisitedResources.get, reverse=True):
