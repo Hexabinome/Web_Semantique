@@ -45,7 +45,7 @@ def populate():
   data = {}
   predicatCibleTab = []
   sparql = SPARQLWrapper("http://live.dbpedia.org/sparql")
-  sparql.setTimeout(2)
+  sparql.setTimeout(10)
   sparql.setReturnFormat(JSON)
 
   #  load the current json file in data
