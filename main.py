@@ -24,7 +24,7 @@ def DoSearch(search, seuil, targetType):
     jsonlist = Module1_GoogleAndAlchemy(search)
     # Module 2.1 - TEXT IN URLs -> URIs
     urllist = Module2_1_Spotlight(jsonlist)
-
+    print(urllist)
     targetedUris = Module2_3_UriResource(urllist, targetType)
     print(targetedUris)
     #Remplis dans un dictionnaire d'url les uri qui sont identifié comme targeted

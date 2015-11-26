@@ -30,6 +30,7 @@ body {
 /* Taille de la zone de recherche */
 #searchInput{
 	width: 525px;
+	padding-left: 10px;
 }
 
 .customInput
@@ -78,4 +79,13 @@ li {
 	z-index: 5;
 	left: 0px;
 	position: relative;
+}
+
+.sliderDiv{
+	padding-top: 20px;
+}
+
+#citation{
+	margin-top: 120px;
+  font-size: 28px;
 }

@@ -52,27 +52,6 @@
                 -->
             </div>
             <br/>
-
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-md-4">
-                        <div class="radio radio-primary">
-                            <label class="searchText">
-                                <input checked value="memento" name="filtre" type="radio"> Retrouver
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-5">
-                        <div class="radio radio-primary">
-                            <label class="searchText">
-                                <input value="similaire" name="filtre" type="radio"> Similaire
-                            </label>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
         </div>
     </div>
 
@@ -86,13 +65,24 @@
 
           <div class="tab-content">
             <div id="home" class="tab-pane fade in active">
-              <h3>HOME</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <div id="citation">
+                  <q>I've got a feeling we're not in Kansas anymore. <q>
+                  <cite> (The Wizard of Oz) </cite>
+                </div>
             </div>
             <div id="menu1" class="tab-pane fade">
-                <!-- graph -->
+                <div class="row">
+                    <div class="col-md-5 col-md-offset-2">
+                        <h2> Graphe de similitude :</h2>
+                    </div>
+                    <div class="sliderDiv col-md-3">
+                        <form>
+                            Seuil minimum de similitude :
+                            <input type="range" step="0.025" name="points" min="0" max="1" id="similitude">
+                        </form>
+                    </div>
+                </div>
                 <div class="row" id="graph">
-
                 </div>
             </div>
             <div id="menu2" class="tab-pane fade">

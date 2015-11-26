@@ -6,6 +6,10 @@ var search = "";
 var seuil = "";
 
 //http://bl.ocks.org/mbostock/4062045
+
+//global
+var matriceSimilitude = null;
+
 function d3Graphe(links, div)
 {
 	var nodes = {};
@@ -27,6 +31,9 @@ function d3Graphe(links, div)
 		.charge(-300)
 		.on("tick", tick)
 		.start();
+
+    // empty div
+    $( div ).empty()
 
 	var svg = d3.select(div).append("svg")
 		.attr("width", width)
@@ -71,6 +78,7 @@ $(document).ready(function() {
     }*/
 
     $("#searchBtn").bind("click", function(){
+        displayQuote();
         doLongCurtain();
         type = $('input[name="type"]:checked').val();
         search = $("#searchInput").val();
@@ -80,15 +88,20 @@ $(document).ready(function() {
                                 'filtre' : "memento"},
         function(data) {
             data = $.parseJSON(data);
-            console.debug(data.graph);
+            // console.debug(data.graph);
             doCurtain();
-            displayGraph(data.graph);
+            matriceSimilitude = data.graph;
+            displayGraph(data.graph, 0.02);
 
             if($('input[name="type"]:checked').val() == "actors")
                 printActors(data.target);
             else if ($('input[name="type"]:checked').val() == "movies")
                 printFilms(data.target);
         });
+    });
+
+    $( "#similitude" ).change(function() {
+      displayGraph(matriceSimilitude, this.value);
     });
 });
 
@@ -193,16 +206,35 @@ function getDivMovie(uri, alias, director, budget, comment, runtime)
 }
 
 function displayGraph(graph, minimum)  {
-    var matrice = [];
-    for (var mySource in graph) {
-        for (var myTarget in graph[mySource]) {
-          if (graph[mySource][myTarget] > minimum) {
-            matrice.push({source: mySource,
-                          target: myTarget,
-                          type: "licensing"    });
-            }
-        }
-    }
-    d3Graphe( matrice , "#graph");
+  var matrice = [];
+  for (var mySource in graph) {
+    for (var myTarget in graph[mySource]) {
+      if (graph[mySource][myTarget] > minimum) {
+        matrice.push({source: mySource,
+                      target: myTarget,
+                      type: "licensing"  });
+  }}}
+  d3Graphe( matrice , "#graph");
+
 }
+
+
+function displayQuote(){
+    // list of list
+    var quote = [[" Houston, we have a problem." , "Apollo 13"],
+    ["I'll be back.", "Terminator"],
+    ["It really tied the room together.", "The Big Lebowski"],
+    ["It's alive! It's alive!", "Frankenstein"],
+    ["I've got a feeling we're not in Kansas anymore.", "The Wizard of Oz"],
+    ["E.T. phone home.", "E.T."],
+    ["I love the smell of napalm in the morning.", "Apocalypse Now"],
+    ["I'm gonna make him an offer he can't refuse.", "The Godfather"],
+    ["Remember, with great power. comes great responsibility.", "Spiderman"]
+    ];
+    var rand = Math.floor((Math.random() * (quote.length -1) ) + 1);
+
+    $("#citation").empty();
+    $("#citation").append("<q>" + quote[rand][0] + "<q> <cite>" + quote[rand][1] + "</cite>");
+}
+
 
