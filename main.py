@@ -52,13 +52,17 @@ def DoSearch(search, seuil, targetType):
     threads = []
 
     outThreadsModule3_4 = {}
-    outThreadsModule3_4['similar'] = [None]
-    outThreadsModule3_4['matrix'] = [None]
+    outThreadsModule3_4['similar'] = []
+    outThreadsModule3_4['matrix'] = []
+
+
 
     # Module 3 - [URL : graphe RDF] -> matrice similarté
+
     t = threading.Thread(target=Module3, args=(dbcontent, outThreadsModule3_4))
     threads.append(t)
     t.start()
+
 
     # On souhaite retrouvé quelque chose : on va donc afficher les informations que l'on a obtenus
     # Module 4 - [URI actor/film] -> information enrichies
@@ -68,9 +72,10 @@ def DoSearch(search, seuil, targetType):
 
     for t in threads:
         t.join()
-
     res = {}
+
     res["graph"] = outThreadsModule3_4['matrix']
+
     res["target"] = outThreadsModule3_4['similar']
 
     print("Temps total : {0} sec".format(time.time() - start))
@@ -103,6 +108,9 @@ def Module2_Threaded(urllist, targetType, requestType):
     t = threading.Thread(target=FindMostReferenced, args=(urllist, targetType, outThreads))
     threads.append(t)
     t.start()
+
+
+
 
     # Module 2.3 - URIs -> DBPEDIA RDF GRAPHs
     t = threading.Thread(target=Module2_3_UriResource, args=(urllist, targetType, outThreads))

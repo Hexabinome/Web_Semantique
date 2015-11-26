@@ -74,8 +74,9 @@ $(document).ready(function() {
                                 'filtre' : $('input[name="filtre"]:checked').val()},
         function(data) {
             data = $.parseJSON(data);
-            console.debug(data);
+            console.debug(data.graph);
             doCurtain();
+            displayGraph(data.graph);
 
             if($('input[name="type"]:checked').val() == "actors")
                 printActors(data.target);
@@ -151,3 +152,16 @@ function getDivMovie(alias, director, budget, comment, runtime)
 
     return str;
 }
+
+function displayGraph(graph, minimum)  {
+  var matrice = [];
+  for (var mySource in graph) {
+    for (var myTarget in graph[mySource]) {
+      if (graph[mySource][myTarget] > minimum) {
+        matrice.push({source: mySource,
+                      target: myTarget,
+                      type: "licensing"    });
+  }}}
+  d3Graphe( matrice , "#graph");
+}
+
