@@ -29,9 +29,9 @@ function d3Graphe(links, div)
 		.on("tick", tick)
 		.start();
 
-  // empty div
+    // empty div
+    $( div ).empty()
 
-  $( div ).empty()
 	var svg = d3.select(div).append("svg")
 		.attr("width", width)
 		.attr("height", height);
@@ -75,10 +75,11 @@ $(document).ready(function() {
     }*/
 
     $("#searchBtn").bind("click", function(){
+        displayQuote();
         doLongCurtain();
         $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
                                 'type' : $('input[name="type"]:checked').val(),
-                                'filtre' : $('input[name="filtre"]:checked').val()},
+                                'filtre' : 'memento'},
         function(data) {
             data = $.parseJSON(data);
             // console.debug(data.graph);
@@ -175,10 +176,26 @@ function displayGraph(graph, minimum)  {
                       target: myTarget,
                       type: "licensing"  });
   }}}
-
-
-
-
   d3Graphe( matrice , "#graph");
 }
+
+
+function displayQuote(){
+    // list of list
+    var quote = [[" Houston, we have a problem." , "Apollo 13"],
+    ["I'll be back.", "Terminator"],
+    ["It really tied the room together.", "The Big Lebowski"],
+    ["It's alive! It's alive!", "Frankenstein"],
+    ["I've got a feeling we're not in Kansas anymore.", "The Wizard of Oz"],
+    ["E.T. phone home.", "E.T."],
+    ["I love the smell of napalm in the morning.", "Apocalypse Now"],
+    ["I'm gonna make him an offer he can't refuse.", "The Godfather"],
+    ["Remember, with great power. comes great responsibility.", "Spiderman"]
+    ];
+    var rand = Math.floor((Math.random() * (quote.length -1) ) + 1);
+
+    $("#citation").empty();
+    $("#citation").append("<q>" + quote[rand][0] + "<q> <cite>" + quote[rand][1] + "</cite>");
+}
+
 
