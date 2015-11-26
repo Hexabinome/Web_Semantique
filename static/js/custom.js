@@ -66,13 +66,39 @@ $(document).ready(function() {
     source.onmessage = function(event) {
         $('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
     }*/
-    target = ($('input[name="type"]:checked').val() == "actors")?0:1;
-    filtre = ($('input[name="filtre"]:checked').val() == "memento")?0:1;
     $("#searchBtn").bind("click", function(){
         $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
-                                                                        'type' : target, 'filtre' : filtre}, function(data) {
+                                'type' : $('input[name="type"]:checked').val(),
+                                'filtre' : $('input[name="filtre"]:checked').val()}, function(data) {
             console.debug(data);
+            /*for
+            $("#listeActors").append()*/
         });
     })
 
 });
+
+function getDivActor(alias, birth, thumbnail, uri, resume)
+{
+    return
+    '<li> '
+    + '<div class="panel panel-default">'
+    + '     <div class="panel-heading">'
+    + '        <h1 class="panel-title">' + alias + ' - ' + birth +'</h1>'
+    + '     </div>'
+    + '     <div class="panel-body">'
+    + '         <div id="thumbnail" class="col-md-6 col-lg-4">'
+    + '            <img src="' + thumbnail + '" />'
+    + '            <div class="caption">'
+    + '                <h3> ' + alias + '</h3>'
+    + '            </div>'
+    + '            <b> sources </b> '+ uri
+    + '        </div>'
+    + '        <div class="col-md-6 col-lg-8 right-padding">'
+    + '            <div id="resume" class="row"><b> Histoire :</b> {{ '+ resume + ' }}'
+    + '            </div>'
+    + '        </div>'
+    + '    </div>'
+    + '</div>'
+    + '</li>';
+}
