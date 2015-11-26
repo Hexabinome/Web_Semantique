@@ -158,22 +158,11 @@ def DoSimilar(search, ratio, type):
     # 1: item,
     # 2: subjectAndItem
     requestType = 2
-
-    # Module 1 - REQUEST -> URLs -> TEXT IN URLs
-    jsonlist = Module1_GoogleAndAlchemy(search)
-
-    # Module 2.1 - TEXT IN URLs -> URIs
-    urllist = Module2_1_Spotlight(jsonlist)
-
-    # What has been searched ?
-    mostReferenced = {}
-    FindMostReferenced(urllist, type, mostReferenced)
-    print(mostReferenced)
-    similars = Module5(mostReferenced, type, ratio)
-    print(similars)
+    ratio = 0.5 if type == 0 else 0.7
+    similars = Module5(search, type, ratio)
     res = {'target':{}}
     for uri in similars:
-        res['target'][uri] = information.getInfoTargetFromUrl(uri, type)
+        res['target'][uri] = information.getInfoFromUrl(uri, type)
 
     return res
 
