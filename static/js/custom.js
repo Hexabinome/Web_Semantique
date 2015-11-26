@@ -70,8 +70,9 @@ $(document).ready(function() {
     filtre = ($('input[name="filtre"]:checked').val() == "memento")?0:1;
     $("#searchBtn").bind("click", function(){
         $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
-                                                                        'type' : target, 'filtre' : filtre}, function(data) {
-            console.debug(data);
+                                                'type' : $('input[name="type"]:checked').val(),
+                                                'filtre' : $('input[name="filtre"]:checked').val()}, function(data) {
+            console.debug($.parseJSON(data));
         });
     })
 

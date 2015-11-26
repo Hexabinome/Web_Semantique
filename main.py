@@ -41,6 +41,7 @@ def DoSearch(search, seuil, targetType):
     outThreadsModule3_4 = {}
     outThreadsModule3_4['similar'] = [None]
     outThreadsModule3_4['matrix'] = [None]
+
     # Module 3 - [URL : graphe RDF] -> matrice similarté
     # t = threading.Thread(target=Module3, args=(outThreadsModule2['dbcontent'], outThreads))
     # threads.append(t)
@@ -58,7 +59,6 @@ def DoSearch(search, seuil, targetType):
     res = {}
     res["graph"] = {}  # outThreadsModule34['matrix']
     res["target"] = outThreadsModule3_4['similar']
-    print(res["target"])
 
     print("Temps total : {0} sec".format(time.time() - start))
     return res
@@ -200,7 +200,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("George actor", 0.3, 0)  # term)[1]))
+    res = DoSearch("Brad actor", 0.3, 0)  # term)[1]))
     '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():
