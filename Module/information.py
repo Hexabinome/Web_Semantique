@@ -81,7 +81,7 @@ def getInfoFromUrlThreaded(listeUri, resultDict, targetType, listeMotARechercher
     for uri in listeUri:
         contienMotsUtilisateur = True
         for mot in listeMotARechercher:
-            if mot not in uri:
+            if mot.lower() not in uri.lower():
                 contienMotsUtilisateur = False
                 break
         if contienMotsUtilisateur:

@@ -66,26 +66,45 @@ $(document).ready(function() {
     source.onmessage = function(event) {
         $('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
     }*/
+
     $("#searchBtn").bind("click", function(){
+        doLongCurtain();
         $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
                                 'type' : $('input[name="type"]:checked').val(),
-                                'filtre' : $('input[name="filtre"]:checked').val()}, function(data) {
+                                'filtre' : $('input[name="filtre"]:checked').val()},
+        function(data) {
+            data = $.parseJSON(data);
             console.debug(data);
-            /*for
-            $("#listeActors").append()*/
+            doCurtain();
 
+            if($('input[name="type"]:checked').val() == "actors")
+                printActors(data.target);
+            else if ($('input[name="type"]:checked').val() == "movies")
+                printFilms(data.target);
         });
-    })
-
+    });
 });
+
+function printActors(data)
+{
+    $.each(data, function(uri, val){
+        $("#listeTarget").append(getDivActor(val.alias, val.birth, val.thumbnail, uri, val.resume));
+    });
+}
+
+function printFilms(data)
+{
+    $.each(data, function(uri, val){
+        $("#listeTarget").append(getDivMovie(val.alias, val.director, val.budget, val.comment, val.runtime));
+    });
+}
 
 function getDivActor(alias, birth, thumbnail, uri, resume)
 {
-    return
-    '<li> '
+    var str = '<li> '
     + '<div class="panel panel-default">'
     + '     <div class="panel-heading">'
-    + '        <h1 class="panel-title">' + alias + ' - ' + birth +'</h1>'
+    + '        <h1 class="panel-title">' + alias + ' - ' + birth + '</h1>'
     + '     </div>'
     + '     <div class="panel-body">'
     + '         <div id="thumbnail" class="col-md-6 col-lg-4">'
@@ -102,4 +121,33 @@ function getDivActor(alias, birth, thumbnail, uri, resume)
     + '    </div>'
     + '</div>'
     + '</li>';
+
+    return str;
+}
+
+function getDivMovie(alias, director, budget, comment, runtime)
+{
+    var str = '<li>'
+    +'  <div class="panel panel-default">'
+    +'      <div class="panel-heading">'
+    +'          <h1 class="panel-title">' + alias + ' - <a href=' + director + '> Director</a>'
+    +'          </h1>'
+    +'      </div>'
+    +'      <div class="row panel-body">'
+    +'          <div id="thumbnail" class="col-md-6">'
+    +'          </div>'
+    +'          <div class="col-md-6">'
+    +'              <div id="budget" class="row">'
+    +'                  <b>Budget :</b> '+ budget
+    +'              </div>'
+    +'              <div id="resume" class="row"><b> Comments :</b> '+ comment
+    +'              </div>'
+    +'              <div id="source" class="row"><b> runtime :</b> '+ runtime
+    +'              </div>'
+    +'          </div>'
+    +'      </div>'
+    +'  </div>'
+    +'</li>';
+
+    return str;
 }

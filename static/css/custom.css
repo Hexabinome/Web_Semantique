@@ -70,6 +70,7 @@ li {
 	border-radius: 15px;
 	height: 420px;
 	visibility: hidden;
+	overflow: auto;
 }
 
 .search

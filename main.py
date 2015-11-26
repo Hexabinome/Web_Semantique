@@ -56,7 +56,7 @@ def DoSearch(search, seuil, targetType):
         t.join()
 
     res = {}
-    res["graph"] = {}  # outThreadsModule34['matrix']
+    res["graph"] = {}  # outThreadsModule3_4['matrix']
     res["target"] = outThreadsModule3_4['similar']
 
     print("Temps total : {0} sec".format(time.time() - start))
