@@ -12,3 +12,4 @@ obj/
 *.sln
 *.pyproj
 *.config
+.DS_Store
