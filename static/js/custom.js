@@ -109,7 +109,7 @@ function ajaxGetSimilar(uri)
 {
     $("#listeSimilar").html("");
 
-    $(".se-pre-con").fadeIn("slow");
+    $("#loading").fadeIn("slow");
     console.debug(uri);
 
     $("#menu3").removeClass("in");
@@ -122,7 +122,7 @@ function ajaxGetSimilar(uri)
 
     $.post('/search', {'search': uri, 'seuil' : seuil, 'type' : type, 'filtre' : 'similar'},
         function(data) {
-            $(".se-pre-con").fadeOut("slow");
+            $("#loading").fadeOut("slow");
 
             data = $.parseJSON(data);
             if($('input[name="type"]:checked').val() == "actors")

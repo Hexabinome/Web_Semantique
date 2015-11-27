@@ -140,7 +140,8 @@ def Module4(setURI, targetType, outThreads, tabSearch):
     # call module 4 RDF TO RESULTS
     start = time.time()
     listeMotRecherche = tabSearch
-    listeMotRecherche.pop()
+    if targetType == 1:
+        listeMotRecherche.pop()
     outThreads['similar'] = information.getInfoTargetFromUrls(setURI, targetType, listeMotRecherche)
     print("Module 4 : {0} sec".format(time.time() - start))
 
@@ -191,7 +192,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("Emma actor", 0.3, 1)  # term)[1]))
+    res = DoSearch("the movie", 0.3, 0)  # term)[1]))
     '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():
