@@ -233,7 +233,7 @@ function displayQuote(){
     // list of list
     var quote = [[" Houston, we have a problem." , "Apollo 13"],
     ["I'll be back.", "Terminator"],
-    ["It really tied the room together.", "The Big Lebowski"],
+    ["Y'a pas de mal à se moquer des abrutis.Ils sont là pour ça, non?", "Le Dîner de cons"],
     ["It's alive! It's alive!", "Frankenstein"],
     ["I've got a feeling we're not in Kansas anymore.", "The Wizard of Oz"],
     ["E.T. phone home.", "E.T."],
