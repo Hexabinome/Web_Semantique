@@ -16,7 +16,7 @@ CACHE_DIRECTORY_GOOGLE = 'cache/google'
 GOOGLE_API_KEY_1 = "AIzaSyB1Tqy8xyxFx7JqfsxNL2yyVrJdLxAMv14"  # Momo
 GOOGLE_API_KEY_2 = "AIzaSyAu37WsyKygVkMwMJ8OFP4NMtP4j9Afys8"  # Momo
 GOOGLE_API_KEY_3 = "AIzaSyAURhklAaMmv8UG0cLBAMdVJqbVDUbU_s0"  # Robin
-GOOGLE_API_KEY_4 = "AIzaSyAcF9vr-X9VdKYau97nbN3PGsqeZrKqT7w"  # pas Robin
+GOOGLE_API_KEY_4 = "AIzaSyAcF9vr-X9VdKYau97nbN3PGsqeZrKqT7w"  # Momo
 
 # Identifiant de notre moteur de recherche
 CX = "002939247705119679953:0kfwzt0baty"
@@ -24,12 +24,13 @@ CX_TEST = "017576662512468239146:omuauf_lfve"
 
 ALCHEMY_API_KEY = "691b05b66974d5e2c59a2d3d3fa950e7b98d5fcd"
 
+
 def get_random_api_key():
     """
     Renvoie une clé au hasard parmi l'ensemble des clés à notre disposition
     :return:
     """
-    liste_api = [GOOGLE_API_KEY_1, GOOGLE_API_KEY_2, GOOGLE_API_KEY_3, GOOGLE_API_KEY_4]
+    liste_api = [GOOGLE_API_KEY_2, GOOGLE_API_KEY_3, GOOGLE_API_KEY_4]
     return random.choice(liste_api)
 
 
@@ -154,4 +155,4 @@ def do_module1_job(search_input, start_page=None):
 
 
 if __name__ == "__main__":
-    print(do_module1_job("tom cruise"))
+    print(do_module1_job("chuck norris"))
