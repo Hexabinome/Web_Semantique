@@ -6,7 +6,7 @@ import main, time
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/old")
 def index():
     return render_template('index.html')
 
@@ -31,7 +31,7 @@ def search():
     return render_template('results.html', results=search_res, type=request_type)
 '''
 
-@app.route("/test")
+@app.route("/")
 def test():
     return render_template('curtain.html')
 
