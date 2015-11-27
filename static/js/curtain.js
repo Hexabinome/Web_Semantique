@@ -51,7 +51,6 @@ function doLongCurtain()
 
 $(document).ready(function() {
     $(".rope").bind("click", function() {
-        console.debug("rope");
         $(this).blur();
 
         if ($curtainopen == true){

@@ -5,6 +5,8 @@ var type = -1;
 var search = "";
 var seuil = "";
 
+var compteur_id_btn = 0;
+
 //http://bl.ocks.org/mbostock/4062045
 
 //global
@@ -76,10 +78,20 @@ $(document).ready(function() {
     source.onmessage = function(event) {
         $('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
     }*/
-
     $("#searchBtn").bind("click", function(){
+        $("#listeSimilar").html("");
+
+        $.each($(".active"), function(index, value){
+            $(value).removeClass("active");
+        });
+
+        $("#tab1").addClass("active");
+        $("#home").addClass("active");
+        $("#home").addClass("in");
+
         displayQuote();
         doLongCurtain();
+
         type = $('input[name="type"]:checked').val();
         search = $("#searchInput").val();
         seuil = $("#seuilInput").val();
@@ -110,7 +122,6 @@ function ajaxGetSimilar(uri)
     $("#listeSimilar").html("");
 
     $("#loading").fadeIn("slow");
-    console.debug(uri);
 
     $("#menu3").removeClass("in");
     $("#menu3").removeClass("active");
@@ -135,8 +146,8 @@ function ajaxGetSimilar(uri)
 function printActors(ul, data)
 {
     $.each(data, function(uri, val){
-        $("#"+ul).append(getDivActor(val.alias, val.birth, val.thumbnail, uri, val.resume));
-        $("#"+uri.split("/").pop()).bind("click", function(e){
+        $("#"+ul).append(getDivActor(val.alias, val.birth, val.thumbnail, uri, val.resume, compteur_id_btn));
+        $("#"+(compteur_id_btn++ + uri.split("/").pop().substr(0, 5))).bind("click", function(e){
             ajaxGetSimilar($("#"+e.currentTarget.id).data("uri"));
         });
     });
@@ -145,15 +156,15 @@ function printActors(ul, data)
 function printFilms(ul, data)
 {
     $.each(data, function(uri, val){
-        $("#"+ul).append(getDivMovie(uri, val.alias, val.director, val.budget, val.comment, val.runtime));
-
-        $("#"+uri.split("/").pop().substr(0, 5)).bind("click", function(e){
+        $("#"+ul).append(getDivMovie(uri, val.alias, val.director, val.budget, val.comment, val.runtime, compteur_id_btn));
+        $("#"+(compteur_id_btn++ + uri.split("/").pop().substr(0, 5))).bind("click", function(e){
+            console.debug(uri);/**/
             ajaxGetSimilar($("#"+e.currentTarget.id).data("uri"));
         });
     });
 }
 
-function getDivActor(alias, birth, thumbnail, uri, resume)
+function getDivActor(alias, birth, thumbnail, uri, resume, compteur)
 {
     var str = '<li> '
     + '<div class="panel panel-default">'
@@ -164,7 +175,7 @@ function getDivActor(alias, birth, thumbnail, uri, resume)
     +'          <div class="col-md-6">'
     +'              <img src="' + thumbnail + '" />'
     +'              <div>'
-    +'                  <button id="' + uri.split("/").pop() + '" class="btnSimilar btn btn-primary" data-uri="' + uri + '">'
+    +'                  <button id="' + compteur + uri.split("/").pop().substr(0, 5) + '" class="btnSimilar btn btn-primary" data-uri="' + uri + '">'
     +'                      Résultats similaires '
     +'                  </button>'
     +'              </div>'
@@ -185,7 +196,7 @@ function getDivActor(alias, birth, thumbnail, uri, resume)
     return str;
 }
 
-function getDivMovie(uri, alias, director, budget, comment, runtime)
+function getDivMovie(uri, alias, director, budget, comment, runtime, compteur)
 {
     var str = '<li>'
     +'  <div class="panel panel-default">'
@@ -196,7 +207,7 @@ function getDivMovie(uri, alias, director, budget, comment, runtime)
     +'          <div class="col-md-6">'
     +'              <div id="thumbnail" >'
     +'              </div>'
-    +'              <button id="' + uri.split("/").pop().substr(0, 5) + '" class="btnSimilar btn btn-primary" data-uri = "' + uri + '">'
+    +'              <button id="' + compteur + uri.split("/").pop().substr(0, 5) + '" class="btnSimilar btn btn-primary" data-uri = "' + uri + '">'
     +'                  Résultats similaires '
     +'              </button>'
     +'          </div>'
