@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from Module import text_from_request, url_from_text, rdf_from_url, similarity, information, most_referenced, \
-    similar_result, targeted_uri_from_url
+    similar_result, targeted_uri_from_url, uri_entityclassifier
 from flask import json
 import time
 import threading
@@ -116,6 +116,16 @@ def Module2_1_Spotlight(jsonList):
     start = time.time()
     urlList = url_from_text.getUrlsFromTexts(jsonList)
     print("Module 2-1 (spotlight) : {0} sec".format(time.time() - start))
+    '''start = time.time()
+    urlListEntityClassifier = uri_entityclassifier.getUrlsFromTexts(jsonList)
+    print("Module 2-1 (entityclassifier) : {0} sec".format(time.time() - start))'''
+
+    # Merge both
+    ''' for url in urlList:
+        urlList[url] = set(urlList[url])
+        for uri in urlListEntityClassifier[url]:
+            urlList[url].add(urlListEntityClassifier[url])
+    print("Module 2-1 (spotlight + entityclassifier) : {0} sec".format(time.time() - start))'''
     return urlList
 
 def Module2_2_DBPedia(urList, requestType):
