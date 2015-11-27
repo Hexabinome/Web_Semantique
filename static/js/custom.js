@@ -79,7 +79,7 @@ $(document).ready(function() {
         $('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
     }*/
     $("#searchBtn").bind("click", function(){
-        $("#listeSimilar").html("");
+        $("#listeTarget").html("");
 
         $.each($(".active"), function(index, value){
             $(value).removeClass("active");
@@ -94,8 +94,8 @@ $(document).ready(function() {
 
         type = $('input[name="type"]:checked').val();
         search = $("#searchInput").val();
-        seuil = $("#seuilInput").val();
-        $.post('/search', {'search': $("#searchInput").val(), 'seuil' : $("#seuilInput").val(),
+        seuil = 0.8;
+        $.post('/search', {'search': $("#searchInput").val(), 'seuil' : seuil,
                                 'type' : type,
                                 'filtre' : "memento"},
         function(data) {

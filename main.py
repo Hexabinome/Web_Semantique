@@ -26,7 +26,7 @@ def DoSearch(search, seuil, targetType):
     urllist = Module2_1_Spotlight(jsonlist)
 
     targetedUris = Module2_3_UriResource(urllist, targetType)
-    #print(targetedUris)
+
     #Remplis dans un dictionnaire d'url les uri qui sont identifié comme targeted
     #Cela évite de récupérer les graphes rdf de tous
     uriListInUrl = {}
@@ -83,29 +83,6 @@ def Module1_GoogleAndAlchemy(searchKeyword):
     print('Module 1 : {0} sec'.format(time.time() - start))
 
     return jsonlist
-
-'''
-def Module2_Threaded(urllist, targetType, requestType):
-    threads = []
-    outThreads = {}
-    outThreads['mostReferenced'] = [None]
-    outThreads['targetedUris'] = [None]
-
-    # What has been searched ?
-    #t = threading.Thread(target=FindMostReferenced, args=(urllist, targetType, outThreads))
-    #threads.append(t)
-    #t.start()
-
-    # Module 2.3 - URIs -> DBPEDIA RDF GRAPHs
-    t = threading.Thread(target=Module2_3_UriResource, args=(urllist, targetType, outThreads))
-    threads.append(t)
-    t.start()
-
-    for t in threads:
-        t.join()
-
-    return outThreads
-'''
 
 def Module2_1_Spotlight(jsonList):
     """
@@ -168,6 +145,7 @@ ratio : le seuil de similartié pour le graphe
 type :  0 : actor
         1 : film
 '''
+
 def DoSimilar(search, ratio, type):
     # 0: subject,
     # 1: item,
