@@ -192,7 +192,7 @@ if __name__ == '__main__':
     # sys.stdout = open('console.txt', 'w')
 
     # term = input()
-    res = DoSearch("the movie", 0.3, 0)  # term)[1]))
+    res = DoSearch("Fight movie", 0.3, 0)  # term)[1]))
     '''for k, v in res["target"].items():
         print(k.encode("utf-8", "ignore"))
         for key, value in v.items():
