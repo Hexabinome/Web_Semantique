@@ -2,15 +2,17 @@
 # ------------------------------------------
 #           get_sparql_graph
 # ------------------------------------------
-import threading
+import threading, os
 from Module.sparql_helper import runQuery_returnBindings
 
-CACHE_DIRECTORY = 'cache/dbpedia/'
+CACHE_DIRECTORY = 'cache/uris/'
 
 
 # TODO : Reflechir sur les requetes a effectuer
 
 def testIsTargetType(url, target):
+    if not os.path.exists(CACHE_DIRECTORY):
+        os.makedirs(CACHE_DIRECTORY)
     options = {0: actor,
                1: film
                }
@@ -19,44 +21,40 @@ def testIsTargetType(url, target):
     cache_file = CACHE_DIRECTORY+cache_file
     notcache_file = CACHE_DIRECTORY+notcache_file
     key = 'acteur' if target == 0 else 'film'
-    open(notcache_file, 'a').close()
-    open(cache_file, 'a').close()
-    with open(cache_file, 'r+') as cache:
-        notcache = open(notcache_file, 'r+')
+    open(notcache_file, 'w').close()
+    open(cache_file, 'w').close()
+    with open(cache_file, 'r') as cache:
+        notcache = open(notcache_file, 'r')
         typeList = []
         nottypeList = []
         try:
             typeList = cache.read().splitlines()
         except:
-            # print('EXCEPTION')
+            print('EXCEPTION')
             pass
         try:
             nottypeList = notcache.read().splitlines()
         except:
-            # print('EXCEPTION 2')
+            print('EXCEPTION 2')
             pass
-        if(url in typeList):
-            # print('IN')
-            notcache.close()
-            return url
-        elif(url in nottypeList):
-            # print('NOTIN')
-            notcache.close()
-            return
+        notcache.close()
+    if(url in typeList):
+        print('IN')
+        return [{key:{'value':url}}]
+    elif(url in nottypeList):
+        print('NOTIN')
+        return []
+    else:
+        # print(url+' NOT IN FILES')
+        query = options[target](url)
+        uri = runQuery_returnBindings(query)
+        if uri:
+            with open(cache_file, 'a') as cache:
+                cache.write(uri[0][key]['value'])
         else:
-            # print(url+' NOT IN FILES')
-            query = options[target](url)
-            uri = runQuery_returnBindings(query)
-            if uri:
-                cache.seek(0,2)
-                #print(uri[0][key]['value'])
-                cache.write(uri[0][key]['value']+'\n')
-            else:
-                print(url)
-                notcache.seek(0,2)
+            with open(notcache_file, 'a') as notcache:
                 notcache.write(url+'\n')
-            notcache.close()
-            return uri
+        return uri
 
 
 def actor(url):
@@ -111,7 +109,7 @@ def getTargetedUrisFromUrls(urlDict, targetType):
     for t in threads:
         t.join()
 
-    #print(targetSet)
+    print(len(targetSet))
     return targetSet
 
 #if __name__ == '__main__':
