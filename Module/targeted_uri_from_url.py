@@ -5,17 +5,58 @@
 import threading
 from Module.sparql_helper import runQuery_returnBindings
 
-CACHE_DIRECTORY = 'cache/dbpedia'
+CACHE_DIRECTORY = 'cache/dbpedia/'
 
 
-# TODO : Reflechir sur les requetes a effectuee
+# TODO : Reflechir sur les requetes a effectuer
 
 def testIsTargetType(url, target):
     options = {0: actor,
                1: film
                }
-    query = options[target](url)
-    return runQuery_returnBindings(query)
+    cache_file = 'actor.json' if target == 0 else 'film.json'
+    notcache_file = 'not'+cache_file
+    cache_file = CACHE_DIRECTORY+cache_file
+    notcache_file = CACHE_DIRECTORY+notcache_file
+    key = 'acteur' if target == 0 else 'film'
+    open(notcache_file, 'a').close()
+    open(cache_file, 'a').close()
+    with open(cache_file, 'r+') as cache:
+        notcache = open(notcache_file, 'r+')
+        typeList = []
+        nottypeList = []
+        try:
+            typeList = cache.read().splitlines()
+        except:
+            # print('EXCEPTION')
+            pass
+        try:
+            nottypeList = notcache.read().splitlines()
+        except:
+            # print('EXCEPTION 2')
+            pass
+        if(url in typeList):
+            # print('IN')
+            notcache.close()
+            return url
+        elif(url in nottypeList):
+            # print('NOTIN')
+            notcache.close()
+            return
+        else:
+            # print(url+' NOT IN FILES')
+            query = options[target](url)
+            uri = runQuery_returnBindings(query)
+            if uri:
+                cache.seek(0,2)
+                #print(uri[0][key]['value'])
+                cache.write(uri[0][key]['value']+'\n')
+            else:
+                print(url)
+                notcache.seek(0,2)
+                notcache.write(url+'\n')
+            notcache.close()
+            return uri
 
 
 def actor(url):
@@ -70,7 +111,7 @@ def getTargetedUrisFromUrls(urlDict, targetType):
     for t in threads:
         t.join()
 
-    print(targetSet)
+    #print(targetSet)
     return targetSet
 
 #if __name__ == '__main__':

@@ -26,7 +26,7 @@ def DoSearch(search, seuil, targetType):
     urllist = Module2_1_Spotlight(jsonlist)
 
     targetedUris = Module2_3_UriResource(urllist, targetType)
-    print(targetedUris)
+    #print(targetedUris)
     #Remplis dans un dictionnaire d'url les uri qui sont identifié comme targeted
     #Cela évite de récupérer les graphes rdf de tous
     uriListInUrl = {}
