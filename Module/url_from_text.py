@@ -101,6 +101,8 @@ def getUrlsFromTexts(jsonTexts):
     for thread in threads:
         thread.join()
 
+    print("retour urls from text (spotlight)", result)
+
     return result
 
 

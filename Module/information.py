@@ -126,6 +126,8 @@ def getInfoTargetFromUrls(setUrls, targetType, tabSearch):
     for t in threads:
         t.join()
 
+    print("partie 4", resDict)
+
     return resDict
 
 # Example calls TEST
