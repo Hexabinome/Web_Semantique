@@ -1,8 +1,7 @@
 ﻿# ==========================
 # Import
 # ==========================
-import threading
-import json
+import threading, json, queue
 
 # ==========================
 # Déclaration variables
@@ -42,13 +41,6 @@ def createSimilarityMatrix(dbPedia):
                     sujet = triplet['subject']['value']
                 except:
                     sujet = ''
-                '''
-                try:
-                    predicat = triplet['predicat']['value']
-                except:
-                    predicat = ''
-                '''
-
                 try:
                     objet = triplet['valeur']['value']
                 except:
@@ -74,12 +66,24 @@ def createSimilarityMatrix(dbPedia):
         urlTab.append(urlLigne)
 
     # Calcul d'une moitié de la matrice, 1 thread par URL
+
+    stoptedThread = queue.Queue()
     for idxLigne in range(len(urlTab)):
-        #Créer une entré dans matriceIndice pour chaque url
-        matriceIndice[urlTab[idxLigne]] = {}
-        t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlTab, idxLigne, sujetObjetsGraphes))
-        threads.append(t)
-        t.start()
+        #Au moins trois thread on été crée. On attent qu'un deux finissent avant d'en relancé.
+        if idxLigne > 3:
+            #Attend qu'un thread ai finis
+            stoptedThread.get()
+            matriceIndice[urlTab[idxLigne]] = {}
+            t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlTab, idxLigne, sujetObjetsGraphes, stoptedThread))
+            threads.append(t)
+            t.start()
+        else:
+            print(idxLigne)
+            #Créer une entré dans matriceIndice pour chaque url
+            matriceIndice[urlTab[idxLigne]] = {}
+            t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlTab, idxLigne, sujetObjetsGraphes, stoptedThread))
+            threads.append(t)
+            t.start()
 
     for t in threads:
         t.join()
@@ -108,7 +112,13 @@ def similarity(RDF1, RDF2, type):
                 RDF2.remove(j)
     return common / initLen
 
-def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
+'''
+resultMatrice : la matrice contenant tous les résultats
+urlTab : une liste des 10 urls récupérer sur Google
+idxLigne : la ligne à calculer
+sujetObjetsGraphes : dictionnaire (key : url, valeur : set d'objet / sujet)
+'''
+def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes, stoptedThread):
     #Pour toutes les urls
     for idxCol in range(idxLigne, len(urlTab)):
         urlLigne = urlTab[idxLigne]
@@ -124,6 +134,7 @@ def ratioCalcThread(resultMatrice, urlTab, idxLigne, sujetObjetsGraphes):
                 ratio = 0
         #ajout de l'entré dans la matrice
         resultMatrice[urlLigne][urlCol] = ratio
+    stoptedThread.put(True)
 
 def extractGraph(matrice, seuil):
     graph = {}

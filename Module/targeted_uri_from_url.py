@@ -99,6 +99,7 @@ def getTargetedUrisFromUrls(urlDict, targetType):
     nbThreads = min(4, nbURI)
     # Créer et lance les thread, qui vont appellé la méthode getSparqlFromUrlThreaded.
     # Chaque thread a un bout de la liste de toutes les url à traiter et les dictionnaires en entrée / sorties
+
     for x in range(nbThreads):
         t = threading.Thread(target=getUriFromUrlThreaded,
                              args=(
