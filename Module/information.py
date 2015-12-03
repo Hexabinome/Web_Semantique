@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------
-#           get_sparql_graph
+#           Get information about targeted uris, in order to print them later
 # ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
-import threading, json, sys
-
-# TODO : Reflechir sur les requetes a effectuee
-'''
-requestType is a number to change the dbpedia query
-'''
+import threading, json
 
 def getInfoFromUrl(url, targetType):
     # actors
@@ -126,17 +121,5 @@ def getInfoTargetFromUrls(setUrls, targetType, tabSearch):
     for t in threads:
         t.join()
 
-    print("partie 4", resDict)
-
     return resDict
 
-# Example calls TEST
-# res = getSparqlFromUrl('http://dbpedia.org/resource/Beer', 1)
-# redirige l'output sur le fichier
-# sys.stdout = open('console.txt', 'w', encoding="utf-8")
-
-# results = getInfoTargetFromUrls(
-#   ['http://dbpedia.org/resource/Brad_Pitt',
-#    'http://dbpedia.org/resource/Angelina_Jolie',
-#    'http://dbpedia.org/resource/Brad_Davis_(actor)'], 0)
-# print(results)

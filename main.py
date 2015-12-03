@@ -13,7 +13,6 @@ type :  0 : actor
 '''
 def DoSearch(search, seuil, targetType):
     start = time.time()
-    # googleRequestInFile = True
 
     # 0: subject,
     # 1: item,
@@ -95,35 +94,54 @@ def Module2_1_Spotlight(jsonList):
     print("Module 2-1 (spotlight) : {0} sec".format(time.time() - start))
     return urlList
 
-def Module2_2_DBPedia(urList, requestType):
+def Module2_2_DBPedia(uriList, requestType):
+    """
+    Parameter : A list of {'url': [uris]} and a request type (0; actor, 1: movie)
+    Return : For each url the whole rdf graphe of all uris
+    """
     start = time.time()
-    dbpedia = rdf_from_url.getRdfFromUrls(urList, requestType)
+    dbpedia = rdf_from_url.getRdfFromUrls(uriList, requestType)
     print("Module 2-2 (dbpedia content) : {0} sec".format(time.time() - start))
     return dbpedia
 
-def Module2_3_UriResource(urList, targetType):
+def Module2_3_UriResource(uriList, targetType):
+    """
+    Parameter : A list of {'url': [uris]} and a request type (0; actor, 1: movie)
+    Return : a list of all uris that have a targeted type
+    """
     start = time.time()
-    targetedUris = targeted_uri_from_url.getTargetedUrisFromUrls(urList, targetType)
+    targetedUris = targeted_uri_from_url.getTargetedUrisFromUrls(uriList, targetType)
     print("Module 2-3 (targeted uri) : {0} sec".format(time.time() - start))
     return targetedUris
 
 def Module3(grapheRDF, outThreads):
-    # call module 3 RDF TO RESULTS
+    """
+    Parameter : A list of {'url': rdfGraphe}
+    Return : a matrix where colones and ligne are urls and values are the jaccard's indice
+    """
     start = time.time()
     outThreads['matrix'] = similarity.createSimilarityMatrix(grapheRDF)
     print("Module 3 : {0} sec".format(time.time() - start))
 
 def Module4(setURI, targetType, outThreads, tabSearch):
-    # call module 4 RDF TO RESULTS
+    """
+    Parameter : A list of targeted uris, a targeted type, and an array containing all the worlds given by the user
+    Return : a list of targeted object, one for each given uri
+    """
     start = time.time()
     listeMotRecherche = tabSearch
+    #If the type is 0 (actor) then we've added the word actor at the end of the search, and we have to pop it now
     if targetType == 0:
         listeMotRecherche.pop()
     outThreads['similar'] = information.getInfoTargetFromUrls(setURI, targetType, listeMotRecherche)
     print("Module 4 : {0} sec".format(time.time() - start))
 
 def Module5(uri, targetType, ratio):
-    # call module 5, one RDF TO similars RDFs
+    """
+    Parameter : One uri that we want to match, a target type and a ratio which clue about how much other resources
+    have to be similar to the one given.
+    Return : a list of targeted object that match the given uri.
+    """
     start = time.time()
     similars = similar_result.getSimilar(uri, targetType, ratio)
     print("Module 5 : {0} sec".format(time.time() - start))
@@ -135,11 +153,7 @@ ratio : le seuil de similartié pour le graphe
 type :  0 : actor
         1 : film
 '''
-
 def DoSimilar(search, ratio, type):
-    # 0: subject,
-    # 1: item,
-    # 2: subjectAndItem
     ratio = 0.5 if type == 0 else 0.7
     similars = Module5(search, type, ratio)
     res = {'target':{}}
@@ -148,6 +162,7 @@ def DoSimilar(search, ratio, type):
 
     return res
 
+#Not useful anymore
 def FindMostReferenced(urlDic, elementType, outThreads):
     """
     Parameters :
@@ -166,14 +181,4 @@ def FindMostReferenced(urlDic, elementType, outThreads):
     outThreads['mostReferenced'] = mostReferencedUri
 
 if __name__ == '__main__':
-    # redirige l'output sur le fichier
-    # sys.stdout = open('console.txt', 'w')
-
-    # term = input()
-    res = DoSearch("Emma actor", 0.3, 0)  # term)[1]))
-    '''for k, v in res["target"].items():
-        print(k.encode("utf-8", "ignore"))
-        for key, value in v.items():
-            print(key.encode("utf-8", "ignore"))
-            print(value.encode("utf-8", "ignore"))
-    '''
+    res = DoSearch("Emma actor", 0.3, 0)

@@ -76,7 +76,6 @@ def getUrlsFromTextThreaded(texts, result):
                 if uri != []:
                     result[text['url']].add(uri)
 
-
 '''
 Parameter : list of dictionnaries, containing {'url':..., 'text':...}. Texts returned by Alchemy
 Requests for each text DBPedia spotlight
@@ -100,8 +99,6 @@ def getUrlsFromTexts(jsonTexts):
     # Wait for threads
     for thread in threads:
         thread.join()
-
-    print("retour urls from text (spotlight)", result)
 
     return result
 

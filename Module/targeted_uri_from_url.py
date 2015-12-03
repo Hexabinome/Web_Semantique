@@ -1,15 +1,12 @@
 ﻿# -*- coding: utf-8 -*-
 # ------------------------------------------
-#           get_sparql_graph
+#  Get targeted uri from a list of all retrieved uri
 # ------------------------------------------
 import threading
 import os
 from Module.sparql_helper import runQuery_returnBindings
 
 CACHE_DIRECTORY = 'cache/uris/'
-
-
-# TODO : Reflechir sur les requetes a effectuer
 
 def testIsTargetType(url, target):
     options = {0: actor,

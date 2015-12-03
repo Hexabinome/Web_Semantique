@@ -1,7 +1,7 @@
 ﻿import json
 
-from flask import Flask, render_template, request, Response
-import main, time
+from flask import Flask, render_template, request
+import main
 
 app = Flask(__name__)
 
@@ -18,7 +18,7 @@ def test():
 def search():
     search_query = request.form['search']
     seuil = request.form['seuil']
-    type = request.form['type']  # Récuperation de la valeur du radio button
+    type = request.form['type']
     filtre = request.form['filtre']
 
     request_filtre = 0 if filtre == 'memento' else 1

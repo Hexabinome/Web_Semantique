@@ -1,10 +1,9 @@
 # ------------------------------------------
-#           get_spotlight_uri
+#  get uri from a list of text, using the entityClassifier. But not done and not working
 # ------------------------------------------
 import requests, json, threading, os
 
 CACHE_DIRECTORY = 'cache/entityclassifier'
-
 
 # TODO: making the confidence and support changeable
 def getUrlsFromText(url, text, confidence, support):
@@ -37,7 +36,6 @@ def getUrlsFromText(url, text, confidence, support):
     req = requests.post(urlSpotlight, text, headers=header)
     print("2 REQ END")
 
-    # TODO can throw error. Check status code 200
     if req.status_code != 200:
         # raise IOError("ERR : {0}({1})\nJson was : {2}".format(req.reason, req.status_code, text))
         return []

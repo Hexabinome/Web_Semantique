@@ -1,11 +1,9 @@
-﻿# ==========================
-# Import
-# ==========================
+﻿# -*- coding: utf-8 -*-
+# ------------------------------------------
+# Create a matrix where columns and line are urls and values are the Jaccard index
+# ------------------------------------------
 import threading, json, queue
 
-# ==========================
-# Déclaration variables
-# ==========================
 def createSimilarityVector(filmRDF, searchType, ratio):
     similarityVector = {}
     if searchType == 1:
@@ -78,7 +76,6 @@ def createSimilarityMatrix(dbPedia):
             threads.append(t)
             t.start()
         else:
-            print(idxLigne)
             #Créer une entré dans matriceIndice pour chaque url
             matriceIndice[urlTab[idxLigne]] = {}
             t = threading.Thread(target=ratioCalcThread, args=(matriceIndice, urlTab, idxLigne, sujetObjetsGraphes, stoptedThread))

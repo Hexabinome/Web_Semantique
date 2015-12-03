@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# ------------------------------------------
+#  Function useful for all querys done in other modules
+# ------------------------------------------
 from SPARQLWrapper import SPARQLWrapper, JSON
 import json
 

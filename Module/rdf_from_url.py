@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 # ------------------------------------------
-#           get_sparql_graph
+# Get the RDF graphes form a list of given uris
 # ------------------------------------------
 import threading
 import os
@@ -8,12 +8,6 @@ import ast
 from Module.sparql_helper import runQuery_returnBindings
 
 CACHE_DIRECTORY = 'cache/dbpedia'
-
-# TODO : Reflechir sur les requetes a effectuee
-'''
-requestType is a number to change the dbpedia query
-'''
-
 
 def getRdfFromUrl(url, requestType):
     # ATTENTION. Si on modifie les requêtes associées aux indices, il faut supprimer (à la main) les fichiers en cache !!!
@@ -142,8 +136,5 @@ if __name__ == '__main__':
          'http://test.fr': ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Brad_Davis_(actor)',
                             'http://dbpedia.org/resource/Brad_Pitt']}
         , 0)
-    # results = getSparqlFromUrls(['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany'], 0)
-    # ['http://dbpedia.org/resource/Beer', 'http://dbpedia.org/resource/Germany', 'http://dbpedia.org/resource/Europe'],
-    #  ['http://dbpedia.org/resource/France', 'http://dbpedia.org/resource/Baguette',
-    #   'http://dbpedia.org/resource/Europe'], 0)
+
     print(results)

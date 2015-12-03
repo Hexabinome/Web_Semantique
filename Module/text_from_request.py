@@ -1,5 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
-
+# ------------------------------------------
+#  Make an Google and Alchemy query in order to retrieve text and url about a given search
+# ------------------------------------------
 import re
 from urllib.parse import quote
 import json
@@ -147,12 +149,10 @@ def do_module1_job(search_input, start_page=None):
 
     result = []
     links = google_search(search_input, start_page)
-    print("retour google : ", links)
     for link in links:
         result.append(alchemy_api(link["link"]))
 
     json_string = {"resultats": result}
-    print("retour alchemy :", json_string)
     return json.dumps(json_string, ensure_ascii=False)
 
 

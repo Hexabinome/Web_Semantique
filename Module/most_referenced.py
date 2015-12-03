@@ -1,11 +1,12 @@
 ﻿# -*- coding: utf-8 -*-
+# ------------------------------------------
+# Get the most referenced uri from all the given one
+# ------------------------------------------
 from Module.sparql_helper import runQuery_returnBool
 
 '''
 Parametre : une liste de resources (uri), int pour le type rechercher (0 = film, 1 = acteur)
 '''
-
-
 def findMostReferenced(uriList, type):
     mostVisitedResources = {}
 

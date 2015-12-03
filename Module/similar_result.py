@@ -1,14 +1,11 @@
+# -*- coding: utf-8 -*-
+# ------------------------------------------
+#  Get similar targeted objet from one given in parameter
+# ------------------------------------------
 from Module import similarity, rdf_from_url
-
-'''
-    targetType 0 : actor
-               1 : film
-'''
-
 
 def getSimilar(uri, targetType, ratio):
     # get rdf with items for this object
-    print(uri)
     rdf = rdf_from_url.getRdfFromUrl(uri, 2)
     #print(str(rdf).encode('utf-8','ignore'))
     # values est le graphe RDF contenant seulement les triplets qui on une
