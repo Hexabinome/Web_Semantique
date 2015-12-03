@@ -3,9 +3,10 @@
 #           get_sparql_graph
 # ------------------------------------------
 import threading
+import os
 from Module.sparql_helper import runQuery_returnBindings
 
-CACHE_DIRECTORY = 'cache/dbpedia/'
+CACHE_DIRECTORY = 'cache/uris/'
 
 
 # TODO : Reflechir sur les requetes a effectuer
@@ -14,49 +15,10 @@ def testIsTargetType(url, target):
     options = {0: actor,
                1: film
                }
-    cache_file = 'actor.json' if target == 0 else 'film.json'
-    notcache_file = 'not'+cache_file
-    cache_file = CACHE_DIRECTORY+cache_file
-    notcache_file = CACHE_DIRECTORY+notcache_file
-    key = 'acteur' if target == 0 else 'film'
-    open(notcache_file, 'a').close()
-    open(cache_file, 'a').close()
-    with open(cache_file, 'r+') as cache:
-        notcache = open(notcache_file, 'r+')
-        typeList = []
-        nottypeList = []
-        try:
-            typeList = cache.read().splitlines()
-        except:
-            # print('EXCEPTION')
-            pass
-        try:
-            nottypeList = notcache.read().splitlines()
-        except:
-            # print('EXCEPTION 2')
-            pass
-        if(url in typeList):
-            # print('IN')
-            notcache.close()
-            return url
-        elif(url in nottypeList):
-            # print('NOTIN')
-            notcache.close()
-            return
-        else:
-            # print(url+' NOT IN FILES')
-            query = options[target](url)
-            uri = runQuery_returnBindings(query)
-            if uri:
-                cache.seek(0,2)
-                #print(uri[0][key]['value'])
-                cache.write(uri[0][key]['value']+'\n')
-            else:
-                print(url)
-                notcache.seek(0,2)
-                notcache.write(url+'\n')
-            notcache.close()
-            return uri
+
+    query = options[target](url)
+    uri = runQuery_returnBindings(query)
+    return uri
 
 
 def actor(url):
@@ -69,10 +31,20 @@ def film(url):
         .format(url)
 
 
-def getUriFromUrlThreaded(uris, targetSet, targetType):
+def getUriFromUrlThreaded(uris, targetSet, targetType, typeSet, nottypeSet):
     for uri in uris:
-        if testIsTargetType(uri, targetType) != []:
+        if uri in typeSet:
+            # already in cache of this type
             targetSet.add(uri)
+        elif uri in nottypeSet:
+            # already in cache of this not(type)
+            nottypeSet.add(uri)
+        elif testIsTargetType(uri, targetType) != []:
+            targetSet.add(uri)
+            typeSet.add(uri)
+        else:
+            nottypeSet.add(uri)
+
 
 '''
 Parameter is a dictionnary {url: [uri, uri, uri, ...], url: [...], ...}
@@ -82,7 +54,40 @@ targetType :
     0 : actor
     1 : film
 '''
+
+
 def getTargetedUrisFromUrls(urlDict, targetType):
+
+    #GROSSE opti à faire ici pour faire 3 caches: film, acteur, autre
+    if not os.path.exists(CACHE_DIRECTORY):
+        os.makedirs(CACHE_DIRECTORY)
+    cache_file = 'actor.json' if targetType == 0 else 'film.json'
+    notcache_file = 'not'+cache_file
+    cache_file = CACHE_DIRECTORY+cache_file
+    notcache_file = CACHE_DIRECTORY+notcache_file
+    # if cache files don't exist
+    if not os.path.isfile(cache_file):
+        open(cache_file, 'w').close()
+    if not os.path.isfile(notcache_file):
+        open(notcache_file, 'w').close()
+    typeSet = set()
+    nottypeSet = set()
+    ori_typeSet = set()
+    ori_nottypeSet = set()
+    # load cache
+    with open(cache_file, 'r') as cache:
+        try:
+            typeSet = set(cache.read().splitlines())
+            ori_typeSet = typeSet.copy()
+        except:
+            pass
+    with open(notcache_file, 'r') as notcache:
+        try:
+            nottypeSet = set(notcache.read().splitlines())
+            ori_nottypeSet = nottypeSet.copy()
+        except:
+            pass
+
     # Contient toutes les uris acteurs ou films
     targetSet = set()
     # Contient toutes les uris
@@ -105,14 +110,26 @@ def getTargetedUrisFromUrls(urlDict, targetType):
                              args=(
                                  list(uriSet)[int(x * nbURI / nbThreads):int((x + 1) * nbURI / nbThreads)],
                                  targetSet,
-                                 targetType))
+                                 targetType,
+                                 typeSet,nottypeSet))
         t.start()
         threads.append(t)
     # Wait for threads
     for t in threads:
         t.join()
-
-    #print(targetSet)
+    # Update cache
+    with open(cache_file, 'w') as cache:
+        for uri in (typeSet-ori_typeSet):
+            try:
+                cache.write(uri+'\n')
+            except:
+                pass
+    with open(notcache_file, 'w') as notcache:
+        for uri in (nottypeSet-ori_nottypeSet):
+            try:
+                notcache.write(uri+'\n')
+            except:
+                pass
     return targetSet
 
 #if __name__ == '__main__':
