@@ -5,7 +5,7 @@ Services utilisés : dbpedia, alchemy
 
 ## Site Démo:
 
-Le moteur de recherche sémantique est disponible içi: [Memento Cinema](https://www.github.com).
+Le moteur de recherche sémantique est disponible içi: [Memento Cinema](https://semantic-search-engine.herokuapp.com).
 _(Pour des coût d'hebergement, le nombre de resultats est réduit et le module similarité n'est pas disponible.)_
 
 ## Technologie:
