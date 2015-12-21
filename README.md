@@ -1,9 +1,14 @@
 # Web Semantique
 
-# Moteur de recherche sémantique de cinéma
+## Moteur de recherche sémantique de cinéma:
 Services utilisés : dbpedia, alchemy
 
-## Technos :
+## Site Démo:
+
+Le moteur de recherche sémantique est disponible içi: [Memento Cinema](https://www.github.com).
+_(Pour des coût d'hebergement, le nombre de resultats est réduit et le module similarité n'est pas disponible.)_
+
+## Technologie:
  - bash
  - python3 (Flask, SPARQLWrapper, requests)
 
@@ -13,7 +18,17 @@ Services utilisés : dbpedia, alchemy
 ## Pour tester sans serveur web:
 `$ python3 main.py`
 
-## Clé google pour l'API Google Custom Search
+## Continuer le peuplement de notre *base de connaissance*:
+
+lancer les 2 scripts depuis `./data`:
+```bash
+# afin de peupler actor.json
+python3 data/peuplateRdfActor.py
+# afin de peupler films.json
+python3 data/peuplateRdfFilm.py 
+```
+
+## Clé google pour l'API Google Custom Search:
 Pour créer une nouvelle clé il faut :
  - Aller sur la [console google](https://console.developers.google.com)
  - Créer un nouveau projet
